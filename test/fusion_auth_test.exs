@@ -5,12 +5,13 @@ defmodule FusionAuthTest do
   test "client has correct headers" do
     base_url = "http://localhost:9011"
     api_key = "123456"
-    client = FusionAuth.client(base_url, api_key)
+    tenant_id = "234567"
+    client = FusionAuth.client(base_url, api_key, tenant_id)
 
     assert client.pre == [
       {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
       {Tesla.Middleware.JSON, :call, [[]]},
-      {Tesla.Middleware.Headers, :call, [[{"Authorization", "123456"}]]}
+      {Tesla.Middleware.Headers, :call, [[{"Authorization", "123456"}, {"X-FusionAuth-TenantId", "234567"}]]}
     ]
   end
 
