@@ -7,5 +7,5 @@ defmodule FusionAuth.Registrations do
   ## Examples
   """
 
-  @registrations_url "/api/registration"
+  # @registrations_url "/api/registration"
 end

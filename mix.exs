@@ -21,7 +21,10 @@ defmodule FusionAuth.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:tesla, "~> 1.3.0"}
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:tesla, "~> 1.3.0"},
+      {:hackney, "~> 1.15.2"},
+      {:verus_common, git: "git@github.com:Cogility/verus_common"}
     ]
   end
 end

@@ -27,15 +27,17 @@ defmodule FusionAuth do
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [{"authorization", api_key}]}
+      {Tesla.Middleware.Headers, [{"Authorization", api_key}]}
     ]
 
-    Tesla.client(middleware, adapter())
+    adapter = {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
+
+    Tesla.client(middleware, adapter)
   end
 
   @spec result({:ok, Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status < 300 do
-    {:ok, body, env}
+    {:ok, VerusCommon.Utilities.CaseFormatter.atomize_keys(body), env}
   end
 
   @spec result({:ok, Tesla.Env.t()}) :: result()
@@ -45,12 +47,4 @@ defmodule FusionAuth do
 
   @spec result({:error, any}) :: result()
   def result({:error, any}), do: {:error, %{}, any}
-
-  @doc false
-  def adapter do
-    case Application.get_env(:okta_api, :tesla) do
-      nil -> {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
-      tesla -> tesla[:adapter]
-    end
-  end
 end
