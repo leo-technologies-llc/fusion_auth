@@ -41,5 +41,4 @@
   "transcribe": {:git, "git@github.com:Cogility/transcribe", "703f4491ee27e885e07ae82656fdd105cd0a3a38", []},
   "tzdata": {:hex, :tzdata, "0.5.22", "f2ba9105117ee0360eae2eca389783ef7db36d533899b2e84559404dbc77ebb8", [:mix], [{:hackney, "~> 1.0", [hex: :hackney, repo: "hexpm", optional: false]}], "hexpm", "cd66c8a1e6a9e121d1f538b01bef459334bb4029a1ffb4eeeb5e4eae0337e7b6"},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.4.1", "d869e4c68901dd9531385bb0c8c40444ebf624e60b6962d95952775cac5e90cd", [:rebar3], [], "hexpm", "1d1848c40487cdb0b30e8ed975e34e025860c02e419cb615d255849f3427439d"},
-  "verus_common": {:git, "git@github.com:Cogility/verus_common", "49281264d856aea49eef7545fa4f1128d10fce8f", []},
 }

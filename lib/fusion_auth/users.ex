@@ -1,22 +1,17 @@
 defmodule FusionAuth.Users do
   @moduledoc """
-  The `FusionAuth.Users` module provides access methods to the [FusionAuth Users API](https://fusionauth.io/docs/v1/tech/apis/users).
+  The `FusionAuth.Users` module provides access functions to the [FusionAuth Users API](https://fusionauth.io/docs/v1/tech/apis/users).
 
-  All methods require a Tesla Client struct created with `FusionAuth.client(base_url, api_key)`.
+  All functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key)`.
 
   ## Examples
       client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
       {:ok, result, _env} = FusionAuth.Users.get_user(client, "06da543e-df3e-4011-b122-a9ff04326599")
 
-  TODO: Confirm if we want to leverage soft deletes or hard deletes.
   """
+  alias FusionAuth.Utils
 
   @users_url "/api/user"
-  @default_test_sort_fields [
-    %{missing: "_first", name: "login", order: "asc"},
-    %{name: "fullName", order: "asc"}
-  ]
-  @default_test_query "{\"bool\":{\"must\":[{\"nested\":{\"path\":\"registrations\",\"query\":{\"bool\":{\"must\":[{\"match\":{\"registrations.applicationId\":\"f8109431-14f2-4815-9987-77fdedeff802\"}}]}}}}]}}"
 
   @doc """
   Retrieve a user by the user’s ID.
@@ -83,11 +78,12 @@ defmodule FusionAuth.Users do
 
   https://fusionauth.io/docs/v1/tech/apis/users#bulk-delete-users
   """
-  @spec bulk_delete_users(FusionAuth.client(), list()) :: FusionAuth.request()
-  def bulk_delete_users(client, user_ids) do
+  @spec bulk_delete_users(FusionAuth.client(), list(), boolean()) :: FusionAuth.request()
+  def bulk_delete_users(client, user_ids, hard_delete \\ nil) do
     Tesla.delete(
       client,
-      @users_url <> "/bulk?#{format_bulk_user_ids(user_ids, "userId")}&hardDelete=true"
+      @users_url <>
+        "/bulk" <> Utils.build_query_parameters(userId: user_ids, hardDelete: hard_delete)
     )
     |> FusionAuth.result()
   end
@@ -117,22 +113,84 @@ defmodule FusionAuth.Users do
 
   https://fusionauth.io/docs/v1/tech/apis/users#search-for-users
   """
-  @spec search_users(FusionAuth.client(), String.t(), list()) :: FusionAuth.request()
-  def search_users(
-        client,
-        query \\ @default_test_query,
-        sort_fields \\ @default_test_sort_fields
-      ) do
-    Tesla.post(client, @users_url <> "/search", %{
-      search: %{query: query, sortFields: sort_fields}
-    })
+  @spec search_users(FusionAuth.client(), FusionAuth.search_criteria()) :: FusionAuth.request()
+  def search_users(client, search) do
+    Tesla.post(client, @users_url <> "/search", %{search: search}) |> FusionAuth.result()
+  end
+
+  @doc """
+  Get recent logins.
+
+  https://fusionauth.io/docs/v1/tech/apis/users#retrieve-recent-logins
+  """
+  @spec get_recent_logins(FusionAuth.client(), integer() | nil, integer() | nil, String.t() | nil) ::
+          FusionAuth.request()
+  def get_recent_logins(client, limit \\ nil, offset \\ nil, user_id \\ nil) do
+    Tesla.get(
+      client,
+      @users_url <>
+        "/recent-login" <>
+        Utils.build_query_parameters(limit: limit, offset: offset, userId: user_id)
+    )
     |> FusionAuth.result()
   end
 
-  defp format_bulk_user_ids(user_ids, key) do
-    Enum.reduce(user_ids, "", fn user_id, acc ->
-      "#{acc}&#{key}=#{user_id}"
-    end)
-    |> String.trim_leading("&")
+  @doc """
+  Verify a user's email.
+
+  https://fusionauth.io/docs/v1/tech/apis/users#verify-a-users-email
+  """
+  @spec verify_user_email(FusionAuth.client(), String.t()) :: FusionAuth.request()
+  def verify_user_email(client, verification_id) do
+    Tesla.post(client, @users_url <> "/verify-email/#{verification_id}")
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Resend verification email.
+
+  https://fusionauth.io/docs/v1/tech/apis/users#resend-verification-email
+  """
+  @spec resend_verification_email(FusionAuth.client(), String.t()) :: FusionAuth.request()
+  def resend_verification_email(client, email) do
+    Tesla.put(client, @users_url <> "/verify-email?email=#{email}", %{})
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Start forgot password workflow.
+
+  https://fusionauth.io/docs/v1/tech/apis/users#start-forgot-password-workflow
+  """
+  @spec forgot_password(FusionAuth.client(), String.t()) :: FusionAuth.request()
+  def forgot_password(client, login_id) do
+    Tesla.post(client, @users_url <> "/forgot-password", %{loginId: login_id})
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Change a user's password with a change password ID. This usually occurs after an email has been sent to the user
+  and they clicked on a link to reset their password.
+
+  https://fusionauth.io/docs/v1/tech/apis/users#change-a-users-password
+  """
+  @spec change_password(FusionAuth.client(), String.t(), map()) ::
+          FusionAuth.request()
+  def change_password(client, change_password_id, password_data) do
+    Tesla.post(client, @users_url <> "/change-password/#{change_password_id}", password_data)
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Change a user's password using their identity (loginID and password). Using a loginId instead of the changePasswordId
+  bypasses the email verification and allows a password to be changed directly without first calling the forgot_password
+  method.
+
+  https://fusionauth.io/docs/v1/tech/apis/users#change-a-users-password
+  """
+  @spec change_password_by_identity(FusionAuth.client(), map()) :: FusionAuth.request()
+  def change_password_by_identity(client, password_data) do
+    Tesla.post(client, @users_url <> "/change-password", password_data)
+    |> FusionAuth.result()
   end
 end
