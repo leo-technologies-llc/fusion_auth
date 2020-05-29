@@ -1,3 +1,3 @@
 use Mix.Config
 
-config :tesla, adapter: Tesla.Mock
+config :fusion_auth, :tesla, adapter: Tesla.Mock

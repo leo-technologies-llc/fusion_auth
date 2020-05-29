@@ -70,9 +70,7 @@ defmodule FusionAuth do
       ]}
     ]
 
-    adapter = {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
-
-    Tesla.client(middleware, adapter)
+    Tesla.client(middleware, adapter())
   end
 
   @spec result({:ok, Tesla.Env.t()}) :: result()
@@ -87,4 +85,12 @@ defmodule FusionAuth do
 
   @spec result({:error, any}) :: result()
   def result({:error, any}), do: {:error, %{}, any}
+
+  @doc false
+  def adapter do
+    case Application.get_env(:fusion_auth, :tesla) do
+      nil -> {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
+      tesla -> tesla[:adapter]
+    end
+  end
 end
