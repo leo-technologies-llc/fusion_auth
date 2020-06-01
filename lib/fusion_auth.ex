@@ -90,7 +90,8 @@ defmodule FusionAuth do
   def adapter do
     case Application.get_env(:fusion_auth, :tesla) do
       nil -> {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
-      tesla -> tesla[:adapter]
+      # tesla -> tesla[:adapter]
+      tesla -> {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
     end
   end
 end

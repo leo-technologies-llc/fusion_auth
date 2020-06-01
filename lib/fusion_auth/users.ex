@@ -14,7 +14,45 @@ defmodule FusionAuth.Users do
   @users_url "/api/user"
 
   @doc """
-  Retrieve a user by the user’s ID.
+  Get a user by the user’s ID.
+
+  ## Examples
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.get_user_by_id(client, "06da543e-df3e-4011-b122-a9ff04326599")
+    {
+      :ok,
+      %{
+        "user" => %{
+          "active" => true,
+          "email" => "cogadmin@cogility.com",
+          "firstName" => "Cogility",
+          "fullName" => "Cogility Admin",
+          "id" => "06da543e-df3e-4011-b122-a9ff04326599",
+          "insertInstant" => 1590606624689,
+          "lastLoginInstant" => 1590607603500,
+          "lastName" => "Admin",
+          "memberships" => [...],
+          "mobilePhone" => "6092895176",
+          "passwordChangeRequired" => false,
+          "passwordLastUpdateInstant" => 1590606624715,
+          "preferredLanguages" => ["en"],
+          "registrations" => [...],
+          "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
+          "timezone" => "America/Los_Angeles",
+          "twoFactorDelivery" => "None",
+          "twoFactorEnabled" => false,
+          "username" => "cogadmin",
+          "usernameStatus" => "ACTIVE",
+          "verified" => true
+        }
+      },
+      %Tesla.Env{...}
+    }
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.get_user_by_id(client, "bad-id")
+    {:error, "", %Tesla.Env{...}}
 
   https://fusionauth.io/docs/v1/tech/apis/users#retrieve-a-user
   """
@@ -24,7 +62,45 @@ defmodule FusionAuth.Users do
   end
 
   @doc """
-  Retrieve a user by the user’s email.
+  Get a user by the user’s email.
+
+    ## Examples
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.get_user_by_email(client, "cogadmin@cogility.com")
+    {
+      :ok,
+      %{
+        "user" => %{
+          "active" => true,
+          "email" => "cogadmin@cogility.com",
+          "firstName" => "Cogility",
+          "fullName" => "Cogility Admin",
+          "id" => "06da543e-df3e-4011-b122-a9ff04326599",
+          "insertInstant" => 1590606624689,
+          "lastLoginInstant" => 1590607603500,
+          "lastName" => "Admin",
+          "memberships" => [...],
+          "mobilePhone" => "6092895176",
+          "passwordChangeRequired" => false,
+          "passwordLastUpdateInstant" => 1590606624715,
+          "preferredLanguages" => ["en"],
+          "registrations" => [...],
+          "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
+          "timezone" => "America/Los_Angeles",
+          "twoFactorDelivery" => "None",
+          "twoFactorEnabled" => false,
+          "username" => "cogadmin",
+          "usernameStatus" => "ACTIVE",
+          "verified" => true
+        }
+      },
+      %Tesla.Env{...}
+    }
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.get_user_by_email(client, "invalidemail@invalid.com")
+    {:error, "", %Tesla.Env{...}}
 
   https://fusionauth.io/docs/v1/tech/apis/users#retrieve-a-user
   """
@@ -34,7 +110,45 @@ defmodule FusionAuth.Users do
   end
 
   @doc """
-  Retrieve a user by the user’s username.
+  Get a user by the user’s username.
+
+    ## Examples
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.get_user_by_username(client, "cogadmin")
+    {
+      :ok,
+      %{
+        "user" => %{
+          "active" => true,
+          "email" => "cogadmin@cogility.com",
+          "firstName" => "Cogility",
+          "fullName" => "Cogility Admin",
+          "id" => "06da543e-df3e-4011-b122-a9ff04326599",
+          "insertInstant" => 1590606624689,
+          "lastLoginInstant" => 1590607603500,
+          "lastName" => "Admin",
+          "memberships" => [...],
+          "mobilePhone" => "6092895176",
+          "passwordChangeRequired" => false,
+          "passwordLastUpdateInstant" => 1590606624715,
+          "preferredLanguages" => ["en"],
+          "registrations" => [...],
+          "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
+          "timezone" => "America/Los_Angeles",
+          "twoFactorDelivery" => "None",
+          "twoFactorEnabled" => false,
+          "username" => "cogadmin",
+          "usernameStatus" => "ACTIVE",
+          "verified" => true
+        }
+      },
+      %Tesla.Env{...}
+    }
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.get_user_by_username(client, "invalid")
+    {:error, "", %Tesla.Env{...}}
 
   https://fusionauth.io/docs/v1/tech/apis/users#retrieve-a-user
   """
