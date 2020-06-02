@@ -11,7 +11,7 @@ defmodule FusionAuthTest do
     assert client.pre == [
       {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
       {Tesla.Middleware.JSON, :call, [[]]},
-      {Tesla.Middleware.Headers, :call, [[{"Authorization", "123456"}, {"X-FusionAuth-TenantId", "234567"}]]}
+      {Tesla.Middleware.Headers, :call, [[{"Authorization", api_key}, {"X-FusionAuth-TenantId", tenant_id}]]}
     ]
   end
 
