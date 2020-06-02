@@ -143,4 +143,52 @@ defmodule FusionAuth.UsersTest do
       assert {:error, response_body, %Tesla.Env{status: 400}} = Users.create_user(client, user)
     end
   end
+
+  describe "Update User" do
+
+  end
+
+  describe "Delete User" do
+
+  end
+
+  describe "Bulk Delete Users" do
+
+  end
+
+  describe "Reactivate User" do
+
+  end
+
+  describe "Import Users" do
+
+  end
+
+  describe "Search Users" do
+
+  end
+
+  describe "Get Recent Logins" do
+
+  end
+
+  describe "Verify User Email" do
+
+  end
+
+  describe "Resend Verification Email" do
+
+  end
+
+  describe "Forgot Password" do
+
+  end
+
+  describe "Change Password" do
+
+  end
+
+  describe "Change Password by Identity" do
+
+  end
 end
