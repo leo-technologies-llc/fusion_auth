@@ -19,7 +19,7 @@ defmodule FusionAuth.UsersTest do
         method: :get,
         response: :ok,
         status: 200,
-        body: %{}
+        response_body: %{}
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_user_by_id(client, "06da543e-df3e-4011-b122-a9ff04326599")
@@ -31,7 +31,7 @@ defmodule FusionAuth.UsersTest do
         method: :get,
         response: :ok,
         status: 404,
-        body: ""
+        response_body: ""
       )
 
       assert {:error, "", %Tesla.Env{status: 404, body: ""}} = Users.get_user_by_id(client, "12345")
@@ -45,7 +45,7 @@ defmodule FusionAuth.UsersTest do
         method: :get,
         response: :ok,
         status: 200,
-        body: %{}
+        response_body: %{}
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_user_by_email(client, "cogadmin@cogility.com")
@@ -57,7 +57,7 @@ defmodule FusionAuth.UsersTest do
         method: :get,
         response: :ok,
         status: 404,
-        body: ""
+        response_body: ""
       )
 
       assert {:error, "", %Tesla.Env{status: 404}} = Users.get_user_by_email(client, "invalid@invalid.com")
@@ -71,7 +71,7 @@ defmodule FusionAuth.UsersTest do
         method: :get,
         response: :ok,
         status: 200,
-        body: %{}
+        response_body: %{}
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_user_by_username(client, "cogadmin")
@@ -83,7 +83,7 @@ defmodule FusionAuth.UsersTest do
         method: :get,
         response: :ok,
         status: 404,
-        body: ""
+        response_body: ""
       )
 
       assert {:error, "", %Tesla.Env{status: 404}} = Users.get_user_by_username(client, "invalid")
@@ -91,6 +91,56 @@ defmodule FusionAuth.UsersTest do
   end
 
   describe "Create User" do
+    test "create_user/2 returns the newly created user", %{client: client} do
+      user = %{username: "johndoe", password: "password"}
 
+      Helpers.mock_request(
+        path: "/api/user",
+        method: :post,
+        response: :ok,
+        status: 200,
+        body: user,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.create_user(client, user)
+    end
+
+    test "create_user/2 returns a 400 status code if the request to create a user was invalid and/or malformed", %{client: client} do
+      user = %{}
+      response_body = %{
+        "fieldErrors" => %{
+          "user.email" => [
+            %{
+              "code" => "[blank]user.email",
+              "message" => "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+            }
+          ],
+          "user.password" => [
+            %{
+              "code" => "[blank]user.password",
+              "message" => "You must specify the [user.password] property."
+            }
+          ],
+          "user.username" => [
+            %{
+              "code" => "[blank]user.username",
+              "message" => "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+            }
+          ]
+        }
+      }
+
+      Helpers.mock_request(
+        path: "/api/user",
+        method: :post,
+        response: :ok,
+        status: 400,
+        body: user,
+        response_body: response_body
+      )
+
+      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.create_user(client, user)
+    end
   end
 end

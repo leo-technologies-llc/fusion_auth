@@ -1,13 +1,12 @@
 defmodule FusionAuth.TestSupport.Helpers do
   @moduledoc false
 
-  import ExUnit.Assertions
   import Tesla.Mock
 
   alias FusionAuth.Utils
 
   @doc false
-  def mock_request(opts), do: mock_request(@base_url, opts)
+  def mock_request(opts), do: mock_request(base_url(), opts)
 
   @doc false
   def mock_request(base_url, opts, callback \\ nil) do
@@ -16,12 +15,12 @@ defmodule FusionAuth.TestSupport.Helpers do
     method = Keyword.get(opts, :method)
     query_parameters = Keyword.get(opts, :query_parameters, [])
     response = Keyword.get(opts, :response, %{})
-    body = Keyword.get(opts, :body)
+    response_body = Keyword.get(opts, :response_body)
     url = build_url(path, query_parameters)
 
     mock(fn
       %{method: method, url: url} ->
-        {response, %Tesla.Env{status: status, body: body}}
+        {response, %Tesla.Env{status: status, body: response_body}}
     end)
 
     if callback do
@@ -34,6 +33,6 @@ defmodule FusionAuth.TestSupport.Helpers do
 
   defp build_url(path, []), do: path
   defp build_url(path, query_parameters) do
-    @base_url <> path <> Utils.build_query_parameters(query_parameters)
+    base_url() <> path <> Utils.build_query_parameters(query_parameters)
   end
 end

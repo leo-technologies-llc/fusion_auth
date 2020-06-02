@@ -158,7 +158,148 @@ defmodule FusionAuth.Users do
   end
 
   @doc """
-  Create a new user.
+  Create a new user. You must specify either the email or the username or both for the User. Either of these values
+  may be used to uniquely identify the User and may be used to authenticate the User.
+
+    ## Examples
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.create_user(client, %{
+      "birthDate": "1976-05-30",
+      "data": %{
+        "displayName": "Johnny Boy",
+        "favoriteColors": [
+          "Red",
+          "Blue"
+        ]
+      },
+      "email": "example@fusionauth.io",
+      "encryptionScheme": "salted-sha256",
+      "factor": 24000,
+      "expiry": 1571786483322,
+      "firstName": "John",
+      "fullName": "John Doe",
+      "imageUrl": "http://65.media.tumblr.com/tumblr_l7dbl0MHbU1qz50x3o1_500.png",
+      "lastName": "Doe",
+      "middleName": "William",
+      "mobilePhone": "303-555-1234",
+      "passwordChangeRequired": false,
+      "preferredLanguages": [
+        "en",
+        "fr"
+      ],
+      "timezone": "America/Los_Angeles",
+      "twoFactorEnabled": false,
+      "usernameStatus": "ACTIVE",
+      "username": "johnny123"
+    })
+    {
+      :ok,
+      %{
+        "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImMxVU5ON0pIUVc4X21ROHBTaWZKbzBXekdybDlTbTRnIn0.eyJleHAiOjE1ODY4ODQzNzksImlhdCI6MTU4Njg4NDMxOSwiaXNzIjoiZnVzaW9uYXV0aC5pbyIsInN1YiI6IjAwMDAwMDAwLTAwMDAtMDAwMS0wMDAwLTAwMDAwMDAwMDAwMCIsImF1dGhlbnRpY2F0aW9uVHlwZSI6IlVTRVJfQ1JFQVRFIiwiZW1haWwiOiJ0ZXN0MEBmdXNpb25hdXRoLmlvIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXJuYW1lMCJ9.Z1jV8xDcayZZDBdLRVd2fIyowhstRI4Dgk7_u2XFerc",
+        "user" => %{
+          "active" => true,
+          "birthDate" => "1976-05-30",
+          "data" => %{
+            "displayName": "Johnny Boy",
+            "favoriteColors" => [
+              "Red",
+              "Blue"
+            ]
+          },
+          "email" => "example@fusionauth.io",
+          "expiry" => 1571786483322,
+          "firstName" => "John",
+          "fullName" => "John Doe",
+          "id" => "00000000-0000-0001-0000-000000000000",
+          "imageUrl" => "http://65.media.tumblr.com/tumblr_l7dbl0MHbU1qz50x3o1_500.png",
+          "lastLoginInstant" => 1471786483322,
+          "lastName" => "Doe",
+          "memberships" => [%{
+            "data" => %{
+              "externalId" => "cc6714c6-286c-411c-a6bc-ee413cda1dbc"
+            },
+            "groupId" => "2cb5c83f-53ff-4d16-88bd-c5e3802111a5",
+            "id" => "27218714-305e-4408-bac0-23e7e1ddceb6",
+            "insertInstant" => 1471786482322
+          }],
+          "middleName" => "William",
+          "mobilePhone" => "303-555-1234",
+          "passwordChangeRequired" => false,
+          "passwordLastUpdateInstant" => 1471786483322,
+          "preferredLanguages" => [
+            "en",
+            "fr"
+          ],
+          "registrations" => [
+            %{
+              "applicationId" => "10000000-0000-0002-0000-000000000001",
+              "data" => %{
+                "displayName" => "Johnny",
+                "favoriteSports" => [
+                  "Football",
+                  "Basketball"
+                ]
+              },
+              "id" => "00000000-0000-0002-0000-000000000000",
+              "insertInstant" => 1446064706250,
+              "lastLoginInstant" => 1456064601291,
+              "preferredLanguages" => [
+                "en",
+                "fr"
+              ],
+              "roles" => [
+                "user",
+                "community_helper"
+              ],
+              "timezone" => "America/Chicago",
+              "tokens" => %{
+                "Facebook" => "nQbbBIzDhMXXfa7iDUoonz5zS",
+                "19544aa2-d634-4859-b193-e57af82b5d12" => "eu1SsrjsiDf3h3LryUjxHIKTS0yyrbiPcsKF3HDp"
+              },
+              "username" => "johnny123",
+              "usernameStatus" => "ACTIVE"
+            }
+          ],
+          "timezone" => "America/Los_Angeles",
+          "tenantId" => "f24aca2b-ce4a-4dad-951a-c9d690e71415",
+          "twoFactorEnabled" => false,
+          "usernameStatus" => "ACTIVE",
+          "username" => "johnny123",
+          "verified" => true
+        }
+      },
+      %Tesla.Env{...}
+    }
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.create_user(client, %{})
+    {
+      :error,
+      %{
+        "fieldErrors" => %{
+          "user.email" => [
+            %{
+              "code" => "[blank]user.email",
+              "message" => "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+            }
+          ],
+          "user.password" => [
+            %{
+              "code" => "[blank]user.password",
+              "message" => "You must specify the [user.password] property."
+            }
+          ],
+          "user.username" => [
+            %{
+              "code" => "[blank]user.username",
+              "message" => "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+            }
+          ]
+        }
+      },
+      %Tesla.Env{...}
+    }
 
   https://fusionauth.io/docs/v1/tech/apis/users#create-a-user
   """
