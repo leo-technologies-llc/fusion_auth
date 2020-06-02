@@ -57,23 +57,23 @@ defmodule FusionAuth.Groups do
   def add_member(client, group_id, member) do
   end
 
-  @spec add_members(FusionAuth.client(), list()) :: FusionAuth.request()
+  @spec remove_member(FusionAuth.client(), list()) :: FusionAuth.request()
   def remove_members(client, members) when is_list(members) do
   end
 
-  @spec add_members(FusionAuth.client(), map()) :: FusionAuth.request()
+  @spec remove_member(FusionAuth.client(), map()) :: FusionAuth.request()
   def remove_members(client, members) when is_map(members) do
   end
 
-  @spec add_members(FusionAuth.client(), String.t()) :: FusionAuth.request()
+  @spec remove_members(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def remove_members(client, group_id) do
   end
 
-  @spec add_members(FusionAuth.client(), String.t()) :: FusionAuth.request()
+  @spec remove_member(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def remove_member(client, member_id) do
   end
 
-  @spec add_members(FusionAuth.client(), String.t(), String.t()) :: FusionAuth.request()
+  @spec remove_member(FusionAuth.client(), String.t(), String.t()) :: FusionAuth.request()
   def remove_member(client, group_id, user_id) do
   end
 end
