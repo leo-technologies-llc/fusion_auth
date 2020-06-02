@@ -7,9 +7,16 @@ defmodule FusionAuth.Utils do
   Builds query parameters based on the keys and values passed in the parameters keyword list.
   """
   def build_query_parameters(parameters) do
-    Enum.reduce(parameters, "", fn {key, value}, acc ->
-      build_query_parameter(acc, key, value)
-    end)
+    case Keyword.keyword?(parameters) do
+      true ->
+        Enum.reduce(parameters, "", fn {key, value}, acc ->
+          build_query_parameter(acc, key, value)
+        end)
+
+      false ->
+        raise ArgumentError,
+              "A keyword list must be passed to the build_query_parameters/1 function."
+    end
   end
 
   defp build_query_parameter(acc, _, nil), do: acc

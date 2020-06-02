@@ -55,9 +55,9 @@ defmodule FusionAuth do
   @tenant_id "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
 
   # TODO: Remove after testing.
-  def client() do
-    client(@base_url, @api_key, @tenant_id)
-  end
+  # def client() do
+  #   client(@base_url, @api_key, @tenant_id)
+  # end
 
   @spec client(String.t(), String.t(), String.t()) :: client()
   def client(base_url, api_key, tenant_id) do
