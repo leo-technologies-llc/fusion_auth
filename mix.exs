@@ -12,7 +12,9 @@ defmodule FusionAuth.MixProject do
       description: description(),
       package: package(),
       source_url: "https://github.com/Cogility/fusion_auth",
-      docs: [main: "FusionAuth"]
+      docs: [main: "FusionAuth"],
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
     ]
   end
 
@@ -32,7 +34,8 @@ defmodule FusionAuth.MixProject do
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:tesla, "~> 1.3.0"},
       {:hackney, "~> 1.15.2"},
-      {:jason, ">= 1.0.0"}
+      {:jason, ">= 1.0.0"},
+      {:excoveralls, "~> 0.10", only: :test}
     ]
   end
 
