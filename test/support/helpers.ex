@@ -1,12 +1,15 @@
 defmodule FusionAuth.TestSupport.Helpers do
   @moduledoc false
+
   import ExUnit.Assertions
   import Tesla.Mock
 
-  @base_url "http://localhost:9011"
+  alias FusionAuth.Utils
 
+  @doc false
   def mock_request(opts), do: mock_request(@base_url, opts)
 
+  @doc false
   def mock_request(base_url, opts, callback \\ nil) do
     status = Keyword.get(opts, :status)
     path = Keyword.get(opts, :path)
@@ -14,9 +17,10 @@ defmodule FusionAuth.TestSupport.Helpers do
     query_parameters = Keyword.get(opts, :query_parameters, [])
     response = Keyword.get(opts, :response, %{})
     body = Keyword.get(opts, :body)
+    url = build_url(path, query_parameters)
 
     mock(fn
-      %{method: method, url: build_url(path, query_parameters)} ->
+      %{method: method, url: url} ->
         {response, %Tesla.Env{status: status, body: body}}
     end)
 
@@ -25,8 +29,11 @@ defmodule FusionAuth.TestSupport.Helpers do
     end
   end
 
-  defp build_url([]), do: path
-  defp build_url(query_parameters) do
+  @doc false
+  def base_url(), do: "http://localhost:9011"
 
+  defp build_url(path, []), do: path
+  defp build_url(path, query_parameters) do
+    @base_url <> path <> Utils.build_query_parameters(query_parameters)
   end
 end
