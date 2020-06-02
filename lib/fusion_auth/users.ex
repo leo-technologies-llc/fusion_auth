@@ -397,7 +397,7 @@ defmodule FusionAuth.Users do
   """
   @spec verify_user_email(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def verify_user_email(client, verification_id) do
-    Tesla.post(client, @users_url <> "/verify-email/#{verification_id}")
+    Tesla.post(client, @users_url <> "/verify-email/#{verification_id}", %{})
     |> FusionAuth.result()
   end
 
