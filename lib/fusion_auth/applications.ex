@@ -7,5 +7,5 @@ defmodule FusionAuth.Applications do
   ## Examples
   """
 
-  @applications_url "/api/application"
+  # @applications_url "/api/application"
 end

@@ -7,5 +7,5 @@ defmodule FusionAuth.Groups do
   ## Examples
   """
 
-  @groups_url "/api/group"
+  # @groups_url "/api/group"
 end

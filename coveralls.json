@@ -1,0 +1,20 @@
+{
+  "coverage_options": {
+    "minimum_coverage": 80
+  },
+  "default_stop_words": [
+    "defmodule",
+    "defparams",
+    "defrecord",
+    "defimpl",
+    "defexception",
+    "defprotocol",
+    "defstruct",
+    "def.+(.+\\\\.+).+do",
+    "^\\s+use\\s+"
+  ],
+  "skip_files": ["test/"],
+  "terminal_options": {
+    "file_column_width": 80
+  }
+}
