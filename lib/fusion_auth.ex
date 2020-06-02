@@ -49,16 +49,6 @@ defmodule FusionAuth do
     order: String.t() | nil
   }
 
-  # TODO: Local configs. Remove after testing.
-  @base_url "http://10.1.101.112:9011"
-  @api_key "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
-  @tenant_id "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
-
-  # TODO: Remove after testing.
-  # def client() do
-  #   client(@base_url, @api_key, @tenant_id)
-  # end
-
   @spec client(String.t(), String.t(), String.t()) :: client()
   def client(base_url, api_key, tenant_id) do
     middleware = [
@@ -91,8 +81,6 @@ defmodule FusionAuth do
     case Application.get_env(:fusion_auth, :tesla) do
       nil -> {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
       tesla -> tesla[:adapter]
-
-      # tesla -> {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
     end
   end
 end

@@ -13,11 +13,10 @@ defmodule FusionAuth.UsersTest do
   end
 
   describe "Get User by ID" do
-    test "get_user_by_id/2 returns the user based on the ID", %{client: client} do
+    test "get_user_by_id/2 returns a 200 status code with the user based on the ID", %{client: client} do
       Helpers.mock_request(
         path: "/api/user/06da543e-df3e-4011-b122-a9ff04326599",
         method: :get,
-        response: :ok,
         status: 200,
         response_body: %{}
       )
@@ -30,7 +29,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user/12345",
         method: :get,
-        response: :ok,
         status: 404,
         response_body: ""
       )
@@ -41,11 +39,10 @@ defmodule FusionAuth.UsersTest do
   end
 
   describe "Get User by Email" do
-    test "get_user_by_email/2 returns the user based on the email", %{client: client} do
+    test "get_user_by_email/2 returns a 200 status code with the user based on the email", %{client: client} do
       Helpers.mock_request(
         path: "/api/user?email=cogadmin@cogility.com",
         method: :get,
-        response: :ok,
         status: 200,
         response_body: %{}
       )
@@ -60,7 +57,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user?email=invalid@invalid.com",
         method: :get,
-        response: :ok,
         status: 404,
         response_body: ""
       )
@@ -71,11 +67,10 @@ defmodule FusionAuth.UsersTest do
   end
 
   describe "Get User by Username" do
-    test "get_user_by_username/2 returns the user based on the username", %{client: client} do
+    test "get_user_by_username/2 returns a 200 status code with the user based on the username", %{client: client} do
       Helpers.mock_request(
         path: "/api/user?username=cogadmin",
         method: :get,
-        response: :ok,
         status: 200,
         response_body: %{}
       )
@@ -89,7 +84,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user?username=invalid",
         method: :get,
-        response: :ok,
         status: 404,
         response_body: ""
       )
@@ -105,7 +99,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user",
         method: :post,
-        response: :ok,
         status: 200,
         body: user,
         response_body: %{}
@@ -146,7 +139,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user",
         method: :post,
-        response: :ok,
         status: 400,
         body: user,
         response_body: response_body
@@ -157,21 +149,221 @@ defmodule FusionAuth.UsersTest do
   end
 
   describe "Update User" do
+    test "update_user/3 returns a 200 status code with the updated user", %{client: client} do
+      user_id = "06da543e-df3e-4011-b122-a9ff04326599"
+      updated_user = %{username: "updatedjohndoe"}
+
+      Helpers.mock_request(
+        path: "/api/user/#{user_id}",
+        method: :patch,
+        status: 200,
+        body: updated_user,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.update_user(client, user_id, updated_user)
+    end
+
+    test "update_user/3 returns a 400 status code if the request to update a user was invalid and/or malformed", %{client: client} do
+      user_id = "06da543e-df3e-4011-b122-a9ff04326599"
+      updated_user = %{}
+      response_body = %{
+        "fieldErrors" => %{}
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/#{user_id}",
+        method: :patch,
+        status: 400,
+        body: updated_user,
+        response_body: response_body
+      )
+
+      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.update_user(client, user_id, updated_user)
+    end
   end
 
   describe "Delete User" do
+    test "delete_user/2 returns a 200 status code with an empty body if the request is successful", %{client: client} do
+      user_id = "06da543e-df3e-4011-b122-a9ff04326599"
+
+      Helpers.mock_request(
+        path: "/api/user/#{user_id}",
+        method: :delete,
+        status: 200,
+        response_body: ""
+      )
+
+      assert {:ok, "", %Tesla.Env{status: 200}} = Users.delete_user(client, user_id)
+    end
+
+    test "delete_user/2 returns a 404 status code if the user is not found", %{client: client} do
+      user_id = "abcde"
+
+      Helpers.mock_request(
+        path: "/api/user/#{user_id}",
+        method: :delete,
+        status: 404,
+        response_body: ""
+      )
+
+      assert {:error, "", %Tesla.Env{status: 404}} = Users.delete_user(client, user_id)
+    end
   end
 
   describe "Bulk Delete Users" do
+    test "bulk_delete_users/2 returns a 200 status code with an empty body if the request is successful", %{client: client} do
+      user_one = "00000000-0000-0001-0000-000000000000"
+      user_two = "00000000-0000-0001-0000-000000000001"
+      user_ids = [user_one, user_two]
+      response_body = %{
+        "dryRun" => false,
+        "hardDelete" => false,
+        "total" => 2,
+        "userIds" => user_ids
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/bulk?userId=#{user_one}&userId=#{user_two}",
+        method: :delete,
+        status: 200,
+        response_body: response_body
+      )
+
+      assert {:ok, response_body, %Tesla.Env{status: 200}} = Users.bulk_delete_users(client, user_ids)
+    end
+
+    test "bulk_delete_users/2 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
+      user_one = "00000000-0000-0001-0000-000000000000"
+      user_two = "00000000-0000-0001-0000-000000000001"
+      user_ids = [user_one, user_two]
+      response_body = %{
+        "fieldErrors" => %{}
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/bulk?invalidQp=invalid",
+        method: :delete,
+        status: 400,
+        response_body: response_body
+      )
+
+      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.bulk_delete_users(client, user_ids)
+    end
   end
 
   describe "Reactivate User" do
+    test "reactivate_user/2 returns a 200 status code with the reactivated user", %{client: client} do
+      user_id = "06da543e-df3e-4011-b122-a9ff04326599"
+
+      Helpers.mock_request(
+        path: "/api/user/#{user_id}?reactivate=true",
+        method: :put,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.reactivate_user(client, user_id)
+    end
+
+    test "reactivate_user/2 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
+      user_id = "06da543e-df3e-4011-b122-a9ff04326599"
+      response_body = %{
+        "fieldErrors" => %{}
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/#{user_id}?invalidQp=invalid",
+        method: :put,
+        status: 400,
+        response_body: response_body
+      )
+
+      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.reactivate_user(client, user_id)
+    end
   end
 
   describe "Import Users" do
+    test "import_users/2 returns a 200 status code with an empty body if the request is successful", %{client: client} do
+      user_one = %{username: "userone"}
+      user_two = %{username: "usertwo"}
+      users = [user_one, user_two]
+
+      Helpers.mock_request(
+        path: "/api/user/import",
+        method: :post,
+        status: 200,
+        body: users,
+        response_body: ""
+      )
+
+      assert {:ok, "", %Tesla.Env{status: 200}} = Users.import_users(client, users)
+    end
+
+    test "import_users/2 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
+      user_one = %{}
+      user_two = %{}
+      users = [user_one, user_two]
+      response_body = %{
+        "fieldErrors" => %{}
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/import",
+        method: :post,
+        status: 400,
+        body: users,
+        response_body: response_body
+      )
+
+      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.import_users(client, users)
+    end
   end
 
   describe "Search Users" do
+    test "search_users/2 returns a 200 status code with the list of users based on the search criteria", %{client: client} do
+      search = %{
+        numberOfResults: 10,
+        queryString: "tenantId:39666465-6535-3731-3139-666363356438",
+        sortFields: [
+          %{
+            missing: "_first",
+            name: "email",
+            order: "asc"
+          }
+        ],
+        startRow: 0
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/search",
+        method: :post,
+        status: 200,
+        body: search,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.search_users(client, search)
+    end
+
+    test "search_users/2 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
+      search = %{
+        invalidBody: "invalid"
+      }
+      response_body = %{
+        "fieldErrors" => %{}
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/search",
+        method: :post,
+        status: 400,
+        body: search,
+        response_body: response_body
+      )
+
+      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.search_users(client, search)
+    end
   end
 
   describe "Get Recent Logins" do
@@ -211,7 +403,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user/verify_email/#{verification_id}",
         method: :post,
-        response: :ok,
         status: 200,
         response_body: ""
       )
@@ -225,7 +416,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user/verify_email/#{verification_id}",
         method: :post,
-        response: :ok,
         status: 400,
         response_body: ""
       )
@@ -244,7 +434,6 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: "/api/user/verify-email?email=#{email}",
         method: :put,
-        response: :ok,
         status: 200,
         response_body: response_body
       )
@@ -255,13 +444,12 @@ defmodule FusionAuth.UsersTest do
     test "verify_user_email/2 returns a 400 status code if the request to resend a verification email was invalid and/or malformed", %{client: client} do
       email = "cogadmin@cogility.com"
       response_body = %{
-        "ERRORS" => "ERRORS"
+        "fieldErrors" => %{}
       }
 
       Helpers.mock_request(
         path: "/api/user/verify-email?email=#{email}",
         method: :put,
-        response: :ok,
         status: 400,
         response_body: response_body
       )
@@ -271,11 +459,111 @@ defmodule FusionAuth.UsersTest do
   end
 
   describe "Forgot Password" do
+    test "forgot_password/2 with an email as the login_id returns a 200 status code with a change_password_id if the request was successful", %{client: client} do
+      login_id = "cogadmin@cogility.com"
+      response_body = %{
+        "changePasswordId" => "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/forgot-password",
+        method: :post,
+        status: 200,
+        response_body: response_body
+      )
+
+      assert {:ok, response_body, %Tesla.Env{status: 200}} = Users.forgot_password(client, login_id)
+    end
+
+    test "forgot_password/2 with a username as the login_id returns a 200 status code with a change_password_id if the request was successful", %{client: client} do
+      login_id = "cogadmin"
+      response_body = %{
+        "changePasswordId" => "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
+      }
+
+      Helpers.mock_request(
+        path: "/api/user/forgot-password",
+        method: :post,
+        status: 200,
+        response_body: response_body
+      )
+
+      assert {:ok, response_body, %Tesla.Env{status: 200}} = Users.forgot_password(client, login_id)
+    end
+
+    test "forgot_password/2 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
+      login_id = "12345"
+
+      Helpers.mock_request(
+        path: "/api/user/forgot-password",
+        method: :post,
+        status: 400,
+        response_body: ""
+      )
+
+      assert {:error, "", %Tesla.Env{status: 400}} = Users.forgot_password(client, login_id)
+    end
   end
 
   describe "Change Password" do
+    test "change_password/3 with a change_password_id returns a 200 status code with an empty body if the request was successful", %{client: client} do
+      change_password_id = "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
+      password_data = %{current_password: "hello", password: "updated"}
+
+      Helpers.mock_request(
+        path: "/api/user/change-password/#{change_password_id}",
+        method: :post,
+        status: 200,
+        body: password_data,
+        response_body: ""
+      )
+
+      assert {:ok, "", %Tesla.Env{status: 200}} = Users.change_password(client, change_password_id, password_data)
+    end
+
+    test "change_password/3 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
+      change_password_id = "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
+      password_data = %{}
+
+      Helpers.mock_request(
+        path: "/api/user/change-password/#{change_password_id}",
+        method: :post,
+        status: 400,
+        body: password_data,
+        response_body: ""
+      )
+
+      assert {:error, "", %Tesla.Env{status: 400}} = Users.change_password(client, change_password_id, password_data)
+    end
   end
 
   describe "Change Password by Identity" do
+    test "change_password_by_identity/3 with a login_id returns a 200 status code with an empty body if the request was successful", %{client: client} do
+      password_data = %{current_password: "hello", password: "updated", loginId: "cogadmin@cogility.com"}
+
+      Helpers.mock_request(
+        path: "/api/user/change-password",
+        method: :post,
+        status: 200,
+        body: password_data,
+        response_body: ""
+      )
+
+      assert {:ok, "", %Tesla.Env{status: 200}} = Users.change_password_by_identity(client, password_data)
+    end
+
+    test "change_password_by_identity/3 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
+      password_data = %{}
+
+      Helpers.mock_request(
+        path: "/api/user/change-password",
+        method: :post,
+        status: 400,
+        body: password_data,
+        response_body: ""
+      )
+
+      assert {:error, "", %Tesla.Env{status: 400}} = Users.change_password_by_identity(client, password_data)
+    end
   end
 end

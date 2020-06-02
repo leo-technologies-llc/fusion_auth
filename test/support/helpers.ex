@@ -14,13 +14,12 @@ defmodule FusionAuth.TestSupport.Helpers do
     path = Keyword.get(opts, :path)
     method = Keyword.get(opts, :method)
     query_parameters = Keyword.get(opts, :query_parameters, [])
-    response = Keyword.get(opts, :response, %{})
     response_body = Keyword.get(opts, :response_body)
     url = build_url(path, query_parameters)
 
     mock(fn
       %{method: method, url: url} ->
-        {response, %Tesla.Env{status: status, body: response_body}}
+        {:ok, %Tesla.Env{status: status, body: response_body}}
     end)
 
     if callback do
