@@ -13,9 +13,7 @@
     "def.+(.+\\\\.+).+do",
     "^\\s+use\\s+"
   ],
-  "skip_files": [
-    "test/"
-  ],
+  "skip_files": ["test/"],
   "terminal_options": {
     "file_column_width": 80
   }
