@@ -324,7 +324,7 @@ defmodule FusionAuth.UsersTest do
     test "search_users/2 returns a 200 status code with the list of users based on the search criteria", %{client: client} do
       search = %{
         numberOfResults: 10,
-        queryString: "tenantId:39666465-6535-3731-3139-666363356438",
+        queryString: "tenantId:6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
         sortFields: [
           %{
             missing: "_first",

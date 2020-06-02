@@ -370,6 +370,40 @@ defmodule FusionAuth.Users do
   @doc """
   Search for users.
 
+    ## Examples
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.search_users(client, %{
+      numberOfResults: 10,
+      queryString: "memberships.groupId:6f0a1769-21f3-4705-a653-bd66c3ff6a63",
+      sortFields: [
+        %{
+          missing: "_first",
+          name: "email",
+          order: "asc"
+        }
+      ],
+      startRow: 0
+    })
+    {
+      :ok,
+      %{
+        "total" => 2,
+        "users" => [...],
+      },
+      %Tesla.Env{...}
+    }
+
+    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> FusionAuth.Users.search_users(client, %{invalid: "body"})
+    {
+      :error,
+      %{
+        "fieldErrors" => %{}
+      },
+      %Tesla.Env{...}
+    }
+
   https://fusionauth.io/docs/v1/tech/apis/users#search-for-users
   """
   @spec search_users(FusionAuth.client(), FusionAuth.search_criteria()) :: FusionAuth.request()
