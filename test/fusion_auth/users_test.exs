@@ -4,6 +4,8 @@ defmodule FusionAuth.UsersTest do
   alias FusionAuth.Users
   alias FusionAuth.TestSupport.Helpers
 
+  @users_url "/api/user"
+
   setup do
     api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
     tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
@@ -15,7 +17,7 @@ defmodule FusionAuth.UsersTest do
   describe "Get User by ID" do
     test "get_user_by_id/2 returns a 200 status code with the user based on the ID", %{client: client} do
       Helpers.mock_request(
-        path: "/api/user/06da543e-df3e-4011-b122-a9ff04326599",
+        path: @users_url <> "/06da543e-df3e-4011-b122-a9ff04326599",
         method: :get,
         status: 200,
         response_body: %{}
@@ -27,7 +29,7 @@ defmodule FusionAuth.UsersTest do
 
     test "get_user_by_id/2 returns a 404 status code if the user is not found", %{client: client} do
       Helpers.mock_request(
-        path: "/api/user/12345",
+        path: @users_url <> "/12345",
         method: :get,
         status: 404,
         response_body: ""
@@ -41,7 +43,7 @@ defmodule FusionAuth.UsersTest do
   describe "Get User by Email" do
     test "get_user_by_email/2 returns a 200 status code with the user based on the email", %{client: client} do
       Helpers.mock_request(
-        path: "/api/user?email=cogadmin@cogility.com",
+        path: @users_url <> "?email=cogadmin@cogility.com",
         method: :get,
         status: 200,
         response_body: %{}
@@ -55,7 +57,7 @@ defmodule FusionAuth.UsersTest do
       client: client
     } do
       Helpers.mock_request(
-        path: "/api/user?email=invalid@invalid.com",
+        path: @users_url <> "?email=invalid@invalid.com",
         method: :get,
         status: 404,
         response_body: ""
@@ -69,7 +71,7 @@ defmodule FusionAuth.UsersTest do
   describe "Get User by Username" do
     test "get_user_by_username/2 returns a 200 status code with the user based on the username", %{client: client} do
       Helpers.mock_request(
-        path: "/api/user?username=cogadmin",
+        path: @users_url <> "?username=cogadmin",
         method: :get,
         status: 200,
         response_body: %{}
@@ -82,7 +84,7 @@ defmodule FusionAuth.UsersTest do
       client: client
     } do
       Helpers.mock_request(
-        path: "/api/user?username=invalid",
+        path: @users_url <> "?username=invalid",
         method: :get,
         status: 404,
         response_body: ""
@@ -97,7 +99,7 @@ defmodule FusionAuth.UsersTest do
       user = %{username: "johndoe", password: "password"}
 
       Helpers.mock_request(
-        path: "/api/user",
+        path: @users_url,
         method: :post,
         status: 200,
         body: user,
@@ -137,7 +139,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user",
+        path: @users_url,
         method: :post,
         status: 400,
         body: user,
@@ -154,7 +156,7 @@ defmodule FusionAuth.UsersTest do
       updated_user = %{username: "updatedjohndoe"}
 
       Helpers.mock_request(
-        path: "/api/user/#{user_id}",
+        path: @users_url <> "/#{user_id}",
         method: :patch,
         status: 200,
         body: updated_user,
@@ -172,7 +174,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/#{user_id}",
+        path: @users_url <> "/#{user_id}",
         method: :patch,
         status: 400,
         body: updated_user,
@@ -188,7 +190,7 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
       Helpers.mock_request(
-        path: "/api/user/#{user_id}",
+        path: @users_url <> "/#{user_id}",
         method: :delete,
         status: 200,
         response_body: ""
@@ -201,7 +203,7 @@ defmodule FusionAuth.UsersTest do
       user_id = "abcde"
 
       Helpers.mock_request(
-        path: "/api/user/#{user_id}",
+        path: @users_url <> "/#{user_id}",
         method: :delete,
         status: 404,
         response_body: ""
@@ -224,7 +226,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/bulk?userId=#{user_one}&userId=#{user_two}",
+        path: @users_url <> "/bulk?userId=#{user_one}&userId=#{user_two}",
         method: :delete,
         status: 200,
         response_body: response_body
@@ -242,7 +244,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/bulk?invalidQp=invalid",
+        path: @users_url <> "/bulk?invalidQp=invalid",
         method: :delete,
         status: 400,
         response_body: response_body
@@ -257,7 +259,7 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
       Helpers.mock_request(
-        path: "/api/user/#{user_id}?reactivate=true",
+        path: @users_url <> "/#{user_id}?reactivate=true",
         method: :put,
         status: 200,
         response_body: %{}
@@ -273,7 +275,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/#{user_id}?invalidQp=invalid",
+        path: @users_url <> "/#{user_id}?invalidQp=invalid",
         method: :put,
         status: 400,
         response_body: response_body
@@ -290,7 +292,7 @@ defmodule FusionAuth.UsersTest do
       users = [user_one, user_two]
 
       Helpers.mock_request(
-        path: "/api/user/import",
+        path: @users_url <> "/import",
         method: :post,
         status: 200,
         body: users,
@@ -309,7 +311,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/import",
+        path: @users_url <> "/import",
         method: :post,
         status: 400,
         body: users,
@@ -336,7 +338,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/search",
+        path: @users_url <> "/search",
         method: :post,
         status: 200,
         body: search,
@@ -355,7 +357,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/search",
+        path: @users_url <> "/search",
         method: :post,
         status: 400,
         body: search,
@@ -371,7 +373,7 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
       Helpers.mock_request(
-        path: "/api/user/recent-login?userId=#{user_id}",
+        path: @users_url <> "/recent-login?userId=#{user_id}",
         method: :get,
         response: :ok,
         status: 200,
@@ -385,7 +387,7 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
       Helpers.mock_request(
-        path: "/api/user/recent-login?userId=#{user_id}",
+        path: @users_url <> "/recent-login?userId=#{user_id}",
         method: :get,
         response: :ok,
         status: 404,
@@ -401,7 +403,7 @@ defmodule FusionAuth.UsersTest do
       verification_id = "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
 
       Helpers.mock_request(
-        path: "/api/user/verify_email/#{verification_id}",
+        path: @users_url <> "/verify_email/#{verification_id}",
         method: :post,
         status: 200,
         response_body: ""
@@ -414,7 +416,7 @@ defmodule FusionAuth.UsersTest do
       verification_id = "abcd"
 
       Helpers.mock_request(
-        path: "/api/user/verify_email/#{verification_id}",
+        path: @users_url <> "/verify_email/#{verification_id}",
         method: :post,
         status: 400,
         response_body: ""
@@ -432,7 +434,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/verify-email?email=#{email}",
+        path: @users_url <> "/verify-email?email=#{email}",
         method: :put,
         status: 200,
         response_body: response_body
@@ -448,7 +450,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/verify-email?email=#{email}",
+        path: @users_url <> "/verify-email?email=#{email}",
         method: :put,
         status: 400,
         response_body: response_body
@@ -466,7 +468,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/forgot-password",
+        path: @users_url <> "/forgot-password",
         method: :post,
         status: 200,
         response_body: response_body
@@ -482,7 +484,7 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: "/api/user/forgot-password",
+        path: @users_url <> "/forgot-password",
         method: :post,
         status: 200,
         response_body: response_body
@@ -495,7 +497,7 @@ defmodule FusionAuth.UsersTest do
       login_id = "12345"
 
       Helpers.mock_request(
-        path: "/api/user/forgot-password",
+        path: @users_url <> "/forgot-password",
         method: :post,
         status: 400,
         response_body: ""
@@ -511,7 +513,7 @@ defmodule FusionAuth.UsersTest do
       password_data = %{current_password: "hello", password: "updated"}
 
       Helpers.mock_request(
-        path: "/api/user/change-password/#{change_password_id}",
+        path: @users_url <> "/change-password/#{change_password_id}",
         method: :post,
         status: 200,
         body: password_data,
@@ -526,7 +528,7 @@ defmodule FusionAuth.UsersTest do
       password_data = %{}
 
       Helpers.mock_request(
-        path: "/api/user/change-password/#{change_password_id}",
+        path: @users_url <> "/change-password/#{change_password_id}",
         method: :post,
         status: 400,
         body: password_data,
@@ -542,7 +544,7 @@ defmodule FusionAuth.UsersTest do
       password_data = %{current_password: "hello", password: "updated", loginId: "cogadmin@cogility.com"}
 
       Helpers.mock_request(
-        path: "/api/user/change-password",
+        path: @users_url <> "/change-password",
         method: :post,
         status: 200,
         body: password_data,
@@ -556,7 +558,7 @@ defmodule FusionAuth.UsersTest do
       password_data = %{}
 
       Helpers.mock_request(
-        path: "/api/user/change-password",
+        path: @users_url <> "/change-password",
         method: :post,
         status: 400,
         body: password_data,
