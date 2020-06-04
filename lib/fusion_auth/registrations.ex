@@ -82,22 +82,28 @@ defmodule FusionAuth.Registrations do
         %Tesla.Env{...}
       }
 
-    To use your own UUID for the user id, pass it as a third argument
+  For more information visit the FusionAuth API Documentation for [Create a User and Registration (combined)](https://fusionauth.io/docs/v1/tech/apis/registrations#create-a-user-and-registration-combined)
+  """
+  @spec create_user_and_registration(FusionAuth.client(), map()) ::
+          FusionAuth.result()
+  def create_user_and_registration(client, body) do
+    Tesla.post(client, @registrations_url, body) |> FusionAuth.result()
+  end
+
+  @doc """
+  Similar to `create_user_and_registration/2`, but allows for a custom UUID user id to be passed as a third argument.
+
+  ## Example
+
       iex> user_id = "8ec3ce01-0cb1-408b-8ecf-7e5d5bc557ec"
       iex> FusionAuth.Registrations.create_user_and_registration(client, data, user_id)
 
   For more information visit the FusionAuth API Documentation for [Create a User and Registration (combined)](https://fusionauth.io/docs/v1/tech/apis/registrations#create-a-user-and-registration-combined)
   """
-  @spec create_user_and_registration(FusionAuth.client(), map(), String.t() | nil) ::
+  @spec create_user_and_registration(FusionAuth.client(), map(), String.t()) ::
           FusionAuth.result()
-  def create_user_and_registration(client, body, user_id \\ nil) do
-    case is_binary(user_id) do
-      true ->
-        Tesla.post(client, @registrations_url <> "/#{user_id}", body) |> FusionAuth.result()
-
-      false ->
-        Tesla.post(client, @registrations_url, body) |> FusionAuth.result()
-    end
+  def create_user_and_registration(client, body, user_id) do
+    Tesla.post(client, @registrations_url <> "/#{user_id}", body) |> FusionAuth.result()
   end
 
   @doc """
