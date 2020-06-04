@@ -2,7 +2,7 @@ defmodule FusionAuth.Users do
   @moduledoc """
   The `FusionAuth.Users` module provides access functions to the [FusionAuth Users API](https://fusionauth.io/docs/v1/tech/apis/users).
 
-  All functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key)`.
+  All functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key, tenant_id)`.
 
   ## User Fields
 
