@@ -5,7 +5,7 @@ defmodule FusionAuth do
   ## Examples
 
     iex> FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
-    %{
+    %Tesla.Client{
       adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
       fun: nil,
       post: [],
@@ -25,19 +25,6 @@ defmodule FusionAuth do
   """
   @type client() :: Tesla.Client.t()
   @type result() :: {:ok, map() | String.t(), Tesla.Env.t()} | {:error, map(), any}
-  @type search_criteria() :: %{
-    ids: list() | nil,
-    query: String.t() | nil,
-    query_string: String.t() | nil,
-    number_of_results: integer() | nil,
-    sort_fields: list(sort_field()) | nil,
-    start_row: integer() | nil
-  }
-  @type sort_field() :: %{
-    missing: String.t() | nil,
-    name: String.t(),
-    order: String.t() | nil
-  }
 
   @doc """
   Builds a dynamic client for executing HTTP requests to the FusionAuth API based on runtime arguments.
@@ -47,10 +34,11 @@ defmodule FusionAuth do
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [
-        {"Authorization", api_key},
-        {"X-FusionAuth-TenantId", tenant_id}
-      ]}
+      {Tesla.Middleware.Headers,
+       [
+         {"Authorization", api_key},
+         {"X-FusionAuth-TenantId", tenant_id}
+       ]}
     ]
 
     Tesla.client(middleware, adapter())

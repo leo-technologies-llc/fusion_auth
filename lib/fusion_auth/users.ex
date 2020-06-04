@@ -218,6 +218,20 @@ defmodule FusionAuth.Users do
 
   @users_url "/api/user"
 
+  @type search_criteria() :: %{
+          ids: list() | nil,
+          query: String.t() | nil,
+          query_string: String.t() | nil,
+          number_of_results: integer() | nil,
+          sort_fields: list(sort_field()) | nil,
+          start_row: integer() | nil
+        }
+  @type sort_field() :: %{
+          missing: String.t() | nil,
+          name: String.t(),
+          order: String.t() | nil
+        }
+
   @doc """
   Create a new user. You must specify either the email or the username or both for the User. Either of these values
   may be used to uniquely identify the User and may be used to authenticate the User.
@@ -341,7 +355,7 @@ defmodule FusionAuth.Users do
 
   For more information visit the FusionAuth API Documentation for [Search for Users](https://fusionauth.io/docs/v1/tech/apis/users#search-for-users).
   """
-  @spec search_users(FusionAuth.client(), FusionAuth.search_criteria()) :: FusionAuth.result()
+  @spec search_users(FusionAuth.client(), search_criteria()) :: FusionAuth.result()
   def search_users(client, search) do
     Tesla.post(client, @users_url <> "/search", %{search: search}) |> FusionAuth.result()
   end
