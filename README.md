@@ -1,6 +1,6 @@
 # FusionAuth ![Status](https://github.com/Cogility/fusion_auth/workflows/.github/workflows/elixir.yml/badge.svg?branch=master)
 
-The FusionAuth library provides an Elixir API for accessing the [FusionAuth Developer APIs](https://fusionauth.io/docs/v1/tech/apis/).
+The fusion_auth library provides an Elixir API for accessing the [FusionAuth Developer APIs](https://fusionauth.io/docs/v1/tech/apis/).
 
 The following are the APIs that are currently implemented:
 - [ ] [Actioning Users](https://fusionauth.io/docs/v1/tech/apis/actioning-users)

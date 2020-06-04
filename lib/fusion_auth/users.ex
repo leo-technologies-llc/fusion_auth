@@ -4,12 +4,214 @@ defmodule FusionAuth.Users do
 
   All functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key)`.
 
-  ## User
+  ## User Fields
 
+    - token :: String.t()\n
+      The access token, this string is an encoded JSON Web Token (JWT).
+
+    - active :: boolean()\n
+      True if the User is active. False if the User has been deactivated. Deactivated Users will not be able to login.
+
+    - birthDate :: String.t()\n
+      The User’s birthdate formatted as `YYYY-MM-DD`.
+
+    - cleanSpeakId :: String.t()\n
+      This Id is used by FusionAuth when the User’s username is sent to CleanSpeak to be moderated (filtered and potentially sent to the approval queue). It is the *content Id* of the username inside CleanSpeak.
+
+    - data :: map()\n
+      An object that can hold any information about the User that should be persisted.
+
+    - email :: String.t()\n
+      The User’s email address.
+
+    - expiry :: float()\n
+      The expiration instant of the User’s account. An expired user is not permitted to login.
+
+    - firstName :: String.t()\n
+      The first name of the User.
+
+    - fullName :: String.t()\n
+      The User’s full name as a separate field that is not calculated from `firstName` and `lastName`.
+
+    - id :: String.t()\n
+      The User's unique Id.
+
+    - imageUrl :: String.t()\n
+      The URL that points to an image file that is the User’s profile image.
+
+    - insertInstant :: float()\n
+      The instant when user was created.
+
+    - lastLoginInstant :: float()\n
+      The instant when the User logged in last.
+
+    - lastName :: String.t()\n
+      The User's last name.
+
+    - middleName :: String.t()\n
+      The User's middle name.
+
+    - mobilePhone :: String.t()\n
+      The User’s mobile phone number. This is useful is you will be sending push notifications or SMS messages to the User.
+
+    - parentEmail :: String.t()\n
+      The email address of the user’s parent or guardian. If this value was provided during a create or update operation, this value value will only remain until the child is claimed by a parent.
+
+    - passwordChangeRequired :: boolean()\n
+      Indicates that the User’s password needs to be changed during their next login attempt.
+
+    - passwordLastUpdateInstant :: float()\n
+      The instant that the User last changed their password.
+
+    - preferredLanguages :: list()\n
+      An array of locale strings that give, in order, the User’s preferred languages. These are important for email templates and other localizable text. See [Locales](https://fusionauth.io/docs/v1/tech/reference/data-types#locales).
+
+    - registrations :: list()\n
+      The list of registrations for the User.
+
+    - tenantId :: String.t()\n
+      The Id of the Tenant that this User belongs to.
+
+    - timezone :: String.t()\n
+      The User’s preferred timezone. This can be used as a default to display instants, and it is recommended that you allow User’s to change this per-session. The string will be in an [IANA](https://www.iana.org/time-zones) time zone format.
+
+    - twoFactorDelivery :: String.t()\n
+      The User’s preferred delivery for verification codes during a two factor login request.
+
+    - twoFactorEnabled :: boolean()\n
+      Determines if the User has two factor authentication enabled for their account or not.
+
+    - username :: String.t()\n
+      The username of the User.
+
+    - usernameStatus :: String.t()\n
+      The current status of the username. This is used if you are moderating usernames via CleanSpeak.
+
+    - verified :: boolean()\n
+      Whether or not the User’s email has been verified.
 
   ## Examples
-      iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
-      iex> FusionAuth.Users.get_user(client, "06da543e-df3e-4011-b122-a9ff04326599")
+
+    iex> client = FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
+    iex> FusionAuth.Users.get_user_by_id(client, "06da543e-df3e-4011-b122-a9ff04326599")
+    {:ok,
+      %{
+        "user" => %{
+          "active" => true,
+          "email" => "cogadmin@cogility.com",
+          "firstName" => "Cogility",
+          "fullName" => "Cogility Admin",
+          "id" => "06da543e-df3e-4011-b122-a9ff04326599",
+          "insertInstant" => 1590606624689,
+          "lastLoginInstant" => 1591138635342,
+          "lastName" => "Admin",
+          "memberships" => [
+            %{
+              "groupId" => "6f0a1769-21f3-4705-a653-bd66c3ff6a63",
+              "id" => "ff6fea80-31a3-439b-b880-def21933a01d",
+              "insertInstant" => 1590705735370
+            }
+          ],
+          "mobilePhone" => "6092895176",
+          "passwordChangeRequired" => false,
+          "passwordLastUpdateInstant" => 1590606624715,
+          "preferredLanguages" => ["en"],
+          "registrations" => [
+            %{
+              "applicationId" => "f8109431-14f2-4815-9987-77fdedeff802",
+              "id" => "7aaad5c8-846d-4a40-b587-fa62f0e6240e",
+              "insertInstant" => 1590606684278,
+              "lastLoginInstant" => 1591138635342,
+              "preferredLanguages" => ["en"],
+              "roles" => ["admin", "user"],
+              "timezone" => "America/Los_Angeles",
+              "username" => "cogadmin",
+              "usernameStatus" => "ACTIVE",
+              "verified" => true
+            }
+          ],
+          "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
+          "timezone" => "America/Los_Angeles",
+          "twoFactorDelivery" => "None",
+          "twoFactorEnabled" => false,
+          "username" => "cogadmin",
+          "usernameStatus" => "ACTIVE",
+          "verified" => true
+        }
+      },
+      %Tesla.Env{
+        __client__: %Tesla.Client{
+          adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
+          fun: nil,
+          post: [],
+          pre: [
+            {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
+            {Tesla.Middleware.JSON, :call, [[]]},
+            {Tesla.Middleware.Headers, :call,
+              [
+                [
+                  {"Authorization", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"},
+                  {"X-FusionAuth-TenantId", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"}
+                ]
+              ]}
+          ]
+        },
+        __module__: Tesla,
+        body: %{
+          "user" => %{
+            "active" => true,
+            "email" => "cogadmin@cogility.com",
+            "firstName" => "Cogility",
+            "fullName" => "Cogility Admin",
+            "id" => "06da543e-df3e-4011-b122-a9ff04326599",
+            "insertInstant" => 1590606624689,
+            "lastLoginInstant" => 1591138635342,
+            "lastName" => "Admin",
+            "memberships" => [
+              %{
+                "groupId" => "6f0a1769-21f3-4705-a653-bd66c3ff6a63",
+                "id" => "ff6fea80-31a3-439b-b880-def21933a01d",
+                "insertInstant" => 1590705735370
+              }
+            ],
+            "mobilePhone" => "6092895176",
+            "passwordChangeRequired" => false,
+            "passwordLastUpdateInstant" => 1590606624715,
+            "preferredLanguages" => ["en"],
+            "registrations" => [
+              %{
+                "applicationId" => "f8109431-14f2-4815-9987-77fdedeff802",
+                "id" => "7aaad5c8-846d-4a40-b587-fa62f0e6240e",
+                "insertInstant" => 1590606684278,
+                "lastLoginInstant" => 1591138635342,
+                "preferredLanguages" => ["en"],
+                "roles" => ["admin", "user"],
+                "timezone" => "America/Los_Angeles",
+                "username" => "cogadmin",
+                "usernameStatus" => "ACTIVE",
+                "verified" => true
+              }
+            ],
+            "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
+            "timezone" => "America/Los_Angeles",
+            "twoFactorDelivery" => "None",
+            "twoFactorEnabled" => false,
+            "username" => "cogadmin",
+            "usernameStatus" => "ACTIVE",
+            "verified" => true
+          }
+        },
+        headers: [
+          {"content-type", "application/json;charset=UTF-8"},
+          {"content-length", "1033"},
+          {"date", "Thu, 04 Jun 2020 17:48:29 GMT"}
+        ],
+        method: :get,
+        opts: [],
+        query: [],
+        status: 200,
+        url: "http://localhost:9011/api/user/06da543e-df3e-4011-b122-a9ff04326599"
+      }}
 
   """
   alias FusionAuth.Utils
