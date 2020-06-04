@@ -232,7 +232,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} = Users.bulk_delete_users(client, user_ids)
+      assert {:ok, response_body, %Tesla.Env{status: 200}} = Users.bulk_delete_users(client, user_id: user_ids)
     end
 
     test "bulk_delete_users/2 returns a 400 status code if the request was invalid and/or malformed", %{client: client} do
@@ -250,7 +250,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.bulk_delete_users(client, user_ids)
+      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.bulk_delete_users(client, user_id: user_ids)
     end
   end
 
@@ -380,7 +380,7 @@ defmodule FusionAuth.UsersTest do
         response_body: %{}
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_recent_logins(client, user_id)
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_recent_logins(client, user_id: user_id)
     end
 
     test "get_recent_logins/1-4 returns a 404 status code if the user is not found", %{client: client} do
@@ -394,7 +394,7 @@ defmodule FusionAuth.UsersTest do
         response_body: ""
       )
 
-      assert {:error, "", %Tesla.Env{status: 404}} = Users.get_recent_logins(client, user_id)
+      assert {:error, "", %Tesla.Env{status: 404}} = Users.get_recent_logins(client, user_id: user_id)
     end
   end
 
