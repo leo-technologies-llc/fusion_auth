@@ -238,7 +238,7 @@ defmodule FusionAuth.RegistrationsTest do
             %{
               "code" => "[couldNotConvert]applicationId",
               "message" =>
-                "Invalid applicationId [asdfasdfas]. This must be a valid UUID String (e.g. 25a872da-bb44-4af8-a43d-e7bcb5351ebc)."
+                "Invalid applicationId [12345]. This must be a valid UUID String (e.g. 25a872da-bb44-4af8-a43d-e7bcb5351ebc)."
             },
             %{
               "code" => "[missing]applicationId",
@@ -273,7 +273,7 @@ defmodule FusionAuth.RegistrationsTest do
             %{
               "code" => "[couldNotConvert]userId",
               "message" =>
-                "Invalid userId [asdfa]. This must be a valid UUID String (e.g. 25a872da-bb44-4af8-a43d-e7bcb5351ebc)."
+                "Invalid userId [12345]. This must be a valid UUID String (e.g. 25a872da-bb44-4af8-a43d-e7bcb5351ebc)."
             },
             %{
               "code" => "[missing]userId",
@@ -447,7 +447,7 @@ defmodule FusionAuth.RegistrationsTest do
             %{
               "code" => "[couldNotConvert]userId",
               "message" =>
-                "Invalid userId [asdfs]. This must be a valid UUID String (e.g. 25a872da-bb44-4af8-a43d-e7bcb5351ebc)."
+                "Invalid userId [12345]. This must be a valid UUID String (e.g. 25a872da-bb44-4af8-a43d-e7bcb5351ebc)."
             },
             %{
               "code" => "[missing]userId",
