@@ -92,72 +92,10 @@ defmodule FusionAuth.Users do
 
   ## Examples
 
-    iex> client = FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
-    iex> FusionAuth.Users.get_user_by_id(client, "06da543e-df3e-4011-b122-a9ff04326599")
-    {:ok,
-      %{
-        "user" => %{
-          "active" => true,
-          "email" => "cogadmin@cogility.com",
-          "firstName" => "Cogility",
-          "fullName" => "Cogility Admin",
-          "id" => "06da543e-df3e-4011-b122-a9ff04326599",
-          "insertInstant" => 1590606624689,
-          "lastLoginInstant" => 1591138635342,
-          "lastName" => "Admin",
-          "memberships" => [
-            %{
-              "groupId" => "6f0a1769-21f3-4705-a653-bd66c3ff6a63",
-              "id" => "ff6fea80-31a3-439b-b880-def21933a01d",
-              "insertInstant" => 1590705735370
-            }
-          ],
-          "mobilePhone" => "6092895176",
-          "passwordChangeRequired" => false,
-          "passwordLastUpdateInstant" => 1590606624715,
-          "preferredLanguages" => ["en"],
-          "registrations" => [
-            %{
-              "applicationId" => "f8109431-14f2-4815-9987-77fdedeff802",
-              "id" => "7aaad5c8-846d-4a40-b587-fa62f0e6240e",
-              "insertInstant" => 1590606684278,
-              "lastLoginInstant" => 1591138635342,
-              "preferredLanguages" => ["en"],
-              "roles" => ["admin", "user"],
-              "timezone" => "America/Los_Angeles",
-              "username" => "cogadmin",
-              "usernameStatus" => "ACTIVE",
-              "verified" => true
-            }
-          ],
-          "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
-          "timezone" => "America/Los_Angeles",
-          "twoFactorDelivery" => "None",
-          "twoFactorEnabled" => false,
-          "username" => "cogadmin",
-          "usernameStatus" => "ACTIVE",
-          "verified" => true
-        }
-      },
-      %Tesla.Env{
-        __client__: %Tesla.Client{
-          adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
-          fun: nil,
-          post: [],
-          pre: [
-            {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
-            {Tesla.Middleware.JSON, :call, [[]]},
-            {Tesla.Middleware.Headers, :call,
-              [
-                [
-                  {"Authorization", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"},
-                  {"X-FusionAuth-TenantId", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"}
-                ]
-              ]}
-          ]
-        },
-        __module__: Tesla,
-        body: %{
+      iex> client = FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
+      iex> FusionAuth.Users.get_user_by_id(client, "06da543e-df3e-4011-b122-a9ff04326599")
+      {:ok,
+        %{
           "user" => %{
             "active" => true,
             "email" => "cogadmin@cogility.com",
@@ -201,17 +139,79 @@ defmodule FusionAuth.Users do
             "verified" => true
           }
         },
-        headers: [
-          {"content-type", "application/json;charset=UTF-8"},
-          {"content-length", "1033"},
-          {"date", "Thu, 04 Jun 2020 17:48:29 GMT"}
-        ],
-        method: :get,
-        opts: [],
-        query: [],
-        status: 200,
-        url: "http://localhost:9011/api/user/06da543e-df3e-4011-b122-a9ff04326599"
-      }}
+        %Tesla.Env{
+          __client__: %Tesla.Client{
+            adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
+            fun: nil,
+            post: [],
+            pre: [
+              {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
+              {Tesla.Middleware.JSON, :call, [[]]},
+              {Tesla.Middleware.Headers, :call,
+                [
+                  [
+                    {"Authorization", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"},
+                    {"X-FusionAuth-TenantId", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"}
+                  ]
+                ]}
+            ]
+          },
+          __module__: Tesla,
+          body: %{
+            "user" => %{
+              "active" => true,
+              "email" => "cogadmin@cogility.com",
+              "firstName" => "Cogility",
+              "fullName" => "Cogility Admin",
+              "id" => "06da543e-df3e-4011-b122-a9ff04326599",
+              "insertInstant" => 1590606624689,
+              "lastLoginInstant" => 1591138635342,
+              "lastName" => "Admin",
+              "memberships" => [
+                %{
+                  "groupId" => "6f0a1769-21f3-4705-a653-bd66c3ff6a63",
+                  "id" => "ff6fea80-31a3-439b-b880-def21933a01d",
+                  "insertInstant" => 1590705735370
+                }
+              ],
+              "mobilePhone" => "6092895176",
+              "passwordChangeRequired" => false,
+              "passwordLastUpdateInstant" => 1590606624715,
+              "preferredLanguages" => ["en"],
+              "registrations" => [
+                %{
+                  "applicationId" => "f8109431-14f2-4815-9987-77fdedeff802",
+                  "id" => "7aaad5c8-846d-4a40-b587-fa62f0e6240e",
+                  "insertInstant" => 1590606684278,
+                  "lastLoginInstant" => 1591138635342,
+                  "preferredLanguages" => ["en"],
+                  "roles" => ["admin", "user"],
+                  "timezone" => "America/Los_Angeles",
+                  "username" => "cogadmin",
+                  "usernameStatus" => "ACTIVE",
+                  "verified" => true
+                }
+              ],
+              "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
+              "timezone" => "America/Los_Angeles",
+              "twoFactorDelivery" => "None",
+              "twoFactorEnabled" => false,
+              "username" => "cogadmin",
+              "usernameStatus" => "ACTIVE",
+              "verified" => true
+            }
+          },
+          headers: [
+            {"content-type", "application/json;charset=UTF-8"},
+            {"content-length", "1033"},
+            {"date", "Thu, 04 Jun 2020 17:48:29 GMT"}
+          ],
+          method: :get,
+          opts: [],
+          query: [],
+          status: 200,
+          url: "http://localhost:9011/api/user/06da543e-df3e-4011-b122-a9ff04326599"
+        }}
 
   """
   alias FusionAuth.Utils

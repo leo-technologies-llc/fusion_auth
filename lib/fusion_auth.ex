@@ -4,23 +4,23 @@ defmodule FusionAuth do
 
   ## Examples
 
-    iex> FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
-    %Tesla.Client{
-      adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
-      fun: nil,
-      post: [],
-      pre: [
-        {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
-        {Tesla.Middleware.JSON, :call, [[]]},
-        {Tesla.Middleware.Headers, :call,
-        [
+      iex> FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
+      %Tesla.Client{
+        adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
+        fun: nil,
+        post: [],
+        pre: [
+          {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
+          {Tesla.Middleware.JSON, :call, [[]]},
+          {Tesla.Middleware.Headers, :call,
           [
-            {"Authorization", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"},
-            {"X-FusionAuth-TenantId", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"}
-          ]
-        ]}
-      ]
-    }
+            [
+              {"Authorization", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"},
+              {"X-FusionAuth-TenantId", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"}
+            ]
+          ]}
+        ]
+      }
 
   """
   @type client() :: Tesla.Client.t()
