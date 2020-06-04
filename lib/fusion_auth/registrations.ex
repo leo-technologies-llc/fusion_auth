@@ -12,8 +12,6 @@ defmodule FusionAuth.Registrations do
   @doc """
   Create a User Registration for an existing User
 
-  returns `FusionAuth.result()`
-
   ## Examples
 
       iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
