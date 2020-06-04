@@ -5,7 +5,7 @@ defmodule FusionAuth.Users do
   All functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key)`.
 
   ## Examples
-      client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+      client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
       {:ok, result, _env} = FusionAuth.Users.get_user(client, "06da543e-df3e-4011-b122-a9ff04326599")
 
   """
@@ -18,7 +18,7 @@ defmodule FusionAuth.Users do
 
   ## Examples
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.get_user_by_id(client, "06da543e-df3e-4011-b122-a9ff04326599")
     {
       :ok,
@@ -50,7 +50,7 @@ defmodule FusionAuth.Users do
       %Tesla.Env{...}
     }
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.get_user_by_id(client, "bad-id")
     {:error, "", %Tesla.Env{...}}
 
@@ -66,7 +66,7 @@ defmodule FusionAuth.Users do
 
     ## Examples
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.get_user_by_email(client, "cogadmin@cogility.com")
     {
       :ok,
@@ -98,7 +98,7 @@ defmodule FusionAuth.Users do
       %Tesla.Env{...}
     }
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.get_user_by_email(client, "invalidemail@invalid.com")
     {:error, "", %Tesla.Env{...}}
 
@@ -114,7 +114,7 @@ defmodule FusionAuth.Users do
 
     ## Examples
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.get_user_by_username(client, "cogadmin")
     {
       :ok,
@@ -146,7 +146,7 @@ defmodule FusionAuth.Users do
       %Tesla.Env{...}
     }
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.get_user_by_username(client, "invalid")
     {:error, "", %Tesla.Env{...}}
 
@@ -163,7 +163,7 @@ defmodule FusionAuth.Users do
 
     ## Examples
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.create_user(client, %{
       "birthDate": "1976-05-30",
       "data": %{
@@ -272,7 +272,7 @@ defmodule FusionAuth.Users do
       %Tesla.Env{...}
     }
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.create_user(client, %{})
     {
       :error,
@@ -372,7 +372,7 @@ defmodule FusionAuth.Users do
 
     ## Examples
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.search_users(client, %{
       numberOfResults: 10,
       queryString: "memberships.groupId:6f0a1769-21f3-4705-a653-bd66c3ff6a63",
@@ -394,7 +394,7 @@ defmodule FusionAuth.Users do
       %Tesla.Env{...}
     }
 
-    iex> client = FusionAuth.client("https://10.1.101.112:9011", "fusion_auth_api_key")
+    iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
     iex> FusionAuth.Users.search_users(client, %{invalid: "body"})
     {
       :error,
