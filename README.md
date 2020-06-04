@@ -48,7 +48,7 @@ by adding `fusion_auth` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:fusion_auth, "~> 0.1.0"}
+    {:fusion_auth, "~> 1.0.0"}
   ]
 end
 ```
