@@ -195,8 +195,8 @@ defmodule FusionAuth.Registrations do
 
   ## Examples
 
-      client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
-      FusionAuth.Registrations.verify_user_registration(client, verification_id)
+      iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
+      iex> FusionAuth.Registrations.verify_user_registration(client, verification_id)
       {:ok, %{}, %Tesla.Env{...}}
 
   For more information visit the FusionAuth API Documentation for [Verify a User Registration](https://fusionauth.io/docs/v1/tech/apis/registrations#verify-a-user-registration)
