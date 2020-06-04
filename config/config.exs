@@ -10,11 +10,14 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :fusion_auth, key: :value
+#     config :fusion_auth,
+#       api_key: "FUSION_AUTH_API_KEY",
+#       api_url: "FUSION_AUTH_URL"
+#       tenant_id: "FUSION_AUTH_TENANT_ID"
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:fusion_auth, :key)
+#     Application.get_env(:fusion_auth, :api_key)
 #
 # You can also configure a third-party app:
 #
