@@ -5,6 +5,8 @@ defmodule FusionAuth.Groups do
   All methods require a Tesla Client struct created with `FusionAuth.client(base_url, api_key)`.
 
   ## Examples
+
+
   """
 
   @type client :: FusionAuth.client()
