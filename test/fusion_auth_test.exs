@@ -1,6 +1,5 @@
 defmodule FusionAuthTest do
   use ExUnit.Case
-  doctest FusionAuth
 
   test "client has correct headers" do
     base_url = "http://localhost:9011"

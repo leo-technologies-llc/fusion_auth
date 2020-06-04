@@ -4,7 +4,6 @@ defmodule FusionAuth.Registrations do
 
   All methods require a Tesla Client struct created with `FusionAuth.client(base_url, api_key, tenant_id)`.
 
-  ## Examples
   """
 
   @registrations_url "/api/user/registration"
@@ -18,7 +17,8 @@ defmodule FusionAuth.Registrations do
   ## Examples
 
       iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
-      iex> FusionAuth.Registrations.create_user_registration(client, "aeb1e150-44fa-4130-99ed-4455541d2625", %{registration: %{applicationId: "42b54a1a-e285-41c8-9be0-7fb070c4e3b2"}})
+      iex> body = %{registration: %{applicationId: "42b54a1a-e285-41c8-9be0-7fb070c4e3b2"}}
+      iex> FusionAuth.Registrations.create_user_registration(client, user_id, body)
       {:ok,
       %{
         "registration" => %{
@@ -34,13 +34,13 @@ defmodule FusionAuth.Registrations do
         %Tesla.Env{...}
       }
 
-  https://fusionauth.io/docs/v1/tech/apis/registrations#create-a-user-registration-for-an-existing-user
+  For more information visit the FusionAuth API Documentation for [Create a User Registration (for an existing user)](https://fusionauth.io/docs/v1/tech/apis/registrations#create-a-user-registration-for-an-existing-user)
   """
 
   @spec create_user_registration(FusionAuth.client(), String.t(), map()) ::
           FusionAuth.result()
-  def create_user_registration(client, user_id, data) do
-    Tesla.post(client, @registrations_url <> "/#{user_id}", data) |> FusionAuth.result()
+  def create_user_registration(client, user_id, body) do
+    Tesla.post(client, @registrations_url <> "/#{user_id}", body) |> FusionAuth.result()
   end
 
   @doc """
@@ -50,11 +50,11 @@ defmodule FusionAuth.Registrations do
   ## Examples
 
       iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
-      iex> data = %{
+      iex> body = %{
       ...>   registration: %{applicationId: "42b55a1a-e285-41c8-9be0-7fb070c4ed32"},
       ...>   user: %{password: "helloworld", username: "bob1"}
       ...> }
-      iex> FusionAuth.Registrations.create_user_and_registration(client, data)
+      iex> FusionAuth.Registrations.create_user_and_registration(client, body)
       {:ok,
       %{
           "registration" => %{
@@ -88,17 +88,17 @@ defmodule FusionAuth.Registrations do
       iex> user_id = "8ec3ce01-0cb1-408b-8ecf-7e5d5bc557ec"
       iex> FusionAuth.Registrations.create_user_and_registration(client, data, user_id)
 
-  https://fusionauth.io/docs/v1/tech/apis/registrations#create-a-user-registration-for-an-existing-user
+  For more information visit the FusionAuth API Documentation for [Create a User and Registration (combined)](https://fusionauth.io/docs/v1/tech/apis/registrations#create-a-user-and-registration-combined)
   """
   @spec create_user_and_registration(FusionAuth.client(), map(), String.t() | nil) ::
           FusionAuth.result()
-  def create_user_and_registration(client, data, user_id \\ nil) do
+  def create_user_and_registration(client, body, user_id \\ nil) do
     case is_binary(user_id) do
       true ->
-        Tesla.post(client, @registrations_url <> "/#{user_id}", data) |> FusionAuth.result()
+        Tesla.post(client, @registrations_url <> "/#{user_id}", body) |> FusionAuth.result()
 
       false ->
-        Tesla.post(client, @registrations_url, data) |> FusionAuth.result()
+        Tesla.post(client, @registrations_url, body) |> FusionAuth.result()
     end
   end
 
@@ -122,6 +122,8 @@ defmodule FusionAuth.Registrations do
         %Tesla.Env{...}
       }
 
+
+  For more information visit the FusionAuth API Documentation for [Retrieve a User Registration](https://fusionauth.io/docs/v1/tech/apis/registrations#retrieve-a-user-registration)
   """
   @spec get_user_registration(FusionAuth.client(), String.t(), String.t()) ::
           FusionAuth.result()
@@ -130,7 +132,6 @@ defmodule FusionAuth.Registrations do
   end
 
   @doc """
-  This API is used to update a User Registration for a User.
   This API is used to update the User’s registration for a specific Application.
   You must specify the User Id for the User that is updating their information on the URI.
   The Id of the Application the User is updating their information for is sent in the request body.
@@ -163,6 +164,7 @@ defmodule FusionAuth.Registrations do
       %Tesla.Env{...}
       }
 
+  For more information visit the FusionAuth API Documentation for [Update a User Registration](https://fusionauth.io/docs/v1/tech/apis/registrations#update-a-user-registration)
   """
   @spec update_user_registration(FusionAuth.client(), String.t(), map()) ::
           FusionAuth.result()
@@ -179,6 +181,7 @@ defmodule FusionAuth.Registrations do
       iex> Registrations.delete_user_registration(client, user_id, app_id)
       {:ok, "", %Tesla.Env{...}}
 
+  For more information visit the FusionAuth API Documentation for [Delete a User Registration](https://fusionauth.io/docs/v1/tech/apis/registrations#delete-a-user-registration)
   """
   @spec delete_user_registration(FusionAuth.client(), String.t(), String.t()) ::
           FusionAuth.result()
@@ -196,6 +199,7 @@ defmodule FusionAuth.Registrations do
       FusionAuth.Registrations.verify_user_registration(client, verification_id)
       {:ok, %{}, %Tesla.Env{...}}
 
+  For more information visit the FusionAuth API Documentation for [Verify a User Registration](https://fusionauth.io/docs/v1/tech/apis/registrations#verify-a-user-registration)
   """
   @spec verify_user_registration(FusionAuth.client(), String.t()) ::
           FusionAuth.result()
@@ -214,6 +218,7 @@ defmodule FusionAuth.Registrations do
       iex> client = FusionAuth.client("http://localhost:9011", "fusion_auth_api_key", "tenant_id")
       iex> FusionAuth.Registrations.resend_user_registration_verification_email(client, application_id, "myemail@example.com")
 
+  For more information visit the FusionAuth API Documentation for [Resend a User Registration Verification Email](https://fusionauth.io/docs/v1/tech/apis/registrations#resend-a-user-registration-verification-email)
   """
   @spec resend_user_registration_verification_email(FusionAuth.client(), String.t(), String.t()) ::
           FusionAuth.result()
