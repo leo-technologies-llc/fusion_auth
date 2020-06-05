@@ -27,6 +27,26 @@ defmodule FusionAuth do
   @type result() :: {:ok, map() | String.t(), Tesla.Env.t()} | {:error, map(), any}
 
   @doc """
+  Builds a dynamic client for executing HTTP requests to the FusionAuth API using Application variables
+  specified in `config/{env}.exs`.
+
+  ```
+    config :fusion_auth,
+      api_key: "FUSION_AUTH_API_KEY",
+      api_url: "FUSION_AUTH_URL",
+      tenant_id: "FUSION_AUTH_TENANT_ID"
+  ```
+  """
+  @spec client() :: client()
+  def client(),
+    do:
+      client(
+        Application.get_env(:fusion_auth, :api_url),
+        Application.get_env(:fusion_auth, :api_key),
+        Application.get_env(:fusion_auth, :tenant_id)
+      )
+
+  @doc """
   Builds a dynamic client for executing HTTP requests to the FusionAuth API based on runtime arguments.
   """
   @spec client(String.t(), String.t(), String.t()) :: client()
