@@ -238,34 +238,18 @@ defmodule FusionAuth.UsersTest do
       }
 
       Helpers.mock_request(
-        path: @users_url <> "/bulk?userId=#{user_one}&userId=#{user_two}",
+        path: @users_url <> "/bulk",
+        query_parameters: [
+          userId: user_two,
+          userId: user_one,
+          hardDelete: false
+        ],
         method: :delete,
         status: 200,
         response_body: response_body
       )
 
       assert {:ok, response_body, %Tesla.Env{status: 200}} =
-               Users.bulk_delete_users(client, user_ids)
-    end
-
-    test "bulk_delete_users/2 returns a 400 status code if the request was invalid and/or malformed",
-         %{client: client} do
-      user_one = "00000000-0000-0001-0000-000000000000"
-      user_two = "00000000-0000-0001-0000-000000000001"
-      user_ids = [user_one, user_two]
-
-      response_body = %{
-        "fieldErrors" => %{}
-      }
-
-      Helpers.mock_request(
-        path: @users_url <> "/bulk?invalidQp=invalid",
-        method: :delete,
-        status: 400,
-        response_body: response_body
-      )
-
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
                Users.bulk_delete_users(client, user_ids)
     end
   end
@@ -277,32 +261,14 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
       Helpers.mock_request(
-        path: @users_url <> "/#{user_id}?reactivate=true",
+        path: @users_url <> "/#{user_id}",
+        query_parameters: [reactivate: true],
         method: :put,
         status: 200,
         response_body: %{}
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.reactivate_user(client, user_id)
-    end
-
-    test "reactivate_user/2 returns a 400 status code if the request was invalid and/or malformed",
-         %{client: client} do
-      user_id = "06da543e-df3e-4011-b122-a9ff04326599"
-
-      response_body = %{
-        "fieldErrors" => %{}
-      }
-
-      Helpers.mock_request(
-        path: @users_url <> "/#{user_id}?invalidQp=invalid",
-        method: :put,
-        status: 400,
-        response_body: response_body
-      )
-
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
-               Users.reactivate_user(client, user_id)
     end
   end
 
@@ -402,14 +368,19 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
       Helpers.mock_request(
-        path: @users_url <> "/recent-login?userId=#{user_id}",
+        path: @users_url <> "/recent-login",
         method: :get,
+        query_parameters: [
+          limit: 25,
+          offset: 0,
+          userId: user_id
+        ],
         response: :ok,
         status: 200,
         response_body: %{}
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_recent_logins(client, user_id)
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_recent_logins(client, 25, 0, user_id)
     end
 
     test "get_recent_logins/1-4 returns a 404 status code if the user is not found", %{
@@ -418,14 +389,20 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
       Helpers.mock_request(
-        path: @users_url <> "/recent-login?userId=#{user_id}",
+        path: @users_url <> "/recent-login",
+        query_parameters: [
+          limit: 25,
+          offset: 0,
+          userId: user_id
+        ],
         method: :get,
         response: :ok,
         status: 404,
         response_body: ""
       )
 
-      assert {:error, "", %Tesla.Env{status: 404}} = Users.get_recent_logins(client, user_id)
+      assert {:error, "", %Tesla.Env{status: 404}} =
+               Users.get_recent_logins(client, 25, 0, user_id)
     end
   end
 

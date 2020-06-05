@@ -338,12 +338,11 @@ defmodule FusionAuth.Users do
   https://fusionauth.io/docs/v1/tech/apis/users#bulk-delete-users
   """
   @spec bulk_delete_users(FusionAuth.client(), list(), boolean()) :: FusionAuth.request()
-  def bulk_delete_users(client, user_ids, hard_delete \\ nil) do
-    Tesla.delete(
-      client,
-      @users_url <>
-        "/bulk" <> Utils.build_query_parameters(userId: user_ids, hardDelete: hard_delete)
-    )
+  def bulk_delete_users(client, user_ids, hard_delete \\ false) do
+    user_list = Enum.reduce(user_ids, [], fn id, acc -> [userId: id] ++ acc end)
+    params = Utils.build_query_parameters(user_list ++ [hardDelete: hard_delete])
+
+    Tesla.delete(client, @users_url <> "/bulk" <> params)
     |> FusionAuth.result()
   end
 

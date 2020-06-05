@@ -18,9 +18,7 @@ defmodule FusionAuth.TestSupport.Helpers do
     url = build_url(base_url, path, query_parameters)
 
     mock(fn
-      %{method: ^method, url: response} ->
-        IO.inspect(url)
-        IO.inspect(response)
+      %{method: ^method, url: ^url} ->
         {:ok, %Tesla.Env{status: status, body: response_body}}
     end)
   end
