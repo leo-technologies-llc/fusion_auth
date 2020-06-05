@@ -199,7 +199,7 @@ defmodule FusionAuth.GroupsTest do
   describe "add_member/3" do
     test "add member by user_id", %{client: client} do
       Helpers.mock_request(
-        path: @member_id,
+        path: @members_url,
         method: :post,
         status: 200,
         response_body: %{
@@ -210,14 +210,14 @@ defmodule FusionAuth.GroupsTest do
       )
 
       {:ok, %{"members" => %{@group_id => [member]}}, _} =
-        Groups.update_group(client, @group_id, @user_id)
+        Groups.add_member(client, @group_id, @user_id)
 
       assert member["userId"] == @user_id
     end
 
-    test "add member by member object", %{client: client} do
+    test "add member by member map", %{client: client} do
       Helpers.mock_request(
-        path: @member_id,
+        path: @members_url,
         method: :post,
         status: 200,
         response_body: %{
@@ -230,9 +230,104 @@ defmodule FusionAuth.GroupsTest do
       member = %{userId: @user_id}
 
       {:ok, %{"members" => %{@group_id => [member]}}, _} =
-        Groups.update_group(client, @group_id, member)
+        Groups.add_member(client, @group_id, member)
 
       assert member["userId"] == @user_id
+    end
+  end
+
+  describe "add_members/3" do
+    test "add member by user_id", %{client: client} do
+      Helpers.mock_request(
+        path: @members_url,
+        method: :post,
+        status: 200,
+        response_body: %{
+          "members" => %{
+            @group_id => [@member]
+          }
+        }
+      )
+
+      member = %{userId: @user_id}
+
+      {:ok, %{"members" => %{@group_id => [member]}}, _} =
+        Groups.add_members(client, @group_id, [member])
+
+      assert member["userId"] == @user_id
+    end
+  end
+
+  describe "remove_member/2" do
+    test "remove member by member_id", %{client: client} do
+      Helpers.mock_request(
+        path: @members_url <> "/#{@member_id}",
+        method: :delete,
+        status: 200,
+        response_body: ""
+      )
+
+      {:ok, response, _} = Groups.remove_member(client, @member_id)
+
+      assert response == ""
+    end
+  end
+
+  describe "remove_member/3" do
+    test "remove member by group_id and user_id", %{client: client} do
+      Helpers.mock_request(
+        path: @members_url,
+        method: :delete,
+        status: 200,
+        response_body: ""
+      )
+
+      {:ok, response, _} = Groups.remove_member(client, @group_id, @user_id)
+
+      assert response == ""
+    end
+  end
+
+  describe "remove_members/2" do
+    test "when list of member_ids", %{client: client} do
+      Helpers.mock_request(
+        path: @members_url,
+        method: :delete,
+        status: 200,
+        response_body: ""
+      )
+
+      {:ok, response, _} = Groups.remove_members(client, [@member_id])
+
+      assert response == ""
+    end
+
+    test "when group_id", %{client: client} do
+      Helpers.mock_request(
+        path: @members_url,
+        method: :delete,
+        status: 200,
+        response_body: ""
+      )
+
+      {:ok, response, _} = Groups.remove_members(client, @group_id)
+
+      assert response == ""
+    end
+  end
+
+  describe "remove_members/3" do
+    test "remove member from group with user_ids", %{client: client} do
+      Helpers.mock_request(
+        path: @members_url,
+        method: :delete,
+        status: 200,
+        response_body: ""
+      )
+
+      {:ok, response, _} = Groups.remove_members(client, @group_id, [@user_id])
+
+      assert response == ""
     end
   end
 end
