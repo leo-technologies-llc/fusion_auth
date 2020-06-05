@@ -57,83 +57,7 @@ defmodule FusionAuth.Applications do
       iex> client = FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
       iex> FusionAuth.Applications.get_application(client, "8e0c9833-2e6b-4b1c-9665-4c1af7b4f00a")
       {:ok,
-      %{
-        "application" => %{
-          "active" => true,
-          "authenticationTokenConfiguration" => %{"enabled" => false},
-          "id" => "8e0c9833-2e6b-4b1c-9665-4c1af7b4f00a",
-          "jwtConfiguration" => %{
-            "enabled" => false,
-            "refreshTokenExpirationPolicy" => "Fixed",
-            "refreshTokenTimeToLiveInMinutes" => 0,
-            "refreshTokenUsagePolicy" => "Reusable",
-            "timeToLiveInSeconds" => 0
-          },
-          "lambdaConfiguration" => %{},
-          "loginConfiguration" => %{
-            "allowTokenRefresh" => false,
-            "generateRefreshTokens" => false,
-            "requireAuthentication" => true
-          },
-          "name" => "Test Application",
-          "oauthConfiguration" => %{
-            "clientId" => "8e0c9833-2e6b-4b1c-9665-4c1af7b4f00a",
-            "clientSecret" => "6Gu2kpFxGN8YF9ztwjDdWy6pRTlsapgnWvIyIEzmGM1",
-            "generateRefreshTokens" => false,
-            "logoutBehavior" => "AllApplications",
-            "requireClientAuthentication" => true
-          },
-          "passwordlessConfiguration" => %{"enabled" => false},
-          "registrationConfiguration" => %{
-            "birthDate" => %{"enabled" => false, "required" => false},
-            "confirmPassword" => false,
-            "enabled" => false,
-            "firstName" => %{"enabled" => false, "required" => false},
-            "fullName" => %{"enabled" => false, "required" => false},
-            "lastName" => %{"enabled" => false, "required" => false},
-            "loginIdType" => "email",
-            "middleName" => %{"enabled" => false, "required" => false},
-            "mobilePhone" => %{"enabled" => false, "required" => false}
-          },
-          "registrationDeletePolicy" => %{
-            "unverified" => %{"enabled" => false, "numberOfDaysToRetain" => 0}
-          },
-          "roles" => [
-            %{
-              "id" => "54d363df-373b-4bca-b478-941fcdacb3d0",
-              "isDefault" => false,
-              "isSuperRole" => false,
-              "name" => "Test Role"
-            }
-          ],
-          "samlv2Configuration" => %{
-            "debug" => false,
-            "enabled" => false,
-            "xmlSignatureC14nMethod" => "exclusive_with_comments"
-          },
-          "tenantId" => "6b40f9d6-cfd8-4312-bff8-b082ad45e93c",
-          "verifyRegistration" => false
-        }
-      },
-      %Tesla.Env{
-        __client__: %Tesla.Client{
-          adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
-          fun: nil,
-          post: [],
-          pre: [
-            {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
-            {Tesla.Middleware.JSON, :call, [[]]},
-            {Tesla.Middleware.Headers, :call,
-              [
-                [
-                  {"Authorization", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"},
-                  {"X-FusionAuth-TenantId", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"}
-                ]
-              ]}
-          ]
-        },
-        __module__: Tesla,
-        body: %{
+        %{
           "application" => %{
             "active" => true,
             "authenticationTokenConfiguration" => %{"enabled" => false},
@@ -191,17 +115,8 @@ defmodule FusionAuth.Applications do
             "verifyRegistration" => false
           }
         },
-        headers: [
-          {"content-type", "application/json;charset=UTF-8"},
-          {"content-length", "1495"},
-          {"date", "Fri, 05 Jun 2020 21:06:15 GMT"}
-        ],
-        method: :get,
-        opts: [],
-        query: [],
-        status: 200,
-        url: "http://localhost:9011/api/application/8e0c9833-2e6b-4b1c-9665-4c1af7b4f00a"
-      }}
+        %Tesla.Env{...}
+      }
 
       iex> client = FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
       iex> FusionAuth.Applications.update_role(client, "8e0c9833-2e6b-4b1c-9665-4c1af7b4f00a", "54d363df-373b-4bca-b478-941fcdacb3d0", %{isSuperRole: true})
