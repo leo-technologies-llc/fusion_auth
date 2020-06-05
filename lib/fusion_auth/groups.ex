@@ -100,8 +100,7 @@ defmodule FusionAuth.Groups do
   @member_url "#{@group_url}/member"
 
   @doc """
-  For more information visit the FusionAuth API Documentation for [Create a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#create-a-group)
+  For more information visit the FusionAuth API Documentation for [Create a Group](https://fusionauth.io/docs/v1/tech/apis/groups#create-a-group)
   """
   @spec create_group(client(), group(), role_ids()) :: result()
   def create_group(client, group, roles_ids \\ []) do
@@ -110,8 +109,7 @@ defmodule FusionAuth.Groups do
   end
 
   @doc """
-  For more information visit the FusionAuth API Documentation for [Retrieve a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#retrieve-a-group)
+  For more information visit the FusionAuth API Documentation for [Retrieve a Group](https://fusionauth.io/docs/v1/tech/apis/groups#retrieve-a-group)
   """
   @spec get_groups(client()) :: result()
   def get_groups(client) do
@@ -120,8 +118,7 @@ defmodule FusionAuth.Groups do
   end
 
   @doc """
-  For more information visit the FusionAuth API Documentation for [Retrieve a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#retrieve-a-group)
+  For more information visit the FusionAuth API Documentation for [Retrieve a Group](https://fusionauth.io/docs/v1/tech/apis/groups#retrieve-a-group)
   """
   @spec get_group(client(), group_id()) :: result()
   def get_group(client, group_id) do
@@ -130,8 +127,7 @@ defmodule FusionAuth.Groups do
   end
 
   @doc """
-  For more information visit the FusionAuth API Documentation for [Update a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#update-a-group)
+  For more information visit the FusionAuth API Documentation for [Update a Group](https://fusionauth.io/docs/v1/tech/apis/groups#update-a-group)
   """
   @spec update_group(client(), group_id(), group(), role_ids()) :: result()
   def update_group(client, group_id, group, roles_ids \\ []) do
@@ -140,8 +136,7 @@ defmodule FusionAuth.Groups do
   end
 
   @doc """
-  For more information visit the FusionAuth API Documentation for [Delete a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#delete-a-group)
+  For more information visit the FusionAuth API Documentation for [Delete a Group](https://fusionauth.io/docs/v1/tech/apis/groups#delete-a-group)
   """
   @spec delete_group(client(), group_id()) :: result()
   def delete_group(client, group_id) do
@@ -152,8 +147,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Add member to a group by user_id
 
-  For more information visit the FusionAuth API Documentation for [Add Users to a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
+  For more information visit the FusionAuth API Documentation for [Add Users to a Group](https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
   """
   @spec add_member(client(), group_id(), user_id()) :: result()
   def add_member(client, group_id, user_id) when is_binary(user_id),
@@ -162,8 +156,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Add member to a group.
 
-  For more information visit the FusionAuth API Documentation for [Add Users to a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
+  For more information visit the FusionAuth API Documentation for [Add Users to a Group](https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
   """
   @spec add_member(client(), group_id(), member()) :: result()
   def add_member(client, group_id, member) when is_map(member),
@@ -172,8 +165,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Add multiple members to a group.
 
-  For more information visit the FusionAuth API Documentation for [Add Users to a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
+  For more information visit the FusionAuth API Documentation for [Add Users to a Group](https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
   """
   @spec add_members(client(), group_id(), member_list()) :: result()
   def add_members(client, group_id, members) do
@@ -190,8 +182,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Remove member by member_id
 
-  For more information visit the FusionAuth API Documentation for [Remove Users from a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
+  For more information visit the FusionAuth API Documentation for [Remove Users from a Group](https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
   """
   @spec remove_member(client(), member_id()) :: result()
   def remove_member(client, member_id) do
@@ -202,8 +193,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Remove member by group_id and user_id
 
-  For more information visit the FusionAuth API Documentation for [Remove Users from a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
+  For more information visit the FusionAuth API Documentation for [Remove Users from a Group](https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
   """
   @spec remove_member(client(), group_id(), user_id()) :: result()
   def remove_member(client, group_id, user_id) do
@@ -216,8 +206,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Remove members by member_ids
 
-  For more information visit the FusionAuth API Documentation for [Remove Users from a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
+  For more information visit the FusionAuth API Documentation for [Remove Users from a Group](https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
   """
   @spec remove_members(client(), member_ids()) :: result()
   def remove_members(client, member_ids) when is_list(member_ids) do
@@ -228,8 +217,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Remove all members by group_id
 
-  For more information visit the FusionAuth API Documentation for [Remove Users from a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
+  For more information visit the FusionAuth API Documentation for [Remove Users from a Group](https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
   """
   @spec remove_members(client(), group_id()) :: result()
   def remove_members(client, group_id) do
@@ -242,8 +230,7 @@ defmodule FusionAuth.Groups do
   @doc """
   Remove members by group_id and user_ids
 
-  For more information visit the FusionAuth API Documentation for [Remove Users from a Group]
-  (https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
+  For more information visit the FusionAuth API Documentation for [Remove Users from a Group](https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
   """
   @spec remove_members(client(), group_id(), user_ids()) :: result()
   def remove_members(client, group_id, user_ids) do
