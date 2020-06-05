@@ -38,10 +38,9 @@ defmodule FusionAuth.GroupsTest do
   }
 
   setup do
-    # api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
-    # tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
-    # client = FusionAuth.client(Helpers.base_url(), api_key, tenant_id)
-    client = FusionAuth.client()
+    api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
+    tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
+    client = FusionAuth.client(Helpers.base_url(), api_key, tenant_id)
     {:ok, %{client: client}}
   end
 
