@@ -10,7 +10,7 @@ The following are the APIs that are currently implemented:
 - [ ] [Emails](https://fusionauth.io/docs/v1/tech/apis/emails)
 - [ ] [Event Logs](https://fusionauth.io/docs/v1/tech/apis/event-logs)
 - [ ] [Families](https://fusionauth.io/docs/v1/tech/apis/families)
-- [ ] [Groups](https://fusionauth.io/docs/v1/tech/apis/groups)
+- [X] [Groups](https://fusionauth.io/docs/v1/tech/apis/groups)
 - [ ] [Identity Providers](https://fusionauth.io/docs/v1/tech/apis/identity-providers)
 - [ ] [Integrations](https://fusionauth.io/docs/v1/tech/apis/integrations)
 - [ ] [JWT](https://fusionauth.io/docs/v1/tech/apis/jwt)

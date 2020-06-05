@@ -7,6 +7,36 @@ defmodule FusionAuth.GroupsTest do
   @groups_url "/api/groups"
   @members_url "/api/groups"
 
+  @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
+  @role_id "3ebbc43c-7add-42cd-87b4-c6eca0438c6c"
+  @group_id "8c08f404-3a05-4e60-9d1c-a76766921472"
+  @member_id "3abd935a-3fa5-4402-ba5d-bae024a8d5c4"
+  @user_id "84846873-89d2-44f8-91e9-dac80f420cb2"
+
+  @group %{
+    "id" => @group_id,
+    "name" => "Test Group",
+    "data" => %{"description" => "Test Group Description"},
+    "tenantId" => "edad5b36-25a2-0631-3694-64ba3d39bce9",
+    "roles" => %{
+      @application_id => [
+        %{
+          "description" => "admin",
+          "id" => @role_id,
+          "isDefault" => true,
+          "isSuperRole" => true,
+          "name" => "admin"
+        }
+      ]
+    }
+  }
+
+  @member %{
+    "id" => @member_id,
+    "insertInstant" => 1_591_303_565_005,
+    "userId" => @user_id
+  }
+
   setup do
     # api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
     # tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
@@ -51,6 +81,158 @@ defmodule FusionAuth.GroupsTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 404, body: ""}} = Groups.get_group(client, "12345")
+    end
+  end
+
+  describe "create_group/3" do
+    test "creates group with roles", %{client: client} do
+      Helpers.mock_request(
+        path: @groups_url,
+        method: :post,
+        status: 200,
+        response_body: %{"group" => @group}
+      )
+
+      group = %{name: @group["name"], data: %{description: @group["data"]["description"]}}
+      roles = [@role_id]
+
+      {:ok, %{"group" => group}, _} = Groups.create_group(client, group, roles)
+
+      assert group["name"] == @group["name"]
+      assert group["data"]["description"] == @group["data"]["description"]
+    end
+
+    test "creates group without roles", %{client: client} do
+      Helpers.mock_request(
+        path: @groups_url,
+        method: :post,
+        status: 200,
+        response_body: %{"group" => @group}
+      )
+
+      group = %{name: @group["name"], data: %{description: @group["data"]["description"]}}
+
+      {:ok, %{"group" => group}, _} = Groups.create_group(client, group)
+
+      assert group["name"] == @group["name"]
+      assert group["data"]["description"] == @group["data"]["description"]
+    end
+
+    test "handle duplicate group name", %{client: client} do
+      error_response = %{
+        "fieldErrors" => %{
+          "group.name" => [
+            %{
+              "code" => "[duplicate]group.name",
+              "message" => "A group with name = [Test Group] already exists."
+            }
+          ]
+        }
+      }
+
+      Helpers.mock_request(
+        path: @groups_url,
+        method: :post,
+        status: 400,
+        response_body: error_response
+      )
+
+      group = %{name: @group["name"], data: %{description: @group["data"]["description"]}}
+
+      {:error, error, _} = Groups.create_group(client, group)
+
+      assert error == error_response
+    end
+  end
+
+  describe "update_group/" do
+    test "update group with roles", %{client: client} do
+      group = Map.put(@group, "name", "Modified Group")
+
+      Helpers.mock_request(
+        path: @groups_url <> "/#{@group_id}",
+        method: :patch,
+        status: 200,
+        response_body: %{"group" => group}
+      )
+
+      attrs = %{name: "Modified Group"}
+
+      {:ok, %{"group" => group}, _} = Groups.update_group(client, @group_id, attrs, [@role_id])
+
+      assert group["name"] == "Modified Group"
+    end
+
+    test "update group without roles", %{client: client} do
+      group = Map.put(@group, "name", "Modified Group")
+
+      Helpers.mock_request(
+        path: @groups_url <> "/#{@group_id}",
+        method: :patch,
+        status: 200,
+        response_body: %{"group" => group}
+      )
+
+      attrs = %{name: "Modified Group"}
+
+      {:ok, %{"group" => group}, _} = Groups.update_group(client, @group_id, attrs)
+
+      assert group["name"] == "Modified Group"
+    end
+  end
+
+  describe "delete_group/2" do
+    test "can delete group", %{client: client} do
+      Helpers.mock_request(
+        path: @groups_url <> "/#{@group_id}",
+        method: :delete,
+        status: 200,
+        response_body: ""
+      )
+
+      {:ok, response, _} = Groups.delete_group(client, @group_id)
+
+      assert response == ""
+    end
+  end
+
+  describe "add_member/3" do
+    test "add member by user_id", %{client: client} do
+      Helpers.mock_request(
+        path: @member_id,
+        method: :post,
+        status: 200,
+        response_body: %{
+          "members" => %{
+            @group_id => [@member]
+          }
+        }
+      )
+
+      {:ok, %{"members" => %{@group_id => [member]}}, _} =
+        Groups.update_group(client, @group_id, @user_id)
+
+      assert member["userId"] == @user_id
+    end
+
+    test "add member by member object", %{client: client} do
+      Helpers.mock_request(
+        path: @member_id,
+        method: :post,
+        status: 200,
+        response_body: %{
+          "members" => %{
+            @group_id => [@member]
+          }
+        }
+      )
+
+      member = %{userId: @user_id}
+
+      {:ok, %{"members" => %{@group_id => [member]}}, _} =
+        Groups.update_group(client, @group_id, member)
+
+      assert member["userId"] == @user_id
     end
   end
 end
