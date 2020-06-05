@@ -224,7 +224,7 @@ defmodule FusionAuth.UsersTest do
   end
 
   describe "Bulk Delete Users" do
-    test "bulk_delete_users/2 returns a 200 status code with an empty body if the request is successful",
+    test "bulk_delete_users/3 returns a 200 status code with an empty body if the request is successful",
          %{client: client} do
       user_one = "00000000-0000-0001-0000-000000000000"
       user_two = "00000000-0000-0001-0000-000000000001"
@@ -232,7 +232,7 @@ defmodule FusionAuth.UsersTest do
 
       response_body = %{
         "dryRun" => false,
-        "hardDelete" => false,
+        "hardDelete" => true,
         "total" => 2,
         "userIds" => user_ids
       }
@@ -242,7 +242,7 @@ defmodule FusionAuth.UsersTest do
         query_parameters: [
           userId: user_two,
           userId: user_one,
-          hardDelete: false
+          hardDelete: true
         ],
         method: :delete,
         status: 200,
@@ -250,7 +250,7 @@ defmodule FusionAuth.UsersTest do
       )
 
       assert {:ok, response_body, %Tesla.Env{status: 200}} =
-               Users.bulk_delete_users(client, user_ids)
+               Users.bulk_delete_users(client, user_ids, hardDelete: true)
     end
   end
 
@@ -370,17 +370,14 @@ defmodule FusionAuth.UsersTest do
       Helpers.mock_request(
         path: @users_url <> "/recent-login",
         method: :get,
-        query_parameters: [
-          limit: 25,
-          offset: 0,
-          userId: user_id
-        ],
+        query_parameters: [userId: user_id],
         response: :ok,
         status: 200,
         response_body: %{}
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = Users.get_recent_logins(client, 25, 0, user_id)
+      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+               Users.get_recent_logins(client, userId: user_id)
     end
 
     test "get_recent_logins/1-4 returns a 404 status code if the user is not found", %{
@@ -390,11 +387,7 @@ defmodule FusionAuth.UsersTest do
 
       Helpers.mock_request(
         path: @users_url <> "/recent-login",
-        query_parameters: [
-          limit: 25,
-          offset: 0,
-          userId: user_id
-        ],
+        query_parameters: [userId: user_id],
         method: :get,
         response: :ok,
         status: 404,
@@ -402,7 +395,7 @@ defmodule FusionAuth.UsersTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 404}} =
-               Users.get_recent_logins(client, 25, 0, user_id)
+               Users.get_recent_logins(client, userId: user_id)
     end
   end
 
