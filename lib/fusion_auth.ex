@@ -36,39 +36,40 @@ defmodule FusionAuth do
   @type client() :: Tesla.Client.t()
   @type result() :: {:ok, map() | String.t(), Tesla.Env.t()} | {:error, map(), any}
   @type search_criteria() :: %{
-    ids: list() | nil,
-    query: String.t() | nil,
-    query_string: String.t() | nil,
-    number_of_results: integer() | nil,
-    sort_fields: list(sort_field()) | nil,
-    start_row: integer() | nil
-  }
+          ids: list() | nil,
+          query: String.t() | nil,
+          query_string: String.t() | nil,
+          number_of_results: integer() | nil,
+          sort_fields: list(sort_field()) | nil,
+          start_row: integer() | nil
+        }
   @type sort_field() :: %{
-    missing: String.t() | nil,
-    name: String.t(),
-    order: String.t() | nil
-  }
+          missing: String.t() | nil,
+          name: String.t(),
+          order: String.t() | nil
+        }
 
   @spec client(String.t(), String.t(), String.t()) :: client()
   def client(base_url, api_key, tenant_id) do
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [
-        {"Authorization", api_key},
-        {"X-FusionAuth-TenantId", tenant_id}
-      ]}
+      {Tesla.Middleware.Headers,
+       [
+         {"Authorization", api_key},
+         {"X-FusionAuth-TenantId", tenant_id}
+       ]}
     ]
 
     Tesla.client(middleware, adapter())
   end
 
-  @spec result({:ok, Tesla.Env.t()}) :: result()
+  @spec result({:ok, any(), Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status < 300 do
     {:ok, body, env}
   end
 
-  @spec result({:ok, Tesla.Env.t()}) :: result()
+  @spec result({:error, any(), Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status >= 300 do
     {:error, body, env}
   end
