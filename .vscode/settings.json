@@ -1,0 +1,4 @@
+{
+  "editor.defaultFormatter": "JakeBecker.elixir-ls",
+  "editor.formatOnSave": true
+}
