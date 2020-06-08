@@ -192,7 +192,6 @@ defmodule FusionAuth.JWT do
     Tesla.delete(client, @jwt_url <> "/refresh?token=#{token}")
   end
 
-
   @doc """
   Validate Access Token.
 
