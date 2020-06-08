@@ -143,7 +143,7 @@ defmodule FusionAuth.JWT do
   end
 
   @doc """
-  Retrieve Refresh Tokens issued to a User.
+  Retrieve Refresh Tokens issued to a User by User ID.
 
   For more information, visit the FusionAuth API Documentation for [Retrieve Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-refresh-tokens).
   """
@@ -154,6 +154,10 @@ defmodule FusionAuth.JWT do
 
   @doc """
   Retrieve Refresh Tokens issued to a User.
+
+  This API will use a JWT as authentication. `Authorization` header should contain the token.
+  You must provide the ID of the application for which authorization is being requested.
+  Refresh token is optional and can be provided via request parameter or cookie under `refresh_token`.
 
   For more information, visit the FusionAuth API Documentation for [Retrieve Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-refresh-tokens).
   """

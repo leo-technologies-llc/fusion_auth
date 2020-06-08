@@ -41,9 +41,14 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "get_jwt_by_application_id/2 sends 401 on invalid Authorization header", %{
-      client: client,
+      tenant_id: tenant_id,
       app_id: app_id
     } do
+      invalid_client = FusionAuth.client(
+        Helpers.base_url(),
+        "asdf",
+        tenant_id
+      )
       Helpers.mock_request(
         path: @jwt_url <> "/issue",
         method: :get,
@@ -51,16 +56,78 @@ defmodule FusionAuth.JWTTest do
         response_body: ""
       )
 
-      assert {:error, "", %Tesla.Env{status: 401}} = JWT.get_jwt_by_application_id(client, app_id)
+      assert {:error, "", %Tesla.Env{status: 401}} = JWT.get_jwt_by_application_id(invalid_client, app_id)
     end
   end
 
   describe "Reconcile a JWT" do
-    # test "reconcile_jwt success" do
-    # end
+    test "reconcile_jwt/4 returns a 200 status code for successful request", %{
+      client: client,
+      app_id: app_id
+    } do
+      data = %{ "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo"}
+      identity_provider_id = "0c5ecd6e-a55f-4d3c-8236-f26a966392ea"
 
-    # test "reconcile_jwt error" do
-    # end
+      Helpers.mock_request(
+        path: @jwt_url <> "/reconcile",
+        method: :post,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.reconcile_jwt(client, app_id, data, identity_provider_id)
+    end
+
+    test "reconcile_jwt/4 returns a 400 when the request was invalid and/or malformed", %{
+      client: client,
+      app_id: app_id
+    } do
+      data = %{ "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo"}
+      identity_provider_id = "0c5ecd6e-a55f-4d3c-8236-f26a966392ea"
+
+      Helpers.mock_request(
+        path: @jwt_url <> "/reconcile",
+        method: :post,
+        status: 400,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 400}} = JWT.reconcile_jwt(client, app_id, data, identity_provider_id)
+    end
+
+    test "reconcile_jwt/4 returns a 401 when the request cannot be completed", %{
+      client: client,
+      app_id: app_id
+    } do
+      data = %{ "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo"}
+      identity_provider_id = "0c5ecd6e-a55f-4d3c-8236-f26a966392ea"
+
+      Helpers.mock_request(
+        path: @jwt_url <> "/reconcile",
+        method: :post,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.reconcile_jwt(client, app_id, data, identity_provider_id)
+    end
+
+    test "reconcile_jwt/4 returns a 404 when the user is not found or the password is incorrect", %{
+      client: client,
+      app_id: app_id
+    } do
+      data = %{ "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo"}
+      identity_provider_id = "0c5ecd6e-a55f-4d3c-8236-f26a966392ea"
+
+      Helpers.mock_request(
+        path: @jwt_url <> "/reconcile",
+        method: :post,
+        status: 404,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 404}} = JWT.reconcile_jwt(client, app_id, data, identity_provider_id)
+    end
   end
 
   describe "Retrieve all Public Keys" do
@@ -75,30 +142,158 @@ defmodule FusionAuth.JWTTest do
       assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_public_keys(client)
     end
 
-  #   # test "get_public_keys error" do
-  #   # end
+    test "get_public_keys/1-2 returns a 401 status code for incorrect Authorization header", %{tenant_id: tenant_id} do
+      invalid_client = FusionAuth.client(
+        Helpers.base_url(),
+        "asdf",
+        tenant_id
+      )
+      Helpers.mock_request(
+        path: @jwt <> "/public-key",
+        method: :get,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.get_public_keys(invalid_client)
+    end
   end
 
   describe "Retrieve a single Public Key for a specific Application by Application ID" do
-    # test "get_public_key_by_application_id/1 success" do
-    # end
-    # test "get_public_key_by_application_id/1 error" do
-    # end
+    test "get_public_key_by_application_id/1-2 returns a 200 status code for successful request", %{
+      client: client,
+      app_id: app_id
+    } do
+      Helpers.mock_request(
+        path: @jwt <> "/public-key?applicationId=#{app_id}",
+        method: :get,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_public_key_by_application_id(client, app_id)
+    end
+
+    test "get_public_key_by_application_id/1-2 returns a 401 status code for incorrect Authorization header", %{
+      app_id: app_id
+    } do
+      invalid_client = FusionAuth.client(
+        Helpers.base_url(),
+        "-b6xI0gKV4ae2WKdcnnsEfaqgHR7u_m2MlQBQZWmCRk",
+        tenant_id
+      )
+      Helpers.mock_request(
+        path: @jwt <> "/public-key?applicationId=#{app_id}",
+        method: :get,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_public_key_by_application_id(invalid_client, app_id)
+    end
+
+    test "get_public_key_by_application_id/1-2 returns a 404 status code when object doesn't exist", %{
+      client: client
+    } do
+      Helpers.mock_request(
+        path: @jwt <> "/public-key?applicationId=asdf",
+        method: :get,
+        status: 404,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 404}} = JWT.get_public_key_by_application_id(client, "asdf")
+    end
   end
 
-  # describe "Retrieve a single Public Key by Key Identifier" do
-  #   # test "get_public_key_by_key_id/1 success" do
-  #   # end
-  #   # test "get_public_key_by_key_id/1 error" do
-  #   # end
-  # end
+  describe "Retrieve a single Public Key by Key Identifier" do
+    test "get_public_key_by_key_id/1-2 returns a 200 status code for successful request", %{
+      client: client,
+      k_id
+    } do
+      Helpers.mock_request(
+        path: @jwt <> "/public-key?kid=#{k_id}",
+        method: :get,
+        status: 200,
+        response_body: %{}
+      )
 
-  # describe "Request a new Access Token by presenting a valid Refresh Token" do
-  #   # test "refresh_jwt success" do
-  #   # end
-  #   # test "refresh_jwt error" do
-  #   # end
-  # end
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_public_key_by_key_id(client, k_id)
+    end
+
+    test "get_public_key_by_key_id/1-2 returns a 401 status code for incorrect Authorization header", %{
+      tenant_id,
+      k_id
+    } do
+      invalid_client = FusionAuth.client(
+        Helpers.base_url(),
+        "-b6xI0gKV4ae2WKdcnnsEfaqgHR7u_m2MlQBQZWmCRk",
+        tenant_id
+      )
+        Helpers.mock_request(
+          path: @jwt <> "/public-key?kid=#{k_id}",
+          method: :get,
+          status: 401,
+          response_body: %{}
+        )
+
+        assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.get_public_key_by_key_id(invalid_client, k_id)
+    end
+
+    test "get_public_key_by_key_id/1-2 returns a 404 status code when object doesn't exist", %{
+      client: client
+    } do
+      Helpers.mock_request(
+        path: @jwt <> "/public-key?kid=#{k_id}",
+        method: :get,
+        status: 404,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 404}} = JWT.get_public_key_by_key_id(client, invalid_k_id)
+    end
+  end
+
+  describe "Request a new Access Token by presenting a valid Refresh Token" do
+    test "refresh_jwt/1-3 returns a 200 status code for successful request", %{client: client} do
+      refresh_token = "xRxGGEpVawiUak6He367W3oeOfh+3irw+1G1h1jc",
+      token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFuYV91STRWbWxiMU5YVXZ0cV83SjZKZFNtTSJ9.eyJleHAiOjE1ODgzNTM0NjAsImlhdCI6MTU4ODM1MzQwMCwiaXNzIjoiZnVzaW9uYXV0aC5pbyIsInN1YiI6IjAwMDAwMDAwLTAwMDAtMDAwMS0wMDAwLTAwMDAwMDAwMDAwMCIsImF1dGhlbnRpY2F0aW9uVHlwZSI6IlBBU1NXT1JEIiwiZW1haWwiOiJ0ZXN0MEBmdXNpb25hdXRoLmlvIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXJuYW1lMCJ9.ZoIHTo3Pv0DpcELeX_wu-ZB_rd988jefZc2Ozu9_p59kttwqMm5PV8IDbgxJw9xcq9TFoNG8e_B6renoc11JC54UbiyeXBjF7EH01n9LDz-zTGqu9U72470Z4E7IPAHcyvJIBx4Mp9sgsEYAUm9Tb8ChudqNHhn6ZnXYI7Sew7CtGlu62f10wdBYGX0soYARHBv9CwhJC3-gsD2HLmqHAP_XhrpaYPNr5EAvmCHlM-JlTiEQ9bXwSc4gv-XbPQWamwy8Kcdb-g0EEAml_dC_b2CduwwYg0EoPQB3tQxzTUQzADi7K6q0CtQXv2_1VrRi6aQ4lt7v7t-Na39wGry_pA"
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh",
+        method: :post,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.refresh_jwt(client, refresh_token, token)
+    end
+
+    test "refresh_jwt/1-3 returns a 401 status code when the provided Refresh Token is either expired or revoked", %{client: client} do
+      refresh_token = "xRxGGEpVawiUak6He367W3oeOfh+3irw+1G1h1jc",
+      token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkFuYV91STRWbWxiMU5YVXZ0cV83SjZKZFNtTSJ9.eyJleHAiOjE1ODgzNTM0NjAsImlhdCI6MTU4ODM1MzQwMCwiaXNzIjoiZnVzaW9uYXV0aC5pbyIsInN1YiI6IjAwMDAwMDAwLTAwMDAtMDAwMS0wMDAwLTAwMDAwMDAwMDAwMCIsImF1dGhlbnRpY2F0aW9uVHlwZSI6IlBBU1NXT1JEIiwiZW1haWwiOiJ0ZXN0MEBmdXNpb25hdXRoLmlvIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInByZWZlcnJlZF91c2VybmFtZSI6InVzZXJuYW1lMCJ9.ZoIHTo3Pv0DpcELeX_wu-ZB_rd988jefZc2Ozu9_p59kttwqMm5PV8IDbgxJw9xcq9TFoNG8e_B6renoc11JC54UbiyeXBjF7EH01n9LDz-zTGqu9U72470Z4E7IPAHcyvJIBx4Mp9sgsEYAUm9Tb8ChudqNHhn6ZnXYI7Sew7CtGlu62f10wdBYGX0soYARHBv9CwhJC3-gsD2HLmqHAP_XhrpaYPNr5EAvmCHlM-JlTiEQ9bXwSc4gv-XbPQWamwy8Kcdb-g0EEAml_dC_b2CduwwYg0EoPQB3tQxzTUQzADi7K6q0CtQXv2_1VrRi6aQ4lt7v7t-Na39wGry_pA"
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh",
+        method: :post,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.refresh_jwt(client, refresh_token, token)
+    end
+
+    test "refresh_jwt/1-3 returns a 404 status code when the requested object doesn't exist", %{client: client} do
+      refresh_token = "xRxGGEpVawiUak6He367W3oeOfh+3irw+1G1h1jc",
+      token = "asdf"
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh",
+        method: :post,
+        status: 404,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 404}} = JWT.refresh_jwt(client, refresh_token, token)
+    end
+  end
 
   describe "Retrieve Refresh Tokens issued to a User by User ID" do
     test "get_user_refresh_tokens_by_user_id/2 returns a 200 status code for successful request", %{
@@ -112,47 +307,212 @@ defmodule FusionAuth.JWTTest do
         response_body: %{}
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
-               JWT.get_user_refresh_tokens_by_user_id(
-                 client,
-                 user_id
-               )
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_user_refresh_tokens_by_user_id(client, user_id)
     end
 
-    # test "get_user_refresh_tokens_by_user_id/2 error" do
-    # end
+    test "get_user_refresh_tokens_by_user_id/2 returns a 401 status code for incorrect Authorization header", %{
+      tenant_id: tenant_id
+    } do
+      invalid_client = FusionAuth.client(
+        Helpers.base_url(),
+        "-b6xI0gKV4ae2WKdcnnsEfaqgHR7u_m2MlQBQZWmCRk",
+        tenant_id
+      )
+
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?userId=#{user_id}",
+        method: :get,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.get_user_refresh_tokens_by_user_id(invalid_client, user_id)
+    end
   end
 
-  # describe "Retrieve Refresh Tokens issued to a User" do
-  #   # test "get_user_refresh_tokens success" do
-  #   # end
-  #   # test "get_user_refresh_tokens error" do
-  #   # end
-  # end
+  describe "Retrieve Refresh Tokens issued to a User" do
+    test "get_user_refresh_tokens/2 returns a 200 status code for a successful request", %{
+      tenant_id: tenant_id,
+      app_id: app_id
+    } do
+      jwt_client = FusionAuth.client(
+        Helpers.base_url(),
+        "Bearer " <> @valid_jwt,
+        tenant_id
+      )
 
-  # describe "Revoke all Refresh Tokens for an entire Application by Application ID" do
-  #   # test "delete_refresh_tokens_by_application_id/1 success" do
-  #   # end
-  #   # test "delete_refresh_tokens_by_application_id/1 error" do
-  #   # end
-  # end
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh",
+        method: :delete,
+        status: 200,
+        response_body: %{}
+      )
 
-  # describe "Revoke all Refresh Tokens issued to a User by User ID" do
-  #   # test "delete_refresh_tokens_by_user_id/1 success" do
-  #   # end
-  #   # test "delete_refresh_tokens_by_user_id/1 error" do
-  #   # end
-  # end
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_user_refresh_tokens(jwt_client, app_id)
+    end
 
-  # describe "Revoke a single Refresh Token" do
-  #   # test "delete_refresh_token/1 success" do
-  #   # end
-  #   # test "delete_refresh_token/1 error" do
-  #   # end
-  # end
+    test "get_user_refresh_tokens/2 returns a 401 status code for incorrect Authorization header", %{
+      app_id: app_id,
+      tenant_id: tenant_id
+    } do
+      invalid_jwt = "asdf"
+
+      invalid_jwt_client = FusionAuth.client(
+        Helpers.base_url(),
+        "Bearer" <> invalid_jwt,
+        tenant_id
+      )
+
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh",
+        method: :delete,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.get_user_refresh_tokens(invalid_jwt_client, app_id)
+    end
+  end
+
+  describe "Revoke all Refresh Tokens for an entire Application by Application ID" do
+    test "delete_refresh_tokens_by_application_id/2 returns a 200 status code for a successful request", %{
+      client: client,
+      app_id: app_id
+    } do
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?applicationId=#{app_id}",
+        method: :delete,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_application_id(client, app_id)
+    end
+
+    test "delete_refresh_tokens_by_application_id/2 returns a 401 status code for incorrect Authorization header", %{
+      app_id: app_id,
+      tenant_id: tenant_id
+    } do
+      invalid_client = FusionAuth.client(
+        Helpers.base_url(),
+        "-b6xI0gKV4ae2WKdcnnsEfaqgHR7u_m2MlQBQZWmCRk",
+        tenant_id
+      )
+
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?applicationId=#{app_id}",
+        method: :delete,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.delete_refresh_tokens_by_application_id(invalid_client, app_id)
+    end
+
+    test "delete_refresh_tokens_by_application_id/2 returns a 404 status code when object doesn't exist", %{client: client} do
+      invalid_app_id = "1234"
+
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?applicationId=#{invalid_app_id}",
+        method: :delete,
+        status: 404,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 404}} = JwT.delete_refresh_tokens_by_application_id(client, invalid_app_id)
+    end
+  end
+
+  describe "Revoke all Refresh Tokens issued to a User by User ID" do
+    test "delete_refresh_tokens_by_user_id/2 returns a 200 for success", %{
+      user_id: user_id,
+      client: client
+    } do
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?userId=#{user_id}",
+        method: :delete,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_user_id(client, user_id)
+    end
+
+    test "delete_refresh_tokens_by_user_id/2 returns a 401 when you did not supply Authorization header", %{
+      tenant_id: tenant_id,
+      user_id: user_id
+    } do
+      client = FusionAuth.client(
+        Helpers.base_url(),
+        "-b6xI0gKV4ae2WKdcnnsEfaqgHR7u_m2MlQBQZWmCRk",
+        tenant_id
+      )
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?userId=#{user_id}",
+        method: :delete,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_user_id(client, user_id)
+    end
+
+    test "delete_refresh_tokens_by_user_id/2 returns a 404 when object doesn't exist", %{client: client} do
+      invalid_user_id = "123456789"
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?userId=#{invalid_user_id}",
+        method: :delete,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_user_id(client, invalid_user_id)
+    end
+  end
+
+  describe "Revoke a single Refresh Token" do
+    test "delete_refresh_token/2 return a 200 status code for a successful request", %{client: client} do
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?token=#{@valid_jwt}",
+        method: :delete,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.delete_refresh_token(client, @valid_jwt)
+    end
+
+    test "delete_refresh_token/2 returns a 401 status code for incorrect Authorization header", %{tenant_id: tenant_id} do
+      ivnalid_client = FusionAuth.client(
+        Helpers.base_url(),
+        "-b6xI0gKV4ae2WKdcnnsEfaqgHR7u_m2MlQBQZWmCRk",
+        tenant_id
+      )
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?token=#{@valid_jwt}",
+        method: :delete,
+        status: 401,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 401}} = JWT.delete_refresh_token(ivnalid_client, @valid_jwt)
+    end
+
+    test "delete_refresh_token/2 return a 404 status code when the object doesn't exist", %{client: client} do
+      badToken = "badToken"
+      Helpers.mock_request(
+        path: @jwt_url <> "/refresh?token=#{badToken}",
+        method: :delete,
+        status: 404,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 404}} = JWT.delete_refresh_token(client, badToken)
+    end
+  end
 
   describe "Validate Access Token" do
-    test "validate_jwt/1 returns a 200 status for a successful request", %{tenant_id: tenant_id} do
+    test "validate_jwt/1 returns a 200 status code and jwt object for a successful request", %{tenant_id: tenant_id} do
       jwt_client = FusionAuth.client(
         Helpers.base_url(),
         "JWT " <> @valid_jwt,
@@ -181,7 +541,7 @@ defmodule FusionAuth.JWTTest do
       assert {:ok, resp_body, %Tesla.Env{status: 200}} = JWT.validate_jwt(jwt_client)
     end
 
-    test "validate_jwt/1 returns a 401 for an invalid access token", %{tenant_id: tenant_id} do
+    test "validate_jwt/1 returns a 401 status code for an invalid access token", %{tenant_id: tenant_id} do
       jwt_client = FusionAuth.client(
         Helpers.base_url(),
         "JWT asdf",
