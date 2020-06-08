@@ -313,7 +313,7 @@ defmodule FusionAuth.RegistrationsTest do
       }
 
       Helpers.mock_request(
-        path: @registrations_url,
+        path: @registrations_url <> "/#{user_id}",
         method: :put,
         status: 200,
         body: data,
@@ -342,7 +342,7 @@ defmodule FusionAuth.RegistrationsTest do
       }
 
       Helpers.mock_request(
-        path: @registrations_url,
+        path: @registrations_url <> "/#{not_found_user_id}",
         method: :put,
         status: 404,
         body: data,
@@ -379,7 +379,7 @@ defmodule FusionAuth.RegistrationsTest do
       }
 
       Helpers.mock_request(
-        path: @registrations_url,
+        path: @registrations_url <> "/#{user_id}",
         method: :put,
         status: 400,
         body: data,
@@ -478,7 +478,7 @@ defmodule FusionAuth.RegistrationsTest do
       client: client
     } do
       Helpers.mock_request(
-        path: @verify_registration_url,
+        path: @verify_registration_url <> "/good-code",
         method: :post,
         status: 200,
         response_body: ""
@@ -495,7 +495,7 @@ defmodule FusionAuth.RegistrationsTest do
       client: client
     } do
       Helpers.mock_request(
-        path: @verify_registration_url,
+        path: @verify_registration_url <> "/bad-code",
         method: :post,
         status: 404,
         response_body: ""
@@ -521,7 +521,7 @@ defmodule FusionAuth.RegistrationsTest do
 
       Helpers.mock_request(
         path: @verify_registration_url,
-        method: :post,
+        method: :put,
         status: 200,
         response_body: resp_body
       )
@@ -555,7 +555,7 @@ defmodule FusionAuth.RegistrationsTest do
 
       Helpers.mock_request(
         path: @verify_registration_url,
-        method: :post,
+        method: :put,
         status: 400,
         response_body: resp_body
       )
