@@ -405,7 +405,14 @@ defmodule FusionAuth.Applications do
     },
     roles: [role()],
     saml_v2_configuration: %{
-
+      audience: String.t(),
+      callback_url: String.t(),
+      debug: boolean(),
+      enabled: boolean(),
+      issuer: String.t(),
+      key_id: String.t(),
+      logout_url: String.t(),
+      xml_signature_c14n_method: String.t()
     },
     verification_email_template_id: String.t(),
     verify_registration: boolean()
