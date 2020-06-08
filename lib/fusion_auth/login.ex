@@ -89,7 +89,7 @@ defmodule FusionAuth.Login do
   @spec login_one_time_password(client(), String.t(), String.t(), options()) :: result()
   def login_one_time_password(client, application_id, one_time_password, options) do
     data = %{
-      one_time_password: one_time_password,
+      oneTimePassword: one_time_password,
       applicationId: application_id
     }
 
@@ -130,13 +130,30 @@ defmodule FusionAuth.Login do
   For more information visit the FusionAuth API Documentation for [Authenticate a User](https://fusionauth.io/docs/v1/tech/apis/login#authenticate-a-user)
   """
   @spec login_user(client(), String.t(), String.t(), options()) :: result()
-  def login_user(client, login_id, password, options) do
+  def login_user(client, login_id, password, options) when is_map(options) do
     login_user(
       client,
       get_application_id(),
       login_id,
       password,
       options
+    )
+  end
+
+  @doc """
+  Login user with login_id, password and application_id.
+  No default application_id will be applied.
+
+  For more information visit the FusionAuth API Documentation for [Authenticate a User](https://fusionauth.io/docs/v1/tech/apis/login#authenticate-a-user)
+  """
+  @spec login_user(client(), String.t(), String.t(), String.t()) :: result()
+  def login_user(client, application_id, login_id, password) do
+    login_user(
+      client,
+      application_id,
+      login_id,
+      password,
+      %{}
     )
   end
 
@@ -206,7 +223,7 @@ defmodule FusionAuth.Login do
   def two_factor_login(client, application_id, code, two_factor_id, options) do
     data = %{
       applicationId: application_id,
-      twoFactorID: two_factor_id,
+      twoFactorId: two_factor_id,
       code: code
     }
 
