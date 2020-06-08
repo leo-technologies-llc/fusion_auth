@@ -2,12 +2,34 @@ defmodule FusionAuth.JWT do
   @moduledoc """
   The `FusionAuth.JWT` module provides access functions to the [FusionAuth JWT API](https://fusionauth.io/docs/v1/tech/apis/jwt).
 
-  All functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key)`.
+  Most functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key, tenant_id)`.
+  Those that use JWT Authentication may require a different `api_key` structure.
+  See [JWT Authentication](https://fusionauth.io/docs/v1/tech/apis/authentication#jwt-authentication) for examples of how you can send the JWT to FusionAuth.
   """
   alias FusionAuth.Utils
 
   @jwt_url "/api/jwt"
 
+  @doc """
+  Issue a new access token (JWT) using an existing access token (JWT).
+
+  This API will use a JWT as authentication. `Authorization` header should contain the token.
+  You must provide the ID of the application for which authorization is being requested.
+  Refresh token is optional and can be provided via request parameter or cookie under `refresh_token`.
+
+  ## Example
+    iex> api_key = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE0MDMwMDcsImlhdCI6MTU5MTM5OTQwNywiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiYWRlbGFjcnV6QGNvZ2lsaXR5LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhcHBsaWNhdGlvbklkIjoiM2MyMTllNTgtZWQwZS00YjE4LWFkNDgtZjRmOTI3OTNhZTMyIiwicm9sZXMiOlsiYWRtaW4iXX0.XZH9rehgeEL5Ara8N8FvDkAdhWSN0QOKHBoH7CW_h24"
+    iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
+    iex> FusionAuth.JWT.get_jwt_by_application_id(client, "3c219e58-ed0e-4b18-ad48-f4f92793ae32")
+    {:ok,
+      %{
+      "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE0MDMwMDcsImlhdCI6MTU5MTM5OTU2NiwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJKV1RfU1NPIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJyb2xlcyI6WyJhZG1pbiJdfQ.Nleerqr5Z4sOTLvJEBbknHc4HuhsNOVQ15IkDV7JKo0"
+      },
+      %Tesla.Env{...}
+    }
+
+  For more information, visit the FusionAuth API Documentation for [Issue a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#issue-a-jwt).
+  """
   @spec get_jwt_by_application_id(FusionAuth.client(), String.t(), String.t() | nil) :: FusionAuth.request()
   def get_jwt_by_application_id(client, application_id, refresh_token \\ nil) do
     Tesla.get(
@@ -19,25 +41,66 @@ defmodule FusionAuth.JWT do
     |> FusionAuth.result()
   end
 
-  @spec reconcile_jwt(FusionAuth.client(), String.t(), String.t(), map(), String.t()) :: FusionAuth.request()
-  def reconcile_jwt(client, application_id, encoded_JWT, data, identity_provider_id) do
+  @doc """
+  Takes a JWT issued by a third party identity provider as described by an [Identity Providers](https://fusionauth.io/docs/v1/tech/apis/identity-providers/) config and reconcile the User represented by the JWT to FusionAuth.
+
+  Required Fields:
+  applicationId: ID of application use will be logged into during the reconcile process.
+  data: object with a token property that is the JWT issued by third party
+  identityProviderId: ID of the Identity Provider to utilize when reconciling the JWT
+
+  ## Example
+    iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
+    iex> application_id = "ff9880a1-74fd-4947-b482-1ca6f9788362"
+    iex> data = %{ "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo"}
+    iex> identity_provider_id = "0c5ecd6e-a55f-4d3c-8236-f26a966392ea"
+    iex> FusionAuth.JWT.reconcile_jwt(client, application_id, data, identity_provider_id)
+    {:ok,
+     %{
+      "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo",
+     },
+     %Tesla.Env{...}
+    }
+
+  For more information, visit the FusionAuth API Documentation for [Reconcile a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#reconcile-a-jwt).
+  """
+  @spec reconcile_jwt(FusionAuth.client(), String.t(), map(), String.t()) :: FusionAuth.request()
+  def reconcile_jwt(client, application_id, data, identity_provider_id) do
     Tesla.post(
       client,
       @jwt_url <> "/reconcile",
       %{
         applicationId: application_id,
-        encodedJWT: encoded_JWT,
         data: data,
         identityProviderId: identity_provider_id
       }
     ) |> FusionAuth.result()
   end
 
+  @doc """
+  Retrieve all Public Keys generated by FusionAuth in order to verify JWT signatures.
+
+  ## Example
+    iex> api_key = "jnx6HeVRrLkulpwiUNh9s52qlJqp5dox77NcDVkf9YI"
+    iex> tenant_id = "d577a020-30cb-85de-bf30-785cb65997d6"
+    iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
+    iex> FusionAuth.JWT.get_public_keys(client)
+    {:ok, %{},
+     %Tesla.Env{...}
+    }
+
+  For more information, visit the FusionAuth API Documentation for [Retrieve Public Keys](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-public-keys).
+  """
   @spec get_public_keys(FusionAuth.client()) :: FusionAuth.request()
   def get_public_keys(client) do
     Tesla.get(client, @jwt_url <> "/public-key") |> FusionAuth.result()
   end
 
+  @doc """
+  Retrieve a single Public Key for a specific Application by Application ID.
+
+  For more information, visit the FusionAuth API Documentation for [Retrieve Public Keys](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-public-keys).
+  """
   @spec get_public_key_by_application_id(FusionAuth.client(), String.t() | nil) :: FusionAuth.request()
   def get_public_key_by_application_id(client, application_id \\ nil) do
     Tesla.get(
@@ -47,11 +110,26 @@ defmodule FusionAuth.JWT do
     |> FusionAuth.result()
   end
 
+  @doc """
+  Retrieve a single Public Key by Key Identifier.
+
+  For more information, visit the FusionAuth API Documentation for [Retrieve Public Keys](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-public-keys).
+  """
   @spec get_public_key_by_key_id(FusionAuth.client(), String.t() | nil) :: FusionAuth.request()
   def get_public_key_by_key_id(client, k_id \\ nil) do
     Tesla.get(client, @jwt_url <> "/public-key?kid=#{k_id}") |> FusionAuth.result()
   end
 
+  @doc """
+  Request a new Access Token by presenting a valid Refresh Token.
+
+  The refresh token may be provided either in the HTTP request body or as a cookie. If both are provided, the cookie will take precedence.
+
+  If request cookie, use `refresh_token` or `access_token`.
+  If request body, use `refreshToken` or `token`.
+
+  For more information, visit the FusionAuth API Documentation for [Refresh a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#refresh-a-jwt).
+  """
   @spec refresh_jwt(FusionAuth.client(), String.t() | nil, String.t() | nil) :: FusionAuth.request()
   def refresh_jwt(client, refresh_token \\ nil, token \\ nil) do
     Tesla.post(
@@ -64,31 +142,67 @@ defmodule FusionAuth.JWT do
     )
   end
 
+  @doc """
+  Retrieve Refresh Tokens issued to a User.
+
+  For more information, visit the FusionAuth API Documentation for [Retrieve Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-refresh-tokens).
+  """
   @spec get_user_refresh_tokens_by_user_id(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def get_user_refresh_tokens_by_user_id(client, user_id) do
     Tesla.get(client, @jwt_url <> "/refresh?userId=#{user_id}") |> FusionAuth.result()
   end
 
+  @doc """
+  Retrieve Refresh Tokens issued to a User.
+
+  For more information, visit the FusionAuth API Documentation for [Retrieve Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-refresh-tokens).
+  """
   @spec get_user_refresh_tokens(FusionAuth.client()) :: FusionAuth.request()
   def get_user_refresh_tokens(client) do
     Tesla.get(client, @jwt_url <> "/refresh") |> FusionAuth.result()
   end
 
+  @doc """
+  Revoke all Refresh Tokens for an entire Application.
+
+  For more information, visit the FusionAuth API Documentation for [Revoke Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#revoke-refresh-tokens).
+  """
   @spec delete_refresh_tokens_by_application_id(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def delete_refresh_tokens_by_application_id(client, application_id) do
     Tesla.delete(client, @jwt_url <> "/refresh?applicationId=#{application_id}")
   end
 
+  @doc """
+  Revoke all Refresh Tokens issued to a User.
+
+  For more information, visit the FusionAuth API Documentation for [Revoke Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#revoke-refresh-tokens).
+  """
   @spec delete_refresh_tokens_by_user_id(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def delete_refresh_tokens_by_user_id(client, user_id) do
     Tesla.delete(client, @jwt_url <> "/refresh?userId=#{user_id}")
   end
 
+  @doc """
+  Revoke a single Refresh Token.
+
+  For more information, visit the FusionAuth API Documentation for [Revoke Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#revoke-refresh-tokens).
+  """
   @spec delete_refresh_token(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def delete_refresh_token(client, token) do
     Tesla.delete(client, @jwt_url <> "/refresh?token=#{token}")
   end
 
+
+  @doc """
+  Validate Access Token.
+
+  The access token acan be provided to the API using an HTTP request header or a cookie.
+
+  If through a request header, it will need `Authorization: JWT <encoded_access_token>.
+  If through a cookie, use `access_token`. This cookie is written to the client by the Login API
+
+  For more information, visit the FusionAuth API Documentation for [Validate a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#validate-a-jwt).
+  """
   @spec validate_jwt(FusionAuth.client()) :: FusionAuth.request()
   def validate_jwt(client) do
     Tesla.get(client, @jwt_url <> "/validate") |> FusionAuth.result()
