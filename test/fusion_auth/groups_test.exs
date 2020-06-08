@@ -4,8 +4,8 @@ defmodule FusionAuth.GroupsTest do
   alias FusionAuth.Groups
   alias FusionAuth.TestSupport.Helpers
 
-  @groups_url "/api/groups"
-  @members_url "/api/groups"
+  @groups_url "/api/group"
+  @members_url "/api/group/member"
 
   @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
   @role_id "3ebbc43c-7add-42cd-87b4-c6eca0438c6c"
@@ -277,6 +277,10 @@ defmodule FusionAuth.GroupsTest do
     test "remove member by group_id and user_id", %{client: client} do
       Helpers.mock_request(
         path: @members_url,
+        query_parameters: [
+          groupId: @group_id,
+          userId: @user_id
+        ],
         method: :delete,
         status: 200,
         response_body: ""
@@ -305,6 +309,9 @@ defmodule FusionAuth.GroupsTest do
     test "when group_id", %{client: client} do
       Helpers.mock_request(
         path: @members_url,
+        query_parameters: [
+          groupId: @group_id
+        ],
         method: :delete,
         status: 200,
         response_body: ""
