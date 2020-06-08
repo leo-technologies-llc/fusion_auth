@@ -40,7 +40,6 @@ defmodule FusionAuth.MixProject do
       {:tesla, "~> 1.3.0"},
       {:hackney, "~> 1.15.2"},
       {:jason, ">= 1.0.0"},
-      {:plug_cowboy, "~> 2.0"},
       {:excoveralls, "~> 0.10", only: :test}
     ]
   end
