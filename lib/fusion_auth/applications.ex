@@ -324,106 +324,114 @@ defmodule FusionAuth.Applications do
   @type parameters :: [key: boolean()]
   @type role_id :: String.t()
   @type application :: %{
-    id: String.t(),
-    active: boolean(),
-    authentication_token_configuration: %{enabled: boolean()},
-    clean_speak_configuration: %{
-      application_ids: [String.t()],
-      enabled: boolean(),
-      username_moderation: %{
-        application_id: String.t(),
-        enabled: boolean()
-      }
-    },
-    data: map(),
-    jwt_configuration: %{
-      access_token_key_id: String.t(),
-      enabled: boolean(),
-      id_token_key_id: String.t(),
-      refresh_token_time_to_live_in_minutes: integer(),
-      time_to_live_in_seconds: integer()
-    },
-    lambda_configuration: %{
-      access_token_populate_id: String.t(),
-      id_token_populate_id: String.t(),
-      saml_v2_populate_id: String.t()
-    },
-    login_configuration: %{
-      allow_token_refresh: boolean(),
-      generate_refresh_tokens: boolean(),
-      require_authentication: boolean()
-    },
-    name: String.t(),
-    oauth_configuration: %{
-      authorized_origin_urls: [String.t()],
-      authorized_redirect_urls: [String.t()],
-      client_id: String.t(),
-      client_secret: String.t(),
-      device_verification_url: String.t(),
-      enabled_grants: [String.t()],
-      generate_refresh_tokens: boolean(),
-      logout_behavior: String.t(),
-      require_client_authentication: boolean()
-    },
-    password_configuration: %{
-      enabled: boolean()
-    },
-    registration_configuration: %{
-      birth_date: %{
-        enabled: boolean(),
-        required: boolean()
-      },
-      confirm_password: boolean(),
-      enabled: boolean(),
-      first_name: %{
-        enabled: boolean(),
-        required: boolean()
-      },
-      full_name: %{
-        enabled: boolean(),
-        required: boolean()
-      },
-      last_name: %{
-        enabled: boolean(),
-        required: boolean()
-      },
-      login_id_type: String.t(),
-      middle_name: %{
-        enabled: boolean(),
-        required: boolean()
-      },
-      mobile_phone: %{
-        enabled: boolean(),
-        required: boolean()
-      }
-    },
-    registration_delete_policy: %{
-      unverified: %{
-        enabled: boolean(),
-        number_of_days_to_retain: integer()
-      }
-    },
-    roles: [role()],
-    saml_v2_configuration: %{
-      audience: String.t(),
-      callback_url: String.t(),
-      debug: boolean(),
-      enabled: boolean(),
-      issuer: String.t(),
-      key_id: String.t(),
-      logout_url: String.t(),
-      xml_signature_c14n_method: String.t()
-    },
-    verification_email_template_id: String.t(),
-    verify_registration: boolean()
-  }
+          id: String.t(),
+          active: boolean(),
+          authentication_token_configuration: %{enabled: boolean()},
+          clean_speak_configuration: clean_speak_configuration(),
+          data: map(),
+          jwt_configuration: jwt_configuration(),
+          lambda_configuration: lambda_configuration(),
+          login_configuration: login_configuration(),
+          name: String.t(),
+          oauth_configuration: oauth_configuration(),
+          password_configuration: %{
+            enabled: boolean()
+          },
+          registration_configuration: registration_configuration(),
+          registration_delete_policy: registration_delete_policy(),
+          roles: [role()],
+          saml_v2_configuration: saml_v2_configuration(),
+          verification_email_template_id: String.t(),
+          verify_registration: boolean()
+        }
+  @type clean_speak_configuration :: %{
+          application_ids: [String.t()],
+          enabled: boolean(),
+          username_moderation: %{
+            application_id: String.t(),
+            enabled: boolean()
+          }
+        }
+  @type jwt_configuration :: %{
+          access_token_key_id: String.t(),
+          enabled: boolean(),
+          id_token_key_id: String.t(),
+          refresh_token_time_to_live_in_minutes: integer(),
+          time_to_live_in_seconds: integer()
+        }
+  @type lambda_configuration :: %{
+          access_token_populate_id: String.t(),
+          id_token_populate_id: String.t(),
+          saml_v2_populate_id: String.t()
+        }
+  @type login_configuration :: %{
+          allow_token_refresh: boolean(),
+          generate_refresh_tokens: boolean(),
+          require_authentication: boolean()
+        }
+  @type oauth_configuration :: %{
+          authorized_origin_urls: [String.t()],
+          authorized_redirect_urls: [String.t()],
+          client_id: String.t(),
+          client_secret: String.t(),
+          device_verification_url: String.t(),
+          enabled_grants: [String.t()],
+          generate_refresh_tokens: boolean(),
+          logout_behavior: String.t(),
+          require_client_authentication: boolean()
+        }
+  @type registration_configuration :: %{
+          birth_date: %{
+            enabled: boolean(),
+            required: boolean()
+          },
+          confirm_password: boolean(),
+          enabled: boolean(),
+          first_name: %{
+            enabled: boolean(),
+            required: boolean()
+          },
+          full_name: %{
+            enabled: boolean(),
+            required: boolean()
+          },
+          last_name: %{
+            enabled: boolean(),
+            required: boolean()
+          },
+          login_id_type: String.t(),
+          middle_name: %{
+            enabled: boolean(),
+            required: boolean()
+          },
+          mobile_phone: %{
+            enabled: boolean(),
+            required: boolean()
+          }
+        }
+  @type registration_delete_policy :: %{
+          unverified: %{
+            enabled: boolean(),
+            number_of_days_to_retain: integer()
+          }
+        }
+  @type saml_v2_configuration :: %{
+          audience: String.t(),
+          callback_url: String.t(),
+          debug: boolean(),
+          enabled: boolean(),
+          issuer: String.t(),
+          key_id: String.t(),
+          logout_url: String.t(),
+          xml_signature_c14n_method: String.t()
+        }
   @type role :: %{
-    id: String.t(),
-    description: String.t(),
-    name: String.t(),
-    is_default: boolean(),
-    is_super_role: boolean()
-  }
+          id: String.t(),
+          description: String.t(),
+          name: String.t(),
+          is_default: boolean(),
+          is_super_role: boolean()
+        }
 
   @applications_url "/api/application"
 
