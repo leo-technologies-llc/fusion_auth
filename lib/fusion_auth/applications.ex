@@ -6,6 +6,9 @@ defmodule FusionAuth.Applications do
 
   # Application Fields
 
+    - id :: String.t()\n
+      The Id of the Application.
+
     - active :: boolean()\n
       Whether or not the Application is active.
 
@@ -218,6 +221,9 @@ defmodule FusionAuth.Applications do
 
   # Role Fields
 
+    - id :: String.t()\n
+      The Id of the Role.
+
     - description :: String.t()\n
       A description for the role.
 
@@ -312,6 +318,106 @@ defmodule FusionAuth.Applications do
 
   alias FusionAuth.Utils
 
+  @type application_id :: String.t()
+  @type client :: FusionAuth.client()
+  @type name :: String.t()
+  @type parameters :: [key: boolean()]
+  @type role_id :: String.t()
+  @type application :: %{
+    id: String.t(),
+    active: boolean(),
+    authentication_token_configuration: %{enabled: boolean()},
+    clean_speak_configuration: %{
+      application_ids: [String.t()],
+      enabled: boolean(),
+      username_moderation: %{
+        application_id: String.t(),
+        enabled: boolean()
+      }
+    },
+    data: map(),
+    jwt_configuration: %{
+      access_token_key_id: String.t(),
+      enabled: boolean(),
+      id_token_key_id: String.t(),
+      refresh_token_time_to_live_in_minutes: integer(),
+      time_to_live_in_seconds: integer()
+    },
+    lambda_configuration: %{
+      access_token_populate_id: String.t(),
+      id_token_populate_id: String.t(),
+      saml_v2_populate_id: String.t()
+    },
+    login_configuration: %{
+      allow_token_refresh: boolean(),
+      generate_refresh_tokens: boolean(),
+      require_authentication: boolean()
+    },
+    name: String.t(),
+    oauth_configuration: %{
+      authorized_origin_urls: [String.t()],
+      authorized_redirect_urls: [String.t()],
+      client_id: String.t(),
+      client_secret: String.t(),
+      device_verification_url: String.t(),
+      enabled_grants: [String.t()],
+      generate_refresh_tokens: boolean(),
+      logout_behavior: String.t(),
+      require_client_authentication: boolean()
+    },
+    password_configuration: %{
+      enabled: boolean()
+    },
+    registration_configuration: %{
+      birth_date: %{
+        enabled: boolean(),
+        required: boolean()
+      },
+      confirm_password: boolean(),
+      enabled: boolean(),
+      first_name: %{
+        enabled: boolean(),
+        required: boolean()
+      },
+      full_name: %{
+        enabled: boolean(),
+        required: boolean()
+      },
+      last_name: %{
+        enabled: boolean(),
+        required: boolean()
+      },
+      login_id_type: String.t(),
+      middle_name: %{
+        enabled: boolean(),
+        required: boolean()
+      },
+      mobile_phone: %{
+        enabled: boolean(),
+        required: boolean()
+      }
+    },
+    registration_delete_policy: %{
+      unverified: %{
+        enabled: boolean(),
+        number_of_days_to_retain: integer()
+      }
+    },
+    roles: [role()],
+    saml_v2_configuration: %{
+
+    },
+    verification_email_template_id: String.t(),
+    verify_registration: boolean()
+  }
+  @type role :: %{
+    id: String.t(),
+    description: String.t(),
+    name: String.t(),
+    is_default: boolean(),
+    is_super_role: boolean()
+  }
+
   @applications_url "/api/application"
 
   @doc """
@@ -319,7 +425,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Create an Application](https://fusionauth.io/docs/v1/tech/apis/applications#create-an-application)
   """
-  @spec create_application(FusionAuth.client(), map()) :: FusionAuth.result()
+  @spec create_application(client(), application()) :: FusionAuth.result()
   def create_application(client, application) do
     Tesla.post(client, @applications_url, %{application: application}) |> FusionAuth.result()
   end
@@ -335,7 +441,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Retrieve an Application](https://fusionauth.io/docs/v1/tech/apis/applications#retrieve-an-application)
   """
-  @spec list_applications(FusionAuth.client()) :: FusionAuth.result()
+  @spec list_applications(client(), parameters()) :: FusionAuth.result()
   def list_applications(client, parameters \\ []) do
     Tesla.get(client, @applications_url <> Utils.build_query_parameters(parameters))
     |> FusionAuth.result()
@@ -346,7 +452,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Retrieve an Application](https://fusionauth.io/docs/v1/tech/apis/applications#retrieve-an-application)
   """
-  @spec get_application(FusionAuth.client(), String.t()) :: FusionAuth.result()
+  @spec get_application(client(), application_id()) :: FusionAuth.result()
   def get_application(client, application_id) do
     Tesla.get(client, @applications_url <> "/#{application_id}") |> FusionAuth.result()
   end
@@ -356,7 +462,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Retrieve OAuth Configuration](https://fusionauth.io/docs/v1/tech/apis/applications#retrieve-oauth-configuration)
   """
-  @spec get_oauth_configuration(FusionAuth.client(), String.t()) :: FusionAuth.result()
+  @spec get_oauth_configuration(client(), application_id()) :: FusionAuth.result()
   def get_oauth_configuration(client, application_id) do
     Tesla.get(client, @applications_url <> "/#{application_id}" <> "/oauth-configuration")
     |> FusionAuth.result()
@@ -367,7 +473,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Update an Application](https://fusionauth.io/docs/v1/tech/apis/applications#update-an-application)
   """
-  @spec update_application(FusionAuth.client(), String.t(), map()) :: FusionAuth.result()
+  @spec update_application(client(), application_id(), application()) :: FusionAuth.result()
   def update_application(client, application_id, application) do
     Tesla.patch(client, @applications_url <> "/#{application_id}", %{application: application})
     |> FusionAuth.result()
@@ -378,7 +484,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Reactivate an Application](https://fusionauth.io/docs/v1/tech/apis/applications#reactivate-an-application)
   """
-  @spec reactivate_application(FusionAuth.client(), String.t()) :: FusionAuth.result()
+  @spec reactivate_application(client(), application_id()) :: FusionAuth.result()
   def reactivate_application(client, application_id) do
     Tesla.put(client, @applications_url <> "/#{application_id}?reactivate=true", %{})
     |> FusionAuth.result()
@@ -394,7 +500,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Delete an Application](https://fusionauth.io/docs/v1/tech/apis/applications#delete-an-application)
   """
-  @spec delete_application(FusionAuth.client(), String.t()) :: FusionAuth.result()
+  @spec delete_application(client(), application_id(), parameters()) :: FusionAuth.result()
   def delete_application(client, application_id, parameters \\ []) do
     Tesla.delete(
       client,
@@ -409,7 +515,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Create an Application Role](https://fusionauth.io/docs/v1/tech/apis/applications#create-an-application-role)
   """
-  @spec create_role(FusionAuth.client(), String.t(), map()) :: FusionAuth.result()
+  @spec create_role(client(), application_id(), role()) :: FusionAuth.result()
   def create_role(client, application_id, role) do
     Tesla.post(client, @applications_url <> "/#{application_id}" <> "/role", %{role: role})
     |> FusionAuth.result()
@@ -420,7 +526,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Update an Application Role](https://fusionauth.io/docs/v1/tech/apis/applications#update-an-application-role)
   """
-  @spec update_role(FusionAuth.client(), String.t(), String.t(), map()) :: FusionAuth.result()
+  @spec update_role(client(), application_id(), role_id(), role()) :: FusionAuth.result()
   def update_role(client, application_id, role_id, role) do
     Tesla.patch(client, @applications_url <> "/#{application_id}" <> "/role/#{role_id}", %{
       role: role
@@ -433,7 +539,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Delete an Application Role](https://fusionauth.io/docs/v1/tech/apis/applications#delete-an-application-role)
   """
-  @spec delete_role_by_id(FusionAuth.client(), String.t(), String.t()) :: FusionAuth.result()
+  @spec delete_role_by_id(client(), application_id(), role_id()) :: FusionAuth.result()
   def delete_role_by_id(client, application_id, role_id) do
     Tesla.delete(client, @applications_url <> "/#{application_id}" <> "/role/#{role_id}")
     |> FusionAuth.result()
@@ -444,7 +550,7 @@ defmodule FusionAuth.Applications do
 
   For more information visit the FusionAuth API Documentation for [Delete an Application Role](https://fusionauth.io/docs/v1/tech/apis/applications#delete-an-application-role)
   """
-  @spec delete_role_by_name(FusionAuth.client(), String.t(), String.t()) :: FusionAuth.result()
+  @spec delete_role_by_name(client(), application_id(), name()) :: FusionAuth.result()
   def delete_role_by_name(client, application_id, name) do
     name = String.replace(name, " ", "%20")
 
