@@ -258,23 +258,6 @@ defmodule FusionAuth.ApplicationsTest do
                Applications.reactivate_application(client, @valid_application_id)
     end
 
-    test "reactivate_application/2 returns a 400 status code if the request to reactivate an application was invalid and/or malformed",
-         %{client: client} do
-      response_body = %{
-        "fieldErrors" => %{}
-      }
-
-      Helpers.mock_request(
-        path: @applications_url <> "/#{@valid_application_id}?invalidQp=invalid",
-        method: :put,
-        status: 400,
-        response_body: response_body
-      )
-
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
-               Applications.reactivate_application(client, @valid_application_id)
-    end
-
     test "reactivate_application/2 returns a 404 status code if the user is not found",
          %{client: client} do
       Helpers.mock_request(

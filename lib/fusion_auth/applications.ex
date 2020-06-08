@@ -9,35 +9,212 @@ defmodule FusionAuth.Applications do
     - active :: boolean()\n
       Whether or not the Application is active.
 
+    - authenticationTokenConfiguration :: map()\n
+
+      - enabled :: boolean()\n
+        Whether or not Users can have Authentication Tokens associated with this Application.
+
     - cleanSpeakConfiguration :: map()\n
-      Configuration for CleanSpeak.
+
+      - applicationIds :: list()\n
+        An array of UUIDs that map to the CleanSpeak applications for this Application.
+
+      - enabled :: boolean()\n
+        True if CleanSpeak integration is enabled. This setting is global and is not modifiable using this API.
+
+      - usernameModeration :: map()\n
+
+        - applicationId :: String.t()\n
+          The Id of the CleanSpeak application that usernames are sent to for moderation.
+
+        - enabled :: boolean()\n
+          True if CleanSpeak username moderation is enabled.
 
     - data :: map()\n
       An object that can hold any information about the Application that should be persisted.
 
     - jwtConfiguration :: map()\n
-      Configuration for JWT.
+
+      - accessTokenKeyId :: String.t()\n
+        The Id of the signing key used to sign the access token.
+
+      - enabled :: boolean()\n
+        Indicates if this application is using the JWT configuration defined here or the global JWT configuration defined by the System Configuration.
+
+      - idTokenKeyId :: String.t()\n
+        The Id of the signing key used to sign the Id token.
+
+      - refreshTokenTimeToLiveInMinutes :: integer()\n
+        The length of time in minutes the JWT refresh token will live before it is expired and is not able to be exchanged for a JWT.
+
+      - timeToLiveInSeconds :: integer()\n
+        The length of time in seconds the JWT will live before it is expired and no longer valid.
 
     - lambdaConfiguration :: map()\n
-      Lambda configuration.
+
+      - accessTokenPopulateId :: String.t()\n
+        The Id of the Lambda that will be invoked when an access token is generated for this application. This will be utilized during OAuth2 and OpenID Connect authentication requests as well as when an access token is generated for the Login API.
+
+      - idTokenPopulateId :: String.t()\n
+        The Id of the Lambda that will be invoked when an Id token is generated for this application during an OpenID Connect authentication request.
+
+      - samlv2PopulateId :: String.t()\n
+        The Id of the Lambda that will be invoked when a a SAML response is generated during a SAML authentication request.
+
+    - loginConfiguration :: map()\n
+
+      - allowTokenRefresh :: boolean()\n
+        Indicates if a JWT may be refreshed using a Refresh Token for this application. This configuration is separate from issuing new Refresh Tokens which is controlled by the generateRefreshTokens parameter.
+
+      - generateRefreshTokens :: boolean()\n
+        Indicates if a Refresh Token should be issued from the Login API.
+
+      - requireAuthentication :: boolean()\n
+        Indicates if the Login API should require an API key. If you set this value to false and your FusionAuth API is on a public network, anyone may attempt to use the Login API.
 
     - name :: String.t()\n
       The name of the Application.
 
-    - loginConfiguration :: map()\n
-      Configuration for login.
-
     - oauthConfiguration :: map()\n
-      Configuration for OAuth.
+
+      - authorizedOriginURLs :: list()\n
+        An array of URLs that are the authorized origins for FusionAuth OAuth.
+
+      - authorizedRedirectURLs :: list()\n
+        An array of URLs that are the authorized redirect URLs for FusionAuth OAuth.
+
+      - clientId :: String.t()\n
+        The OAuth client Id of the Application.
+
+      - clientSecret :: String.t()\n
+        The OAuth client secret.
+
+      - deviceVerificationURL :: String.t()\n
+        The device verification URL to be used with the Device Code grant type.
+
+      - enabledGrants :: list()\n
+        The enabled grants for this application. Supported values include: authorization_code, implicit, password, refresh_token, device_code
+
+      - generateRefreshTokens :: boolean()\n
+        Determines if the OAuth 2.0 Token endpoint will generate a refresh token when the offline_access scope is requested.
+
+      - logoutBehavior :: String.t()\n
+        Behavior when /oauth2/logout is called. Valid values: RedirectOnly, AllApplications
+
+      - logoutURL :: String.t()\n
+        The logout URL for the Application. FusionAuth will redirect to this URL after the user logs out of OAuth.
+
+      - requireClientAuthentication :: boolean()\n
+        Determines if the OAuth 2.0 Token endpoint requires client authentication. If this is enabled, the client must provide client credentials when using the Token endpoint.
+
+    - passwordlessConfiguration :: map()\n
+
+      - enabled :: boolean()\n
+        Determines if passwordless login is enabled for this application.
+
+    - registrationConfiguration :: map()\n
+
+      - birthDate :: map()\n
+
+        - enabled :: boolean()\n
+          Determines if the birthDate field will be included on the registration form.
+
+        - required :: boolean()\n
+          Determines if the birthDate field is required when displayed on the registration form.
+
+      - confirmPassword :: boolean()\n
+        Determines if the password should be confirmed during self service registration, this means that the user will be required to type the password twice.
+
+      - enabled :: boolean()\n
+        Determines if self service registration is enabled for this application. When this value is false, you may still use the Registration API, this only affects if the self service option is available during the OAuth 2.0 login.
+
+      - firstName :: map()\n
+
+        - enabled :: boolean()\n
+          Determines if the firstName field will be included on the registration form.
+
+        - required :: boolean()\n
+          Determines if the firstName field is required when displayed on the registration form.
+
+      - fullName :: map()\n
+
+        - enabled :: boolean()\n
+          Determines if the fullName field will be included on the registration form.
+
+        - required :: boolean()\n
+          Determines if the fullName field is required when displayed on the registration form.
+
+      - lastName :: map()\n
+
+        - enabled :: boolean()\n
+          Determines if the lastName field will be included on the registration form.
+
+        - required :: boolean()\n
+          Determines if the lastName field is required when displayed on the registration form.
+
+      - loginIdType :: String.t()\n
+        The unique login Id that will be collected during registration, this value can be email or username. Leaving the default value of email is preferred because an email address is globally unique.
+
+      - middleName :: map()\n
+
+        - enabled :: boolean()\n
+          Determines if the middleName field will be included on the registration form.
+
+        - required :: boolean()\n
+          Determines if the middleName field is required when displayed on the registration form.
+
+      - mobilePhone :: map()\n
+
+        - enabled :: boolean()\n
+          Determines if the mobilePhone field will be included on the registration form.
+
+        - required :: boolean()\n
+          Determines if the mobilePhone field is required when displayed on the registration form.
 
     - registrationDeletePolicy :: map()\n
-      Settings for deleting a registration after a set timeout.
+
+      - unverified :: map()\n
+
+        - enabled :: boolean()\n
+          Indicates that users without a verified registration for this application will have their registration permanently deleted after application.registrationDeletePolicy.unverified.numberOfDaysToRetain days.
+
+        - numberOfDaysToRetain :: integer()\n
+          The number of days from registration a user’s registration will be retained before being deleted for not completing registration verification. Value must be greater than 0.
 
     - roles :: list()\n
       An array of Role objects
 
-    - samlv2Configuration
-      SAML configuration settings.
+    - samlv2Configuration :: map()\n
+
+      - audience :: String.t()\n
+        The audience for the SAML response sent to back to the service provider from FusionAuth. Some service providers require different audience values than the issuer and this configuration option lets you change the audience in the response.
+
+      - callbackURL :: String.t()\n
+        The URL of the callback (sometimes called the Assertion Consumer Service or ACS). This is where FusionAuth sends the browser after the user logs in via SAML.
+
+      - debug :: boolean()\n
+        Whether or not FusionAuth will log SAML debug messages to the event log. This is useful for debugging purposes.
+
+      - enabled :: boolean()\n
+        Whether or not the SAML IdP for this Application is enabled or not.
+
+      - issuer :: String.t()\n
+        The issuer that identifies the service provider and allows FusionAuth to load the correct Application and SAML configuration.
+
+      - keyId :: String.t()\n
+        The id of the Key used to sign the SAML response.
+
+      - logoutURL :: String.t()\n
+        The URL that the browser is taken to after the user logs out of the SAML service provider.
+
+      - xmlSignatureC14nMethod :: String.t()\n
+        The XML signature canonicalization method used when digesting and signing the SAML response.
+
+    - verificationEmailTemplateId :: String.t()\n
+      The Id of the Email Template that is used to send the Registration Verification emails to users.
+
+    - verifyRegistration :: boolean()\n
+      Whether or not registrations to this Application may be verified.
 
   # Role Fields
 
@@ -121,33 +298,7 @@ defmodule FusionAuth.Applications do
       iex> client = FusionAuth.client("http://localhost:9011", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c")
       iex> FusionAuth.Applications.update_role(client, "8e0c9833-2e6b-4b1c-9665-4c1af7b4f00a", "54d363df-373b-4bca-b478-941fcdacb3d0", %{isSuperRole: true})
       {:ok,
-      %{
-        "role" => %{
-          "id" => "54d363df-373b-4bca-b478-941fcdacb3d0",
-          "isDefault" => false,
-          "isSuperRole" => true,
-          "name" => "Test Role"
-        }
-      },
-      %Tesla.Env{
-        __client__: %Tesla.Client{
-          adapter: {Tesla.Adapter.Hackney, :call, [[recv_timeout: 30000]]},
-          fun: nil,
-          post: [],
-          pre: [
-            {Tesla.Middleware.BaseUrl, :call, ["http://localhost:9011"]},
-            {Tesla.Middleware.JSON, :call, [[]]},
-            {Tesla.Middleware.Headers, :call,
-              [
-                [
-                  {"Authorization", "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"},
-                  {"X-FusionAuth-TenantId", "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"}
-                ]
-              ]}
-          ]
-        },
-        __module__: Tesla,
-        body: %{
+        %{
           "role" => %{
             "id" => "54d363df-373b-4bca-b478-941fcdacb3d0",
             "isDefault" => false,
@@ -155,17 +306,8 @@ defmodule FusionAuth.Applications do
             "name" => "Test Role"
           }
         },
-        headers: [
-          {"content-type", "application/json;charset=UTF-8"},
-          {"content-length", "110"},
-          {"date", "Fri, 05 Jun 2020 21:13:31 GMT"}
-        ],
-        method: :patch,
-        opts: [],
-        query: [],
-        status: 200,
-        url: "http://localhost:9011/api/application/8e0c9833-2e6b-4b1c-9665-4c1af7b4f00a/role/54d363df-373b-4bca-b478-941fcdacb3d0"
-      }}
+        %Tesla.Env{...}
+      }
   """
 
   alias FusionAuth.Utils
