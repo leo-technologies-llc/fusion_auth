@@ -38,7 +38,7 @@ defmodule FusionAuth.MixProject do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:tesla, "~> 1.3.0"},
-      {:hackney, "~> 1.15.2"},
+      {:hackney, "~> 1.16.0"},
       {:jason, ">= 1.0.0"},
       {:excoveralls, "~> 0.10", only: :test}
     ]
