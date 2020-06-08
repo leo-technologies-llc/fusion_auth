@@ -20,6 +20,8 @@ defmodule FusionAuth.Utils do
   end
 
   defp build_query_parameter(acc, _, nil), do: acc
+  defp build_query_parameter("", key, value) when is_binary(value), do: "?#{key}=#{URI.encode(value)}"
+  defp build_query_parameter(acc, key, value) when is_binary(value), do: "#{acc}&#{key}=#{URI.encode(value)}"
   defp build_query_parameter("", key, value), do: "?#{key}=#{value}"
   defp build_query_parameter(acc, key, value), do: "#{acc}&#{key}=#{value}"
 end

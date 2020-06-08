@@ -302,7 +302,7 @@ defmodule FusionAuth.Users do
   @doc """
   Bulk deactivate or delete users based on their user IDs.
 
-  ## Parameters
+  ## Parameters (query)
 
     - dryRun :: boolean() :: Optional :: _Defaults to false_\n
       To preview the user Ids to be deleted by the request without applying the requested action set this value to `true`.
@@ -318,15 +318,18 @@ defmodule FusionAuth.Users do
     - queryString :: String.t() :: Optional\n
       The Elasticsearch query string that is used to search for Users to be deleted. The userId, query, and queryString parameters are mutually exclusive, they are listed here in order of precedence.
 
-    - userId :: list() :: Optional\n
-      The Id of the User to delete. Repeat this parameter for each user to be deleted. The `userId`, `query`, and `queryString` parameters are mutually exclusive, they are listed here in order of precedence.
+    - userId :: String.t() :: Optional\n
 
   For more information visit the FusionAuth API Documentation for [Bulk Delete Users](https://fusionauth.io/docs/v1/tech/apis/users#bulk-delete-users).
   """
-  @spec bulk_delete_users(FusionAuth.client(), key: list() | String.t() | boolean()) ::
-          FusionAuth.result()
-  def bulk_delete_users(client, parameters \\ []) do
-    Tesla.delete(client, @users_url <> "/bulk" <> Utils.build_query_parameters(parameters))
+
+  @spec bulk_delete_users(FusionAuth.client(), [String.t()], list(Keyword.t())) ::
+          FusionAuth.request()
+  def bulk_delete_users(client, user_ids, query \\ []) do
+    user_list = Enum.reduce(user_ids, [], fn id, acc -> [userId: id] ++ acc end)
+    params = Utils.build_query_parameters(user_list ++ query)
+
+    Tesla.delete(client, @users_url <> "/bulk" <> params)
     |> FusionAuth.result()
   end
 

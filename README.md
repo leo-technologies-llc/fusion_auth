@@ -4,7 +4,7 @@ The fusion_auth library provides an Elixir API for accessing the [FusionAuth Dev
 
 The following are the APIs that are currently implemented:
 - [ ] [Actioning Users](https://fusionauth.io/docs/v1/tech/apis/actioning-users)
-- [ ] [Applications](https://fusionauth.io/docs/v1/tech/apis/applications)
+- [X] [Applications](https://fusionauth.io/docs/v1/tech/apis/applications)
 - [ ] [Audit Logs](https://fusionauth.io/docs/v1/tech/apis/audit-logs)
 - [ ] [Consent](https://fusionauth.io/docs/v1/tech/apis/consent)
 - [ ] [Emails](https://fusionauth.io/docs/v1/tech/apis/emails)
@@ -17,7 +17,7 @@ The following are the APIs that are currently implemented:
 - [ ] [Keys](https://fusionauth.io/docs/v1/tech/apis/keys)
 - [ ] [Login](https://fusionauth.io/docs/v1/tech/apis/login)
 - [ ] [Passwordless](https://fusionauth.io/docs/v1/tech/apis/passwordless)
-- [ ] [Registrations](https://fusionauth.io/docs/v1/tech/apis/registrations)
+- [X] [Registrations](https://fusionauth.io/docs/v1/tech/apis/registrations)
 - [ ] [Reports](https://fusionauth.io/docs/v1/tech/apis/reports)
 - [ ] [System](https://fusionauth.io/docs/v1/tech/apis/system)
 - [ ] [Tenants](https://fusionauth.io/docs/v1/tech/apis/tenants)
@@ -58,6 +58,7 @@ and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/fusion_auth](https://hexdocs.pm/fusion_auth).
 
 ## License
+
 MIT License
 
 Copyright (c) 2020 Cogility Software
