@@ -318,6 +318,8 @@ defmodule FusionAuth.Users do
     - queryString :: String.t() :: Optional\n
       The Elasticsearch query string that is used to search for Users to be deleted. The userId, query, and queryString parameters are mutually exclusive, they are listed here in order of precedence.
 
+    - userId :: String.t() :: Optional\n
+
   For more information visit the FusionAuth API Documentation for [Bulk Delete Users](https://fusionauth.io/docs/v1/tech/apis/users#bulk-delete-users).
   """
 
