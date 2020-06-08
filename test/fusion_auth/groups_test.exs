@@ -50,10 +50,11 @@ defmodule FusionAuth.GroupsTest do
         path: @groups_url,
         method: :get,
         status: 200,
-        response_body: %{}
+        response_body: %{"groups" => [@group]}
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = Groups.get_groups(client)
+      assert {:ok, %{"groups" => [group]}, %Tesla.Env{status: 200}} = Groups.get_groups(client)
+      assert group == @group
     end
   end
 
