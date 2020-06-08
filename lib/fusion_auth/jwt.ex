@@ -18,15 +18,15 @@ defmodule FusionAuth.JWT do
   Refresh token is optional and can be provided via request parameter or cookie under `refresh_token`.
 
   ## Example
-    iex> api_key = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE0MDMwMDcsImlhdCI6MTU5MTM5OTQwNywiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiYWRlbGFjcnV6QGNvZ2lsaXR5LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhcHBsaWNhdGlvbklkIjoiM2MyMTllNTgtZWQwZS00YjE4LWFkNDgtZjRmOTI3OTNhZTMyIiwicm9sZXMiOlsiYWRtaW4iXX0.XZH9rehgeEL5Ara8N8FvDkAdhWSN0QOKHBoH7CW_h24"
-    iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
-    iex> FusionAuth.JWT.get_jwt_by_application_id(client, "3c219e58-ed0e-4b18-ad48-f4f92793ae32")
-    {:ok,
-      %{
-      "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE0MDMwMDcsImlhdCI6MTU5MTM5OTU2NiwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJKV1RfU1NPIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJyb2xlcyI6WyJhZG1pbiJdfQ.Nleerqr5Z4sOTLvJEBbknHc4HuhsNOVQ15IkDV7JKo0"
-      },
-      %Tesla.Env{...}
-    }
+      iex> api_key = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE0MDMwMDcsImlhdCI6MTU5MTM5OTQwNywiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiYWRlbGFjcnV6QGNvZ2lsaXR5LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhcHBsaWNhdGlvbklkIjoiM2MyMTllNTgtZWQwZS00YjE4LWFkNDgtZjRmOTI3OTNhZTMyIiwicm9sZXMiOlsiYWRtaW4iXX0.XZH9rehgeEL5Ara8N8FvDkAdhWSN0QOKHBoH7CW_h24"
+      iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
+      iex> FusionAuth.JWT.get_jwt_by_application_id(client, "3c219e58-ed0e-4b18-ad48-f4f92793ae32")
+      {:ok,
+        %{
+        "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE0MDMwMDcsImlhdCI6MTU5MTM5OTU2NiwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJKV1RfU1NPIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJyb2xlcyI6WyJhZG1pbiJdfQ.Nleerqr5Z4sOTLvJEBbknHc4HuhsNOVQ15IkDV7JKo0"
+        },
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Issue a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#issue-a-jwt).
   """
@@ -50,17 +50,17 @@ defmodule FusionAuth.JWT do
   identityProviderId: ID of the Identity Provider to utilize when reconciling the JWT
 
   ## Example
-    iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
-    iex> application_id = "ff9880a1-74fd-4947-b482-1ca6f9788362"
-    iex> data = %{ "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo"}
-    iex> identity_provider_id = "0c5ecd6e-a55f-4d3c-8236-f26a966392ea"
-    iex> FusionAuth.JWT.reconcile_jwt(client, application_id, data, identity_provider_id)
-    {:ok,
-     %{
-      "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo",
-     },
-     %Tesla.Env{...}
-    }
+      iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
+      iex> application_id = "ff9880a1-74fd-4947-b482-1ca6f9788362"
+      iex> data = %{ "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo"}
+      iex> identity_provider_id = "0c5ecd6e-a55f-4d3c-8236-f26a966392ea"
+      iex> FusionAuth.JWT.reconcile_jwt(client, application_id, data, identity_provider_id)
+      {:ok,
+      %{
+        "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODUxNDA5ODQsImlhdCI6MTQ4NTEzNzM4NCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIyOWFjMGMxOC0wYjRhLTQyY2YtODJmYy0wM2Q1NzAzMThhMWQiLCJhcHBsaWNhdGlvbklkIjoiNzkxMDM3MzQtOTdhYi00ZDFhLWFmMzctZTAwNmQwNWQyOTUyIiwicm9sZXMiOltdfQ.Mp0Pcwsz5VECK11Kf2ZZNF_SMKu5CgBeLN9ZOP04kZo",
+      },
+      %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Reconcile a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#reconcile-a-jwt).
   """
@@ -81,13 +81,13 @@ defmodule FusionAuth.JWT do
   Retrieve all Public Keys generated by FusionAuth in order to verify JWT signatures.
 
   ## Example
-    iex> api_key = "jnx6HeVRrLkulpwiUNh9s52qlJqp5dox77NcDVkf9YI"
-    iex> tenant_id = "d577a020-30cb-85de-bf30-785cb65997d6"
-    iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
-    iex> FusionAuth.JWT.get_public_keys(client)
-    {:ok, %{},
-     %Tesla.Env{...}
-    }
+      iex> api_key = "jnx6HeVRrLkulpwiUNh9s52qlJqp5dox77NcDVkf9YI"
+      iex> tenant_id = "d577a020-30cb-85de-bf30-785cb65997d6"
+      iex> client = FusionAuth.client("http://localhost:9011", api_key, tenant_id)
+      iex> FusionAuth.JWT.get_public_keys(client)
+      {:ok, %{},
+      %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Retrieve Public Keys](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-public-keys).
   """
