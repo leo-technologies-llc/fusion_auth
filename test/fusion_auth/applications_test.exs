@@ -79,7 +79,10 @@ defmodule FusionAuth.ApplicationsTest do
     test "list_applications/2 returns a 200 status code with a list of inactive applications when inactive is true",
          %{client: client} do
       Helpers.mock_request(
-        path: @applications_url <> "?inactive=true",
+        path: @applications_url,
+        query_parameters: [
+          inactive: true
+        ],
         method: :get,
         status: 200,
         response_body: %{}
@@ -95,14 +98,17 @@ defmodule FusionAuth.ApplicationsTest do
       }
 
       Helpers.mock_request(
-        path: @applications_url <> "?invalidQp=invalid",
+        path: @applications_url,
+        query_parameters: [
+          invalidQp: "invalid"
+        ],
         method: :get,
         status: 400,
         response_body: response_body
       )
 
       assert {:error, response_body, %Tesla.Env{status: 400}} =
-               Applications.list_applications(client, inactive: true)
+               Applications.list_applications(client, invalidQp: "invalid")
     end
   end
 
@@ -248,7 +254,10 @@ defmodule FusionAuth.ApplicationsTest do
       client: client
     } do
       Helpers.mock_request(
-        path: @applications_url <> "/#{@valid_application_id}?reactivate=true",
+        path: @applications_url <> "/#{@valid_application_id}",
+        query_parameters: [
+          reactivate: true
+        ],
         method: :put,
         status: 200,
         response_body: %{}
@@ -261,7 +270,10 @@ defmodule FusionAuth.ApplicationsTest do
     test "reactivate_application/2 returns a 404 status code if the user is not found",
          %{client: client} do
       Helpers.mock_request(
-        path: @applications_url <> "/#{@invalid_application_id}?reactivate=true",
+        path: @applications_url <> "/#{@invalid_application_id}",
+        query_parameters: [
+          reactivate: true
+        ],
         method: :put,
         status: 404,
         response_body: ""
@@ -289,14 +301,17 @@ defmodule FusionAuth.ApplicationsTest do
     test "delete_application/3 returns a 200 status code with an empty body if a hard delete request is successful",
          %{client: client} do
       Helpers.mock_request(
-        path: @applications_url <> "/#{@valid_application_id}?hardDelete=true",
+        path: @applications_url <> "/#{@valid_application_id}",
+        query_parameters: [
+          hardDelete: true
+        ],
         method: :delete,
         status: 200,
         response_body: ""
       )
 
       assert {:ok, "", %Tesla.Env{status: 200}} =
-               Applications.delete_application(client, @valid_application_id)
+               Applications.delete_application(client, @valid_application_id, hardDelete: true)
     end
 
     test "delete_application/3 returns a 404 status code if the application is not found",
@@ -556,7 +571,10 @@ defmodule FusionAuth.ApplicationsTest do
       name = "Test Role"
 
       Helpers.mock_request(
-        path: @applications_url <> "/#{@valid_application_id}" <> "/role?name=#{name}",
+        path: @applications_url <> "/#{@valid_application_id}" <> "/role",
+        query_parameters: [
+          name: name
+        ],
         method: :delete,
         status: 200,
         response_body: ""
@@ -584,7 +602,10 @@ defmodule FusionAuth.ApplicationsTest do
       }
 
       Helpers.mock_request(
-        path: @applications_url <> "/#{@invalid_application_id}" <> "/role?name=#{name}",
+        path: @applications_url <> "/#{@invalid_application_id}" <> "/role",
+        query_parameters: [
+          name: name
+        ],
         method: :delete,
         status: 500,
         response_body: response_body
@@ -599,7 +620,10 @@ defmodule FusionAuth.ApplicationsTest do
       name = "Does not exist"
 
       Helpers.mock_request(
-        path: @applications_url <> "/#{@valid_application_id}" <> "/role?name=#{name}",
+        path: @applications_url <> "/#{@valid_application_id}" <> "/role",
+        query_parameters: [
+          name: name
+        ],
         method: :delete,
         status: 404,
         response_body: ""
