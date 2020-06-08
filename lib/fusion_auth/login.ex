@@ -287,7 +287,7 @@ defmodule FusionAuth.Login do
 
   ```
     iex> client = FusionAuth.client()
-    iex> FusionAuth.Login.search_login(client, %{userId: "d7be5e1e-0020-4f6f-a9dc-0f9230650042"})
+    iex> FusionAuth.Login.search(client, %{userId: "d7be5e1e-0020-4f6f-a9dc-0f9230650042"})
     {
       :ok,
       %{
@@ -308,8 +308,8 @@ defmodule FusionAuth.Login do
 
   For more information visit the FusionAuth API Documentation for [Logout a User](https://fusionauth.io/docs/v1/tech/apis/login#logout-a-user)
   """
-  @spec search_login(client(), search_parameters()) :: result()
-  def search_login(client, search_parameters \\ %{}) do
+  @spec search(client(), search_parameters()) :: result()
+  def search(client, search_parameters \\ %{}) do
     url = Tesla.build_url(@login_search_url, search_parameters)
 
     Tesla.get(client, url)
