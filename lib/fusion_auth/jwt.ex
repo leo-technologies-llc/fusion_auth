@@ -74,7 +74,8 @@ defmodule FusionAuth.JWT do
         data: data,
         identityProviderId: identity_provider_id
       }
-    ) |> FusionAuth.result()
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -105,7 +106,9 @@ defmodule FusionAuth.JWT do
   def get_public_key_by_application_id(client, application_id \\ nil) do
     Tesla.get(
       client,
-      @jwt_url <> "/public-key?applicationId=#{application_id}"
+      @jwt_url <>
+        "/public-key" <>
+        Utils.build_query_parameters(applicationId: application_id)
     )
     |> FusionAuth.result()
   end
@@ -117,7 +120,13 @@ defmodule FusionAuth.JWT do
   """
   @spec get_public_key_by_key_id(FusionAuth.client(), String.t() | nil) :: FusionAuth.request()
   def get_public_key_by_key_id(client, k_id \\ nil) do
-    Tesla.get(client, @jwt_url <> "/public-key?kid=#{k_id}") |> FusionAuth.result()
+    Tesla.get(
+      client,
+      @jwt_url <>
+      "/public-key" <>
+      Utils.build_query_parameters(kid: k_id)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -140,6 +149,7 @@ defmodule FusionAuth.JWT do
         token: token
       }
     )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -149,7 +159,13 @@ defmodule FusionAuth.JWT do
   """
   @spec get_user_refresh_tokens_by_user_id(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def get_user_refresh_tokens_by_user_id(client, user_id) do
-    Tesla.get(client, @jwt_url <> "/refresh?userId=#{user_id}") |> FusionAuth.result()
+    Tesla.get(
+      client,
+      @jwt_url <>
+      "/refresh" <>
+      Utils.build_query_parameters(userId: user_id)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -173,7 +189,13 @@ defmodule FusionAuth.JWT do
   """
   @spec delete_refresh_tokens_by_application_id(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def delete_refresh_tokens_by_application_id(client, application_id) do
-    Tesla.delete(client, @jwt_url <> "/refresh?applicationId=#{application_id}")
+    Tesla.delete(
+      client,
+      @jwt_url <>
+      "/refresh" <>
+      Utils.build_query_parameters(applicationId: application_id)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -183,7 +205,13 @@ defmodule FusionAuth.JWT do
   """
   @spec delete_refresh_tokens_by_user_id(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def delete_refresh_tokens_by_user_id(client, user_id) do
-    Tesla.delete(client, @jwt_url <> "/refresh?userId=#{user_id}")
+    Tesla.delete(
+      client,
+      @jwt_url <>
+      "/refresh" <>
+      Utils.build_query_parameters(userId: user_id)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -193,7 +221,13 @@ defmodule FusionAuth.JWT do
   """
   @spec delete_refresh_token(FusionAuth.client(), String.t()) :: FusionAuth.request()
   def delete_refresh_token(client, token) do
-    Tesla.delete(client, @jwt_url <> "/refresh?token=#{token}")
+    Tesla.delete(
+      client,
+      @jwt_url <>
+      "/refresh" <>
+      Utils.build_query_parameters(token: token)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """

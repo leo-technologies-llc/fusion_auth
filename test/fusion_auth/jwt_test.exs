@@ -33,6 +33,9 @@ defmodule FusionAuth.JWTTest do
 
       Helpers.mock_request(
         path: @jwt_url <> "/issue",
+        query_parameters: [
+          applicationId: app_id
+        ],
         method: :get,
         status: 200,
         response_body: resp_body
@@ -52,6 +55,9 @@ defmodule FusionAuth.JWTTest do
       )
       Helpers.mock_request(
         path: @jwt_url <> "/issue",
+        query_parameters: [
+          applicationId: app_id
+        ],
         method: :get,
         status: 401,
         response_body: %{}
@@ -286,7 +292,7 @@ defmodule FusionAuth.JWTTest do
         response_body: %{}
       )
 
-      assert {:ok, %Tesla.Env{status: 200}} = JWT.refresh_jwt(client, refresh_token, token)
+      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.refresh_jwt(client, refresh_token, token)
     end
   end
 
@@ -386,10 +392,11 @@ defmodule FusionAuth.JWTTest do
           applicationId: app_id
         ],
         method: :delete,
-        status: 200
+        status: 200,
+        response_body: nil
       )
 
-      assert {:ok, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_application_id(client, app_id)
+      assert {:ok, nil, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_application_id(client, app_id)
     end
   end
 
@@ -404,10 +411,11 @@ defmodule FusionAuth.JWTTest do
           userId: user_id
         ],
         method: :delete,
-        status: 200
+        status: 200,
+        response_body: nil
       )
 
-      assert {:ok, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_user_id(client, user_id)
+      assert {:ok, nil, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_user_id(client, user_id)
     end
 
     test "delete_refresh_tokens_by_user_id/2 returns a 401 when you did not supply Authorization header", %{
@@ -425,10 +433,11 @@ defmodule FusionAuth.JWTTest do
           userId: user_id
         ],
         method: :delete,
-        status: 200
+        status: 401,
+        response_body: nil
       )
 
-      assert {:ok, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_user_id(client, user_id)
+      assert {:error, nil, %Tesla.Env{status: 401}} = JWT.delete_refresh_tokens_by_user_id(client, user_id)
     end
 
     test "delete_refresh_tokens_by_user_id/2 returns a 404 when object doesn't exist", %{client: client} do
@@ -439,10 +448,11 @@ defmodule FusionAuth.JWTTest do
           userId: invalid_user_id
         ],
         method: :delete,
-        status: 200
+        status: 404,
+        response_body: nil
       )
 
-      assert {:ok, %Tesla.Env{status: 200}} = JWT.delete_refresh_tokens_by_user_id(client, invalid_user_id)
+      assert {:error, nil, %Tesla.Env{status: 404}} = JWT.delete_refresh_tokens_by_user_id(client, invalid_user_id)
     end
   end
 
@@ -454,10 +464,11 @@ defmodule FusionAuth.JWTTest do
           token: @valid_jwt
         ],
         method: :delete,
-        status: 200
+        status: 200,
+        response_body: nil
       )
 
-      assert {:ok, %Tesla.Env{status: 200}} = JWT.delete_refresh_token(client, @valid_jwt)
+      assert {:ok, nil, %Tesla.Env{status: 200}} = JWT.delete_refresh_token(client, @valid_jwt)
     end
   end
 
@@ -502,10 +513,10 @@ defmodule FusionAuth.JWTTest do
         path: @jwt_url <> "/validate",
         method: :get,
         status: 401,
-        response_body: ""
+        response_body: %{}
       )
 
-      assert {:error, "", %Tesla.Env{status: 401}} = JWT.validate_jwt(jwt_client)
+      assert {:error, %{}, %Tesla.Env{status: 401}} = JWT.validate_jwt(jwt_client)
     end
   end
 end
