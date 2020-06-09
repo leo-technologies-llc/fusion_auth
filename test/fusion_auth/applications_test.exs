@@ -10,6 +10,22 @@ defmodule FusionAuth.ApplicationsTest do
   @valid_role_id "8bd3db07-8d98-455a-bd86-b802263114b1"
   @invalid_role_id "67890"
 
+  @role %{
+    "id" => @valid_role_id,
+    "description" => "Test role description.",
+    "name" => "Test Role",
+    "is_default" => true,
+    "is_super_role" => true
+  }
+
+  @application %{
+    "id" => @valid_application_id,
+    "active" => true,
+    "name" => "Test Application",
+    "roles" => [@role],
+    "is_super_role" => true
+  }
+
   setup do
     api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
     tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
@@ -20,18 +36,18 @@ defmodule FusionAuth.ApplicationsTest do
 
   describe "Create Application" do
     test "create_application/2 returns the newly created application", %{client: client} do
-      application = %{name: "Test Application"}
+      response_body = %{"application" => @application}
 
       Helpers.mock_request(
         path: @applications_url,
         method: :post,
         status: 200,
-        body: application,
-        response_body: %{}
+        body: @application,
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
-               Applications.create_application(client, application)
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+               Applications.create_application(client, @application)
     end
 
     test "create_application/2 returns a 400 status code if the request to create an application was invalid and/or malformed",
@@ -66,18 +82,25 @@ defmodule FusionAuth.ApplicationsTest do
     test "list_applications/2 returns a 200 status code with a list of active applications", %{
       client: client
     } do
+      response_body = %{"applications" => [@application]}
+
       Helpers.mock_request(
         path: @applications_url,
         method: :get,
         status: 200,
-        response_body: %{}
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = Applications.list_applications(client)
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+               Applications.list_applications(client)
     end
 
     test "list_applications/2 returns a 200 status code with a list of inactive applications when inactive is true",
          %{client: client} do
+      application = Map.put(@application, "active", false)
+
+      response_body = %{"applications" => [application]}
+
       Helpers.mock_request(
         path: @applications_url,
         query_parameters: [
@@ -85,10 +108,11 @@ defmodule FusionAuth.ApplicationsTest do
         ],
         method: :get,
         status: 200,
-        response_body: %{}
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = Applications.list_applications(client, inactive: true)
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+               Applications.list_applications(client, inactive: true)
     end
 
     test "list_applications/2 returns a 400 status code if the request was invalid and/or malformed",
@@ -116,14 +140,16 @@ defmodule FusionAuth.ApplicationsTest do
     test "get_application/2 returns a 200 status code with the application based on the ID", %{
       client: client
     } do
+      response_body = %{"application" => @application}
+
       Helpers.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         method: :get,
         status: 200,
-        response_body: %{}
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
                Applications.get_application(client, @valid_application_id)
     end
 
@@ -187,17 +213,19 @@ defmodule FusionAuth.ApplicationsTest do
     test "update_application/3 returns a 200 status code with the updated application", %{
       client: client
     } do
-      updated_application = %{name: "Updated Test Application"}
+      updated_application = Map.put(@application, "name", "Updated Test Application")
+
+      response_body = %{"application" => updated_application}
 
       Helpers.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         method: :patch,
         status: 200,
         body: updated_application,
-        response_body: %{}
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
                Applications.update_application(client, @valid_application_id, updated_application)
     end
 
@@ -230,7 +258,7 @@ defmodule FusionAuth.ApplicationsTest do
 
     test "update_application/3 returns a 404 status code if the user is not found",
          %{client: client} do
-      updated_application = %{name: "Updated Test Application"}
+      updated_application = Map.put(@application, "name", "Updated Test Application")
 
       Helpers.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}",
@@ -253,6 +281,8 @@ defmodule FusionAuth.ApplicationsTest do
     test "reactivate_application/2 returns a 200 status code with the reactivated application", %{
       client: client
     } do
+      response_body = %{"application" => @application}
+
       Helpers.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         query_parameters: [
@@ -260,10 +290,10 @@ defmodule FusionAuth.ApplicationsTest do
         ],
         method: :put,
         status: 200,
-        response_body: %{}
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
                Applications.reactivate_application(client, @valid_application_id)
     end
 
@@ -330,18 +360,18 @@ defmodule FusionAuth.ApplicationsTest do
 
   describe "Create Role" do
     test "create_role/3 returns the newly created role", %{client: client} do
-      role = %{name: "Test Role"}
+      response_body = %{"role" => @role}
 
       Helpers.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role",
         method: :post,
         status: 200,
-        body: role,
-        response_body: %{}
+        body: @role,
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
-               Applications.create_role(client, @valid_application_id, role)
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+               Applications.create_role(client, @valid_application_id, @role)
     end
 
     test "create_role/3 returns a 400 status code if the request to create a role was invalid and/or malformed",
@@ -373,8 +403,6 @@ defmodule FusionAuth.ApplicationsTest do
 
     test "create_role/3 returns a 400 status code if the application is not found",
          %{client: client} do
-      role = %{name: "Test Role"}
-
       response_body = %{
         "fieldErrors" => %{
           "applicationId" => [
@@ -392,28 +420,30 @@ defmodule FusionAuth.ApplicationsTest do
         path: @applications_url <> "/#{@invalid_application_id}" <> "/role",
         method: :post,
         status: 400,
-        body: role,
+        body: @role,
         response_body: response_body
       )
 
       assert {:error, response_body, %Tesla.Env{status: 400}} =
-               Applications.create_role(client, @invalid_application_id, role)
+               Applications.create_role(client, @invalid_application_id, @role)
     end
   end
 
   describe "Update Role" do
     test "update_role/4 returns a 200 status code with the updated role", %{client: client} do
-      updated_role = %{name: "Updated Test Role"}
+      updated_role = Map.put(@role, "isSuperRole", false)
+
+      response_body = %{"role" => updated_role}
 
       Helpers.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role/#{@valid_role_id}",
         method: :patch,
         status: 200,
         body: updated_role,
-        response_body: %{}
+        response_body: response_body
       )
 
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+      assert {:ok, response_body, %Tesla.Env{status: 200}} =
                Applications.update_role(
                  client,
                  @valid_application_id,
@@ -457,7 +487,7 @@ defmodule FusionAuth.ApplicationsTest do
 
     test "udpate_role/4 returns a 400 status code if the application is not found",
          %{client: client} do
-      updated_role = %{isSuperRole: true}
+      updated_role = %{isSuperRole: false}
 
       response_body = %{
         "fieldErrors" => %{

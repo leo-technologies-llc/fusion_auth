@@ -381,33 +381,19 @@ defmodule FusionAuth.Applications do
           require_client_authentication: boolean()
         }
   @type registration_configuration :: %{
-          birth_date: %{
-            enabled: boolean(),
-            required: boolean()
-          },
+          birth_date: optional_registration_info(),
           confirm_password: boolean(),
           enabled: boolean(),
-          first_name: %{
-            enabled: boolean(),
-            required: boolean()
-          },
-          full_name: %{
-            enabled: boolean(),
-            required: boolean()
-          },
-          last_name: %{
-            enabled: boolean(),
-            required: boolean()
-          },
+          first_name: optional_registration_info(),
+          full_name: optional_registration_info(),
+          last_name: optional_registration_info(),
           login_id_type: String.t(),
-          middle_name: %{
-            enabled: boolean(),
-            required: boolean()
-          },
-          mobile_phone: %{
-            enabled: boolean(),
-            required: boolean()
-          }
+          middle_name: optional_registration_info(),
+          mobile_phone: optional_registration_info()
+        }
+  @type optional_registration_info :: %{
+          enabled: boolean(),
+          required: boolean()
         }
   @type registration_delete_policy :: %{
           unverified: %{
