@@ -39,6 +39,7 @@ defmodule FusionAuth.Login do
             }
 
   @login_url "/api/login"
+  @logout_url "/api/logout"
   @two_factor_url "/api/two-factor/login"
   @login_search_url "/api/system/login-record/search"
 
@@ -288,7 +289,7 @@ defmodule FusionAuth.Login do
 
   ```
     iex> client = FusionAuth.client()
-    iex> FusionAuth.Login.logout_user(client, "username", "password")
+    iex> FusionAuth.Login.logout_user(client, "xesneAYTdwF42uWM0dHRLgHp0_f1DsHOiNMXHN-ZCHvtRYX-MgvJUg", false)
     {:ok, "", %Tesla.Env{...}}
   ```
 
@@ -296,7 +297,7 @@ defmodule FusionAuth.Login do
   """
   @spec update_login_instant(client(), String.t(), boolean()) :: result()
   def logout_user(client, refresh_token, global \\ false) do
-    url = Tesla.build_url(@login_url, %{global: global, refreshToken: refresh_token})
+    url = Tesla.build_url(@logout_url, %{global: global, refreshToken: refresh_token})
 
     Tesla.post(client, url, %{})
     |> FusionAuth.result()
