@@ -51,7 +51,15 @@ defmodule FusionAuth.LoginTest do
   }
 
   setup do
+    application_id = Application.get_env(:fusion_auth, :application_id)
     client = FusionAuth.client(Helpers.base_url(), @api_key, @tenant_id)
+
+    on_exit(fn ->
+      Application.put_env(:fusion_auth, :application_id, application_id)
+    end)
+
+    Application.put_env(:fusion_auth, :application_id, @application_id)
+
     [client: client]
   end
 
