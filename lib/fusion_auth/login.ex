@@ -269,8 +269,13 @@ defmodule FusionAuth.Login do
   """
   @spec update_login_instant(client(), String.t(), String.t() | nil, String.t() | nil) :: result()
   def update_login_instant(client, user_id, application_id, ip_address) do
-    base_url = @login_url <> "/#{user_id}/#{application_id}"
-    url = Tesla.build_url(base_url, %{ipAddress: ip_address})
+    path =
+      case application_id do
+        nil -> "/#{user_id}"
+        value -> "/#{user_id}/#{value}"
+      end
+
+    url = Tesla.build_url(@login_url <> path, %{ipAddress: ip_address})
 
     Tesla.put(client, url, %{})
     |> FusionAuth.result()

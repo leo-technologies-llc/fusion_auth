@@ -8,9 +8,9 @@ defmodule FusionAuth.LoginTest do
   @two_factor_url "/api/two-factor/login"
   @login_search_url "/api/system/login-record/search"
 
-  @application_id Application.get_env(:fustion_auth, :application_id)
-  @api_key Application.get_env(:fustion_auth, :api_key)
-  @tenant_id Application.get_env(:fustion_auth, :tenant_id)
+  @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
+  @api_key "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
+  @tenant_id "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
   @user_id "84846873-89d2-44f8-91e9-dac80f420cb2"
   @login_id "ckempton@cogility.com"
   @password "Rabitt5955"
@@ -48,7 +48,7 @@ defmodule FusionAuth.LoginTest do
   }
 
   setup do
-    client = FusionAuth.client()
+    client = FusionAuth.client(Helpers.base_url(), @api_key, @tenant_id)
     [client: client]
   end
 
@@ -162,7 +162,7 @@ defmodule FusionAuth.LoginTest do
   describe "two_factor_login/3" do
     test "can login using 2FA", %{client: client} do
       Helpers.mock_request(
-        path: @login_url,
+        path: @two_factor_url,
         method: :post,
         status: 200,
         response_body: @login_response
@@ -178,7 +178,7 @@ defmodule FusionAuth.LoginTest do
 
     test "invalid 2FA attempt", %{client: client} do
       Helpers.mock_request(
-        path: @login_url,
+        path: @two_factor_url,
         method: :post,
         status: 404,
         response_body: ""
@@ -196,7 +196,7 @@ defmodule FusionAuth.LoginTest do
   describe "two_factor_login/4" do
     test "can login using 2FA with specified application_id", %{client: client} do
       Helpers.mock_request(
-        path: @login_url,
+        path: @two_factor_url,
         method: :post,
         status: 200,
         response_body: @login_response
@@ -217,7 +217,7 @@ defmodule FusionAuth.LoginTest do
       modified_response = Map.drop(@login_response, ["refreshToken"])
 
       Helpers.mock_request(
-        path: @login_url,
+        path: @two_factor_url,
         method: :post,
         status: 200,
         response_body: modified_response
@@ -237,8 +237,8 @@ defmodule FusionAuth.LoginTest do
   describe "update_login_instant/2" do
     test "can record user login manually", %{client: client} do
       Helpers.mock_request(
-        path: @login_url,
-        method: :post,
+        path: @login_url <> "/#{@user_id}/#{@application_id}?ipAddress=",
+        method: :put,
         status: 200,
         response_body: ""
       )
@@ -254,8 +254,8 @@ defmodule FusionAuth.LoginTest do
   describe "update_login_instant/3" do
     test "can record user login manually", %{client: client} do
       Helpers.mock_request(
-        path: @login_url,
-        method: :post,
+        path: @login_url <> "/#{@user_id}/#{@application_id}?ipAddress=",
+        method: :put,
         status: 200,
         response_body: ""
       )
@@ -272,8 +272,8 @@ defmodule FusionAuth.LoginTest do
   describe "update_login_instant/4" do
     test "can record user login manually", %{client: client} do
       Helpers.mock_request(
-        path: @login_url,
-        method: :post,
+        path: @login_url <> "/#{@user_id}/#{@application_id}?ipAddress=0.0.0.0",
+        method: :put,
         status: 200,
         response_body: ""
       )
@@ -286,15 +286,38 @@ defmodule FusionAuth.LoginTest do
                  "0.0.0.0"
                )
     end
+
+    test "can handle nil application_id", %{client: client} do
+      Helpers.mock_request(
+        path: @login_url <> "/#{@user_id}?ipAddress=0.0.0.0",
+        method: :put,
+        status: 200,
+        response_body: ""
+      )
+
+      assert {:ok, "", %Tesla.Env{status: 200}} =
+               Login.update_login_instant(
+                 client,
+                 @user_id,
+                 nil,
+                 "0.0.0.0"
+               )
+    end
   end
 
   describe "search/2" do
     test "can search logins", %{client: client} do
       Helpers.mock_request(
-        path: @login_url,
-        method: :post,
+        path: @login_search_url,
+        method: :get,
         status: 200,
-        response_body: @search_response
+        response_body: @search_response,
+        query_parameters: [
+          applicationId: @application_id,
+          end: 1_591_657_456_685,
+          start: 1_591_657_456_684,
+          userId: @user_id
+        ]
       )
 
       assert {:ok, @search_response, %Tesla.Env{status: 200}} =
