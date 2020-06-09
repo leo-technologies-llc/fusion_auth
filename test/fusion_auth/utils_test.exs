@@ -8,6 +8,10 @@ defmodule FusionAuth.UtilsTest do
       assert "?limit=10&offset=5" == Utils.build_query_parameters(limit: 10, offset: 5)
     end
 
+    test "build_query_parameters/1 properly encodes a string that is multiple words" do
+      assert "?name=Test%20Role" == Utils.build_query_parameters(name: "Test Role")
+    end
+
     test "build_query_parameters/1 returns the accumulator if the value for a key is nil" do
       assert "?limit=10" == Utils.build_query_parameters(limit: 10, offset: nil)
     end
