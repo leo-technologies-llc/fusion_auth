@@ -13,7 +13,7 @@ The following are the APIs that are currently implemented:
 - [X] [Groups](https://fusionauth.io/docs/v1/tech/apis/groups)
 - [ ] [Identity Providers](https://fusionauth.io/docs/v1/tech/apis/identity-providers)
 - [ ] [Integrations](https://fusionauth.io/docs/v1/tech/apis/integrations)
-- [ ] [JWT](https://fusionauth.io/docs/v1/tech/apis/jwt)
+- [X] [JWT](https://fusionauth.io/docs/v1/tech/apis/jwt)
 - [ ] [Keys](https://fusionauth.io/docs/v1/tech/apis/keys)
 - [X] [Login](https://fusionauth.io/docs/v1/tech/apis/login)
 - [ ] [Passwordless](https://fusionauth.io/docs/v1/tech/apis/passwordless)
