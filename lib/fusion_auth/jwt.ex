@@ -28,15 +28,15 @@ defmodule FusionAuth.JWT do
   This API will use a JWT as authentication. See [JWT Authentication](https://fusionauth.io/docs/v1/tech/apis/authentication#jwt-authentication) for examples of how you can send the JWT to FusionAuth.
 
   ## Examples
-    iex> FusionAuth.JWT.issue_jwt_by_application_id(client, token, application_id, refresh_token)
-    {
-      :ok,
-      %{
-        "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE4MTk2ODksImlhdCI6MTU5MTgxNjcxMSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJKV1RfU1NPIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJyb2xlcyI6WyJhZG1pbiJdfQ.c9Nyx9UucmALsIueJPWlOOXAC_FkcHeMCInrgdv3zQU"
-      },
-      %Tesla.Env{...}
-    }
-    iex>
+      iex> FusionAuth.JWT.issue_jwt_by_application_id(client, token, application_id, refresh_token)
+      {
+        :ok,
+        %{
+          "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJleHAiOjE1OTE4MTk2ODksImlhdCI6MTU5MTgxNjcxMSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJKV1RfU1NPIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiIzYzIxOWU1OC1lZDBlLTRiMTgtYWQ0OC1mNGY5Mjc5M2FlMzIiLCJyb2xlcyI6WyJhZG1pbiJdfQ.c9Nyx9UucmALsIueJPWlOOXAC_FkcHeMCInrgdv3zQU"
+        },
+        %Tesla.Env{...}
+      }
+      iex>
 
   For more information, visit the FusionAuth API Documentation for [Issue a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#issue-a-jwt).
   """
@@ -116,15 +116,16 @@ defmodule FusionAuth.JWT do
   The refresh token may be provided either in the HTTP request body or as a cookie. If both are provided, the cookie will take precedence.
 
   ## Examples
-  iex> FusionAuth.JWT.refresh_jwt(client, refresh_token, token)
-  {
-    :ok,
-    %{
-      "refreshToken" => "zDfaqcFepy8Q0567IEXSRgCXzn9roKwnypHegadqSZfgAzMHWzzdSg",
-      "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJleHAiOjE1OTE4MTk2ODksImlhdCI6MTU5MTgxNjA4OSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJSRUZSRVNIX1RPS0VOIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJyb2xlcyI6W119.5orARQLfaMYmoOLfxrcWMqRW9_eog5g5l4OivPovGEE"
-    },
-    %Tesla.Env{...}
-  }
+      iex> FusionAuth.JWT.refresh_jwt(client, refresh_token, token)
+      {
+        :ok,
+        %{
+          "refreshToken" => "zDfaqcFepy8Q0567IEXSRgCXzn9roKwnypHegadqSZfgAzMHWzzdSg",
+          "token" => "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJleHAiOjE1OTE4MTk2ODksImlhdCI6MTU5MTgxNjA4OSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJSRUZSRVNIX1RPS0VOIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJyb2xlcyI6W119.5orARQLfaMYmoOLfxrcWMqRW9_eog5g5l4OivPovGEE"
+        },
+        %Tesla.Env{...}
+      }
+
   For more information, visit the FusionAuth API Documentation for [Refresh a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#refresh-a-jwt).
   """
   @spec refresh_jwt(client(), String.t(), String.t()) :: result()
@@ -141,14 +142,14 @@ defmodule FusionAuth.JWT do
   Retrieve Refresh Tokens issued to a User by User ID
 
   ## Examples
-    iex> FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, user_id)
-    {
-      :ok,
-      %{
-        "refreshTokens" => [...]
-      },
-      %Tesla.Env{...}
-    }
+      iex> FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, user_id)
+      {
+        :ok,
+        %{
+          "refreshTokens" => [...]
+        },
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Retrieve Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-refresh-tokens).
   """
@@ -165,14 +166,15 @@ defmodule FusionAuth.JWT do
   This API will use a JWT as authentication. See [JWT Authentication](https://fusionauth.io/docs/v1/tech/apis/authentication#jwt-authentication) for examples of how you can send the JWT to FusionAuth.
 
   ## Examples
-    iex> FusionAuth.JWT.get_user_refresh_tokens(client, token)
-    {
-      :ok,
-      %{
-        "refreshTokens" => [...]
-      },
-      %Tesla.Env{...}
-    }
+      iex> FusionAuth.JWT.get_user_refresh_tokens(client, token)
+      {
+        :ok,
+        %{
+          "refreshTokens" => [...]
+        },
+        %Tesla.Env{...}
+      }
+
   For more information, visit the FusionAuth API Documentation for [Retrieve Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-refresh-tokens).
   """
   @spec get_user_refresh_tokens(client(), String.t()) :: result()
@@ -188,12 +190,12 @@ defmodule FusionAuth.JWT do
   Revoke all Refresh Tokens for an entire Application
 
   ## Examples
-    iex> JWT.revoke_refresh_tokens_by_application_id(client, application_id)
-    {
-      :ok,
-      "",
-      %Tesla.Env{...}
-    }
+      iex> JWT.revoke_refresh_tokens_by_application_id(client, application_id)
+      {
+        :ok,
+        "",
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Revoke Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#revoke-refresh-tokens).
   """
@@ -208,12 +210,12 @@ defmodule FusionAuth.JWT do
   Revoke all Refresh Tokens issued to a User
 
   ## Examples
-    iex> FusionAuth.JWT.revoke_refresh_token(client, user_id)
-    {
-      :ok,
-      "",
-      %Tesla.Env{...}
-    }
+      iex> FusionAuth.JWT.revoke_refresh_token(client, user_id)
+      {
+        :ok,
+        "",
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Revoke Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#revoke-refresh-tokens).
   """
@@ -230,12 +232,12 @@ defmodule FusionAuth.JWT do
   This API may be authenticated using an Access Token. See Authentication for examples of authenticating using an Access Token. The token owner must match the identity in the access token if provided to be successful.
 
   ## Examples
-    iex> FusionAuth.JWT.revoke_refresh_token(client, token)
-    {
-      :ok,
-      "",
-      %Tesla.Env{...}
-    }
+      iex> FusionAuth.JWT.revoke_refresh_token(client, token)
+      {
+        :ok,
+        "",
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Revoke Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#revoke-refresh-tokens).
   """
@@ -252,22 +254,22 @@ defmodule FusionAuth.JWT do
   The access token can be provided to the API using an HTTP request header, or a cookie. The response body will contain the decoded JWT payload.
 
   ## Examples
-    iex> FusionAuth.JWT.validate_jwt(client, token)
-    {
-      :ok,
-      %{
-        "jwt" => %{
-          "authenticationType" => "PASSWORD",
-          "email" => "email@address.com",
-          "email_verified" => true,
-          "exp" => 1591815558,
-          "iat" => 1591811958,
-          "iss" => "acme.com",
-          "sub" => "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
-        }
-      },
-      %Tesla.Env{...}
-    }
+      iex> FusionAuth.JWT.validate_jwt(client, token)
+      {
+        :ok,
+        %{
+          "jwt" => %{
+            "authenticationType" => "PASSWORD",
+            "email" => "email@address.com",
+            "email_verified" => true,
+            "exp" => 1591815558,
+            "iat" => 1591811958,
+            "iss" => "acme.com",
+            "sub" => "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
+          }
+        },
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Validate a JWT](https://fusionauth.io/docs/v1/tech/apis/jwt#validate-a-jwt).
   """
