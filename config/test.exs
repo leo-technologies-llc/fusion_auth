@@ -10,4 +10,4 @@ config :fusion_auth,
   enable_jwt: true,
   jwt_header_key: "authorization",
   enable_access_roles: false,
-  access_roles: ["superadmin", "admin", "user"]
+  access_roles: ["admin", "user"]

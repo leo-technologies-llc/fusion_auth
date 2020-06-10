@@ -1,18 +1,57 @@
 defmodule FusionAuth.Plugs.AuthorizeJWT do
+  @moduledoc """
+  The `FusionAuth.Plugs.AuthorizeJWT` module provides authentication of JWT tokens on incomming requests.
+  Enabling access roles will can be utilized to ensure the user making the request has the proper roles. If
+  the users roles dont match one of the specified roles in the config a 401 response will be sent. This option
+  is useful when implementing Single Sign On (SSO) applications where groups/roles are used to segment what
+  application a user has access to.
+
+  ##Examples
+
+  ```
+    config/{env}.exs
+
+    config :fusion_auth,
+      jwt_header_key: "authorization",
+      enable_access_roles: false,
+      access_roles: ["superadmin", "admin", "user"]
+  ```
+
+  ```
+    lib/my_web_server/router.ex
+
+    defmodule MyWebServer.Router do
+      use MyWebServer, :router
+      pipeline :protected do
+        plug(FusionAuth.Plugs.AuthorizeJWT)
+      end
+    end
+  ```
+
+  ## Plug Options
+    - client :: FusionAuth.client(String.t(), String.t(), String.t()) // default FusionAuth.client()
+    - conn_key :: atom() // default :user
+    - atomize_keys :: boolean() // default true
+
+  """
   import Plug.Conn
 
   @default_options [
+    client: nil,
     conn_key: :user,
     atomize_keys: true
   ]
 
+  @spec init(keyword()) :: keyword()
   def init(opts \\ []), do: opts
 
+  @spec call(%Plug.Conn{}, keyword()) :: %Plug.Conn{}
   def call(conn, opts \\ []) do
     options = Keyword.merge(@default_options, opts)
+    client = options[:client] || FusionAuth.client()
 
     with {:ok, token} <- fetch_token(conn),
-         {:ok, claims} <- verify_token(token),
+         {:ok, claims} <- verify_token(client, token),
          true <- check_access_roles(claims) do
       assign(
         conn,
@@ -22,10 +61,8 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     else
       _ ->
         conn
-        |> put_resp_content_type("application/json")
-        |> put_status(401)
-        |> send_resp()
         |> halt()
+        |> send_resp(401, "Unauthorized")
     end
   end
 
@@ -40,20 +77,12 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
   defp check_access_roles(%{"roles" => roles}) do
     case Application.get_env(:fusion_auth, :enable_access_roles, false) do
       false -> true
-      true -> Enum.any?(access_roles(), &Enum.member?(&1, roles))
-      value -> raise "Invalid FusionAuth config value: enable_access_roles: #{inspect(value)}"
+      true -> Enum.any?(access_roles(), &Enum.member?(roles, &1))
     end
   end
 
-  defp verify_token(_) do
-    client = FusionAuth.client()
-    {:ok, %{"token" => token}, _} = FusionAuth.Login.login_user(client, "ckempton", "Rabitt5955")
-
-    response =
-      Tesla.get(client, "/api/jwt/validate", headers: [{"Authorization", "JWT #{token}"}])
-      |> FusionAuth.result()
-
-    case response do
+  defp verify_token(client, token) do
+    case FusionAuth.JWT.validate_jwt(client, token) do
       {:ok, %{"jwt" => claims}, _} -> {:ok, claims}
       _ -> :error
     end
@@ -66,10 +95,12 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
 
   defp parse_token(["JWT " <> token]), do: {:ok, token}
   defp parse_token(["Bearer " <> token]), do: {:ok, token}
+  defp parse_token([""]), do: {:error, :unauthorized}
+  defp parse_token([nil]), do: {:error, :unauthorized}
   defp parse_token([token]) when is_binary(token), do: {:ok, token}
   defp parse_token(_), do: {:error, :unauthorized}
 
-  defp access_roles(), do: Application.get_env(:fusion_auth, :access_roles)
+  defp access_roles(), do: Application.get_env(:fusion_auth, :access_roles, [])
 
   defp authorization_key(),
     do:
