@@ -6,7 +6,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
   is useful when implementing Single Sign On (SSO) applications where groups/roles are used to segment what
   application a user has access to.
 
-  ##Examples
+  ## Examples
 
   ```
     config/{env}.exs

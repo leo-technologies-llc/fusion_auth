@@ -3,7 +3,7 @@ defmodule FusionAuth.Plugs.RefreshJWT do
   The `FusionAuth.Plugs.RefreshJWT` module provides functionality to return a new refresh token and JWT
   back to the client after the request is processed.
 
-  ##Examples
+  ## Examples
 
   ```
     config/{env}.exs
