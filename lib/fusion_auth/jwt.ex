@@ -141,8 +141,7 @@ defmodule FusionAuth.JWT do
   Retrieve Refresh Tokens issued to a User by User ID
 
   ## Examples
-    iex> params = [userId: user_id]
-    iex> FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, params)
+    iex> FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, user_id)
     {
       :ok,
       %{
