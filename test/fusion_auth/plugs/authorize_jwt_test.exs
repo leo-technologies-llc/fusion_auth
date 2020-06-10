@@ -58,7 +58,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                  fun: nil,
                  post: [],
                  pre: [
-                   {Tesla.Middleware.BaseUrl, :call, [base_url]},
+                   {Tesla.Middleware.BaseUrl, :call, [^base_url]},
                    {Tesla.Middleware.JSON, :call, [[]]},
                    {Tesla.Middleware.Headers, :call,
                     [[{"Authorization", @api_key}, {"X-FusionAuth-TenantId", @tenant_id}]]}
@@ -96,7 +96,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                )
     end
 
-    test "JWT token prefix", %{client: client} do
+    test "JWT token prefix" do
       mock_http_request()
 
       assert %Plug.Conn{assigns: %{user: %{applicationId: @application_id}}} =
@@ -105,7 +105,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                |> AuthorizeJWT.call()
     end
 
-    test "No token prefix", %{client: client} do
+    test "No token prefix" do
       mock_http_request()
 
       assert %Plug.Conn{assigns: %{user: %{applicationId: @application_id}}} =
@@ -114,7 +114,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                |> AuthorizeJWT.call()
     end
 
-    test "No token", %{client: client} do
+    test "No token" do
       mock_http_request()
 
       assert %Plug.Conn{halted: true, status: 401} =
@@ -123,7 +123,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                |> AuthorizeJWT.call()
     end
 
-    test "No authorization header", %{client: client} do
+    test "No authorization header" do
       mock_http_request()
 
       assert %Plug.Conn{halted: true, status: 401} =
