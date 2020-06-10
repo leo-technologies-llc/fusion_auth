@@ -12,7 +12,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     config/{env}.exs
 
     config :fusion_auth,
-      jwt_header_key: "authorization",
+      token_header_key: "authorization",
       enable_access_roles: false,
       access_roles: ["superadmin", "admin", "user"]
   ```
@@ -35,6 +35,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
 
   """
   import Plug.Conn
+  alias FusionAuth.Utils
 
   @default_options [
     client: nil,
@@ -50,7 +51,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     options = Keyword.merge(@default_options, opts)
     client = options[:client] || FusionAuth.client()
 
-    with {:ok, token} <- fetch_token(conn),
+    with {:ok, token} <- Utils.fetch_token(conn),
          {:ok, claims} <- verify_token(client, token),
          true <- check_access_roles(claims) do
       assign(
@@ -88,25 +89,5 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     end
   end
 
-  defp fetch_token(conn) do
-    get_req_header(conn, authorization_key())
-    |> parse_token()
-  end
-
-  defp parse_token(["JWT " <> token]), do: {:ok, token}
-  defp parse_token(["Bearer " <> token]), do: {:ok, token}
-  defp parse_token([""]), do: {:error, :unauthorized}
-  defp parse_token([nil]), do: {:error, :unauthorized}
-  defp parse_token([token]) when is_binary(token), do: {:ok, token}
-  defp parse_token(_), do: {:error, :unauthorized}
-
   defp access_roles(), do: Application.get_env(:fusion_auth, :access_roles, [])
-
-  defp authorization_key(),
-    do:
-      Application.get_env(
-        :fusion_auth,
-        :jwt_header_key,
-        "authorization"
-      )
 end
