@@ -4,9 +4,6 @@ defmodule FusionAuth.JWTTest do
   alias FusionAuth.JWT
   alias FusionAuth.TestSupport.Helpers
 
-  @type client :: FusionAuth.client()
-  @type result :: FusionAuth.result()
-
   @jwt_issue_url "/api/jwt/issue"
   @jwt_reconcile_url "/api/jwt/reconcile"
   @jwt_public_key_url "/api/jwt/public-key"
