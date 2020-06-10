@@ -8,6 +8,6 @@ config :fusion_auth,
   tenant_id: System.get_env("FUSION_AUTH_TENANT_ID"),
   application_id: System.get_env("FUSION_AUTH_APPLICATION_ID"),
   enable_jwt: true,
-  jwt_header_key: "authorization"
-  enable_application_group: true,
-  application_group_role: "role_name"
+  jwt_header_key: "authorization",
+  enable_access_roles: false,
+  access_roles: ["superadmin", "admin", "user"]

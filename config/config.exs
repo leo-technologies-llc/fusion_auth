@@ -15,11 +15,10 @@ use Mix.Config
 #   api_url: "FUSION_AUTH_URL",
 #   tenant_id: "FUSION_AUTH_TENANT_ID",
 #   application_id: "FUSION_AUTH_APPLICATION_ID",
-#   group_id: "FUSION_AUTH_GROUP_ID",
 #   enable_jwt: true,
 #   jwt_header_key: "authorization"
-#   enable_application_group: false,
-#   application_group_role: "role_name"
+#   enable_access_roles: false,
+#   access_roles: ["superadmin", "admin", "user"]
 
 #
 # and access this configuration in your application as:
