@@ -34,7 +34,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     - atomize_keys :: boolean() // default true
 
   """
-  import Plug.Conn
+
   alias FusionAuth.Utils
 
   @default_options [
@@ -54,7 +54,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     with {:ok, token} <- Utils.fetch_token(conn),
          {:ok, claims} <- verify_token(client, token),
          true <- check_access_roles(claims) do
-      assign(
+      Plug.Conn.assign(
         conn,
         options[:conn_key],
         format_session(claims, options[:atomize_keys])
@@ -62,8 +62,8 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     else
       _ ->
         conn
-        |> halt()
-        |> send_resp(401, "Unauthorized")
+        |> Plug.Conn.halt()
+        |> Plug.Conn.send_resp(401, "Unauthorized")
     end
   end
 
