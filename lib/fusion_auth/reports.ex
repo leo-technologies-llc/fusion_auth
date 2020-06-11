@@ -22,9 +22,9 @@ defmodule FusionAuth.Reports do
   @type login_id :: String.t()
   @type user_id :: String.t()
 
-  @reports_daily_active_users_url "/api/report/daily-active-users"
+  @reports_daily_active_users_url "/api/report/daily-active-user"
   @reports_logins_url "/api/report/login"
-  @reports_monthly_active_users_url "/api/report/monthly-active-users"
+  @reports_monthly_active_users_url "/api/report/monthly-active-user"
   @reports_registration_url "/api/report/registration"
   @reports_totals_url "/api/report/totals"
 
@@ -36,6 +36,26 @@ defmodule FusionAuth.Reports do
   ## Parameters
     - applicationid :: String.t() :: Optional\n
     A specific application to query for. If not provided a "Global" (across all applications) daily active users report will be returned.
+
+  ## Examples
+      iex> client = FusionAuth.client()
+      iex> end_date = 1591830136785
+      iex> start_date = 1588316400000
+      iex> params = [applicationId: "473f2618-c526-45ba-9c35-8739ba6cfc2e"]
+      iex> FusionAuth.Reports.get_daily_active_users_report(client, start_date, end_date, params)
+      {
+        :ok,
+        %{
+          "dailyActiveUsers" => [
+            %{"count" => 1, "interval" => 18418},
+            %{"count" => 1, "interval" => 18421},
+            %{"count" => 1, "interval" => 18422},
+            %{"count" => 1, "interval" => 18423}
+          ],
+          "total" => 4
+        },
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Generate Daily Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-daily-active-users-report).
   """
@@ -108,6 +128,18 @@ defmodule FusionAuth.Reports do
   ## Parameters
     - applicationid :: String.t() :: Optional\n
     A specific application to query for. If not provided a "Global" (across all applications) monthly active users report will be returned.
+
+  ## Examples
+      iex> client = FusionAuth.client()
+      iex> end_date = 1591830136785
+      iex> start_date = 1588316400000
+      iex> params = [applicationId: "473f2618-c526-45ba-9c35-8739ba6cfc2e"]
+      iex> FusionAuth.Reports.get_monthly_active_users_report(client, start_date, end_date, params)
+      {
+        :ok,
+        %{"total" => 0},
+        %Tesla.Env{...}
+      }
 
   For more information, visit the FusionAuth API Documentation for [Generate Monthly Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-monthly-active-users-report).
   """

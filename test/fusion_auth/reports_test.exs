@@ -13,9 +13,9 @@ defmodule FusionAuth.ReportsTest do
   @application_id "473f2618-c526-45ba-9c35-8739ba6cfc2e"
   @login_id "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
 
-  @reports_daily_active_users_url "/api/report/daily-active-users"
+  @reports_daily_active_users_url "/api/report/daily-active-user"
   @reports_logins_url "/api/report/login"
-  @reports_monthly_active_users_url "/api/report/monthly-active-users"
+  @reports_monthly_active_users_url "/api/report/monthly-active-user"
   @reports_registration_url "/api/report/registration"
   @reports_totals_url "/api/report/totals"
 
@@ -49,7 +49,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} =
-              FusionAuth.Reports.get_daily_active_users_report(
+              Reports.get_daily_active_users_report(
                 client,
                 @start_date,
                 @end_date,
@@ -74,7 +74,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 401}} =
-              FusionAuth.Reports.get_daily_active_users_report(
+              Reports.get_daily_active_users_report(
                 invalid_client,
                 @start_date,
                 @end_date,
@@ -105,7 +105,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} =
-              FusionAuth.Reports.get_login_report(
+              Reports.get_login_report(
                 client,
                 @start_date,
                 @end_date,
@@ -134,7 +134,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 401}} =
-              FusionAuth.Reports.get_login_report(
+              Reports.get_login_report(
                 invalid_client,
                 @start_date,
                 @end_date,
@@ -160,7 +160,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} =
-              FusionAuth.Reports.get_monthly_active_users_report(
+              Reports.get_monthly_active_users_report(
                 client,
                 @start_date,
                 @end_date,
@@ -185,7 +185,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 401}} =
-              FusionAuth.Reports.get_monthly_active_users_report(
+              Reports.get_monthly_active_users_report(
                 invalid_client,
                 @start_date,
                 @end_date,
@@ -212,7 +212,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} =
-              FusionAuth.Reports.get_registration_report(
+              Reports.get_registration_report(
                 client,
                 @start_date,
                 @end_date,
@@ -237,7 +237,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 401}} =
-              FusionAuth.Reports.get_registration_report(
+              Reports.get_registration_report(
                 invalid_client,
                 @start_date,
                 @end_date,
@@ -257,7 +257,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:ok, %{}, %Tesla.Env{status: 200}} =
-              FusionAuth.Reports.get_totals_report(client)
+              Reports.get_totals_report(client)
     end
 
     test "get_totals_report/4 send a 401 along with an empty JSON body when API key is not valid" do
@@ -270,7 +270,7 @@ defmodule FusionAuth.ReportsTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 401}} =
-              FusionAuth.Reports.get_totals_report(invalid_client)
+              Reports.get_totals_report(invalid_client)
     end
   end
 end
