@@ -3,15 +3,22 @@ defmodule FusionAuth.Reports do
   The `FusionAuth.Reports` module provides access functions to the [FusionAuth Reports API](https://fusionauth.io/docs/v1/tech/apis/reports).
 
   All functions require a Tesla Client struct created with `FusionAuth.client(base_url, api_key, tenant_id)`.
+
+  All but one function (totals) takes in required parameters `start_date` and `end_date`.
+    - end_date :: integer() :: Required]\n
+    The end of the query range. This is an [instant](https://fusionauth.io/docs/v1/tech/reference/data-types#instants) but it is truncated to days in the report timezone (which is set in the system settings).
+
+    - start_date :: integer() :: Required]\n
+    The start of the query range. This is an [instant](https://fusionauth.io/docs/v1/tech/reference/data-types#instants) but it is truncated to days in the report timezone (which is set in the system settings).
   """
   alias FusionAuth.Utils
 
   @type client :: FusionAuth.client()
   @type result :: FusionAuth.result()
 
+  @type start_date :: integer()
+  @type end_date :: integer()
   @type application_id :: String.t()
-  @type start_date :: pos_integer()
-  @type end_date :: pos_integer()
   @type login_id :: String.t()
   @type user_id :: String.t()
 
@@ -29,6 +36,9 @@ defmodule FusionAuth.Reports do
   ## Parameters
     - applicationid :: String.t() :: Optional\n
     A specific application to query for. If not provided a "Global" (across all applications) daily active users report will be returned.
+
+  ## Examples
+        iex>
 
   For more information, visit the FusionAuth API Documentation for [Generate Daily Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-daily-active-users-report).
   """
@@ -55,13 +65,13 @@ defmodule FusionAuth.Reports do
 
     - loginId :: String.t() :: Optional\n
     When this parameter is provided it will reduce the scope of the report to a single user with the requested email or username specified by this parameter.\n
-    This parameter is mutually exclusive with userId, if both are provided, the loginId will take precedence.\n
+    This parameter is mutually exclusive with `userId`, if both are provided, the `loginId` will take precedence.\n
 
     - userId :: String.t() :: Optional\n
     When this parameter is provided it will reduce the scope of the report to a single user with the requested unique Id.\n
-    This parameter is mutually exclusive with loginId, if both are provided, the loginId will take precedence.\n
+    This parameter is mutually exclusive with `loginId`, if both are provided, the `loginId` will take precedence.\n
 
-  ## Example
+  ## Examples
       iex> client = FusionAuth.client()
       iex> end_date = 1591830136785
       iex> start_date = 1588316400000
@@ -102,6 +112,9 @@ defmodule FusionAuth.Reports do
     - applicationid :: String.t() :: Optional\n
     A specific application to query for. If not provided a "Global" (across all applications) monthly active users report will be returned.
 
+  ## Examples
+      iex>
+
   For more information, visit the FusionAuth API Documentation for [Generate Monthly Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-monthly-active-users-report).
   """
   @spec get_monthly_active_users_report(client(), start_date(), end_date(), [key: application_id()] | []) :: result()
@@ -125,7 +138,7 @@ defmodule FusionAuth.Reports do
     - applicationid :: String.t() :: Optional\n
     A specific application to query for. If not provided a "Global" (across all applications) registrations report will be returned.
 
-  ## Example
+  ## Examples
       iex> client = FusionAuth.client()
       iex> end_date = 1591830136785
       iex> start_date = 1588316400000
@@ -164,7 +177,7 @@ defmodule FusionAuth.Reports do
   You must specify a date range for the report. The report is always generated in hours.
   Tf you want to calculate daily registrations, you’ll need to roll up the results in the response.
 
-  ## Example
+  ## Examples
       iex> FusionAuth.Reports.get_totals_report(client)
       {
         :ok,

@@ -4,11 +4,14 @@ defmodule FusionAuth.ReportsTest do
   alias FusionAuth.Reports
   alias FusionAuth.TestSupport.Helpers
 
-  @application_id "473f2618-c526-45ba-9c35-8739ba6cfc2e"
+  @api_key "jnx6HeVRrLkulpwiUNh9s52qlJqp5dox77NcDVkf9YI"
+  @invalid_api_key "invalid-key"
+  @tenant_id "d577a020-30cb-85de-bf30-785cb65997d6"
+
   @start_date 1588316400000
   @end_date 1590908400000
-  @login_id "example@gmail.com"
-  @user_id "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
+  @application_id "473f2618-c526-45ba-9c35-8739ba6cfc2e"
+  @login_id "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
 
   @reports_daily_active_users_url "/api/report/daily-active-users"
   @reports_logins_url "/api/report/login"
@@ -32,58 +35,156 @@ defmodule FusionAuth.ReportsTest do
   describe "Generate the daily active users report" do
     test "get_daily_active_users_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
     end
-    test "get_daily_active_users_report/4 send a 400 along with an Errors JSON Object when the request was invalid and/or malformed", %{client: client} do
-    end
+
     test "get_daily_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid", %{client: client} do
-    end
-    test "get_daily_active_users_report/4 send a 404 along with an empty JSON body when object does not exist", %{client: client} do
     end
   end
 
 
   describe "Generate Login Report" do
     test "get_login_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
+      parameters = [
+        applicationId: @application_id,
+        loginId: @login_id
+      ]
+
+      Helpers.mock_request(
+        path: @reports_logins_url,
+        method: :get,
+        status: 200,
+        response_body: %{},
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id,
+          loginId: @login_id
+        ]
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+              FusionAuth.Reports.get_login_report(
+                client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
-    test "get_login_report/4 send a 400 along with an Errors JSON Object when the request was invalid and/or malformed", %{client: client} do
-    end
-    test "get_login_report/4 send a 401 along with an empty JSON body when API key is not valid", %{client: client} do
-    end
-    test "get_login_report/4 send a 404 along with an empty JSON body when object does not exist", %{client: client} do
+
+    test "get_login_report/4 send a 401 along with an empty JSON body when API key is not valid" do
+      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      parameters = [
+        applicationId: @application_id,
+        loginId: @login_id
+      ]
+
+      Helpers.mock_request(
+        path: @reports_logins_url,
+        method: :get,
+        status: 401,
+        response_body: %{},
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id,
+          loginId: @login_id
+        ]
+      )
+
+      assert {:error, %{}, %Tesla.Env{status: 401}} =
+              FusionAuth.Reports.get_login_report(
+                invalid_client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
   end
 
   describe "Generate Monthly Active Users Report" do
     test "get_monthly_active_users_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
     end
-    test "get_monthly_active_users_report/4 send a 400 along with an Errors JSON Object when the request was invalid and/or malformed", %{client: client} do
-    end
+
     test "get_monthly_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid", %{client: client} do
-    end
-    test "get_monthly_active_users_report/4 send a 404 along with an empty JSON body when object does not exist", %{client: client} do
     end
   end
 
 
   describe "Generate Registration Report" do
     test "get_registration_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
+      parameters = [applicationId: @application_id]
+
+      Helpers.mock_request(
+        path: @reports_registration_url,
+        method: :get,
+        status: 200,
+        response_body: %{},
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id
+        ]
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+              FusionAuth.Reports.get_registration_report(
+                client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
-    test "get_registration_report/4 send a 400 along with an Errors JSON Object when the request was invalid and/or malformed", %{client: client} do
-    end
-    test "get_registration_report/4 send a 401 along with an empty JSON body when API key is not valid", %{client: client} do
-    end
-    test "get_registration_report/4 send a 404 along with an empty JSON body when object does not exist", %{client: client} do
+
+    test "get_registration_report/4 send a 401 along with an empty JSON body when API key is not valid" do
+      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      parameters = [applicationId: @application_id]
+
+      Helpers.mock_request(
+        path: @reports_registration_url,
+        method: :get,
+        status: 401,
+        response_body: %{},
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id
+        ]
+      )
+
+      assert {:error, %{}, %Tesla.Env{status: 401}} =
+              FusionAuth.Reports.get_registration_report(
+                invalid_client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
   end
 
 
   describe "Generate Totals Report" do
     test "get_totals_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
+      Helpers.mock_request(
+        path: @reports_totals_url,
+        method: :get,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+              FusionAuth.Reports.get_totals_report(client)
     end
-    test "get_totals_report/4 send a 400 along with an Errors JSON Object when the request was invalid and/or malformed", %{client: client} do
-    end
-    test "get_totals_report/4 send a 401 along with an empty JSON body when API key is not valid", %{client: client} do
-    end
-    test "get_totals_report/4 send a 404 along with an empty JSON body when object does not exist", %{client: client} do
+
+    test "get_totals_report/4 send a 401 along with an empty JSON body when API key is not valid" do
+      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      Helpers.mock_request(
+        path: @reports_totals_url,
+        method: :get,
+        status: 401,
+        response_body: ""
+      )
+
+      assert {:error, "", %Tesla.Env{status: 401}} =
+              FusionAuth.Reports.get_totals_report(invalid_client)
     end
   end
 end
