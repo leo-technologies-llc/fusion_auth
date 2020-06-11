@@ -1,6 +1,6 @@
 defmodule FusionAuth.Plugs.AuthorizeJWT do
   @moduledoc """
-  The `FusionAuth.Plugs.AuthorizeJWT` module provides authentication of JWT tokens on incomming requests.
+  The `FusionAuth.Plugs.AuthorizeJWT` module provides authentication of JWT tokens on incoming requests.
   Enabling access roles will can be utilized to ensure the user making the request has the proper roles. If
   the users roles dont match one of the specified roles in the config a 401 response will be sent. This option
   is useful when implementing Single Sign On (SSO) applications where groups/roles are used to segment what
@@ -32,6 +32,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     - client :: FusionAuth.client(String.t(), String.t(), String.t()) // default FusionAuth.client()
     - conn_key :: atom() // default :user
     - atomize_keys :: boolean() // default true
+    - case_format :: :underscore | :camelcase  // default :underscore
 
   """
 
@@ -40,7 +41,8 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
   @default_options [
     client: nil,
     conn_key: :user,
-    atomize_keys: true
+    atomize_keys: true,
+    case_format: :underscore
   ]
 
   @spec init(keyword()) :: keyword()
@@ -57,7 +59,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
       Plug.Conn.assign(
         conn,
         options[:conn_key],
-        format_session(claims, options[:atomize_keys])
+        format(claims, options[:atomize_keys], options[:case_format])
       )
     else
       _ ->
@@ -67,13 +69,26 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     end
   end
 
-  defp format_session(claims, false), do: claims
+  defp format(claims, atomize, key_format),
+    do:
+      claims
+      |> case_keys(key_format)
+      |> atomize_keys(atomize)
 
-  defp format_session(claims, true),
+  defp atomize_keys(claims, false),
+    do: claims
+
+  defp atomize_keys(claims, true),
     do:
       claims
       |> Jason.encode!()
       |> Jason.decode!(keys: :atoms)
+
+  defp case_keys(claims, :underscore),
+    do: Recase.Enumerable.convert_keys(claims, &Recase.to_snake/1)
+
+  defp case_keys(claims, :camelcase),
+    do: Recase.Enumerable.convert_keys(claims, &Recase.to_camel/1)
 
   defp check_access_roles(%{"roles" => roles}) do
     case Application.get_env(:fusion_auth, :enable_access_roles, false) do

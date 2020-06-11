@@ -53,6 +53,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
       assert [
                conn_key: :current_user,
                atomize_keys: false,
+               case_format: :underscore,
                client: %Tesla.Client{
                  adapter: {Tesla.Mock, :call, [[]]},
                  fun: nil,
@@ -68,6 +69,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                AuthorizeJWT.init(
                  conn_key: :current_user,
                  atomize_keys: false,
+                 case_format: :underscore,
                  client: client
                )
     end
@@ -77,7 +79,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
     test "default options" do
       mock_http_request()
 
-      assert %Plug.Conn{assigns: %{user: %{applicationId: @application_id}}} =
+      assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
                conn()
                |> Plug.Conn.put_req_header("authorization", "Bearer " <> @token)
                |> AuthorizeJWT.call()
@@ -92,6 +94,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                |> AuthorizeJWT.call(
                  client: client,
                  atomize_keys: false,
+                 case_format: :camelcase,
                  conn_key: :current_user
                )
     end
@@ -99,7 +102,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
     test "JWT token prefix" do
       mock_http_request()
 
-      assert %Plug.Conn{assigns: %{user: %{applicationId: @application_id}}} =
+      assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
                conn()
                |> Plug.Conn.put_req_header("authorization", "JWT " <> @token)
                |> AuthorizeJWT.call()
@@ -108,7 +111,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
     test "No token prefix" do
       mock_http_request()
 
-      assert %Plug.Conn{assigns: %{user: %{applicationId: @application_id}}} =
+      assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
                conn()
                |> Plug.Conn.put_req_header("authorization", @token)
                |> AuthorizeJWT.call()
