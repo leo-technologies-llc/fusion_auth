@@ -37,9 +37,6 @@ defmodule FusionAuth.Reports do
     - applicationid :: String.t() :: Optional\n
     A specific application to query for. If not provided a "Global" (across all applications) daily active users report will be returned.
 
-  ## Examples
-        iex>
-
   For more information, visit the FusionAuth API Documentation for [Generate Daily Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-daily-active-users-report).
   """
   @spec get_daily_active_users_report(client(), start_date(), end_date(), [key: application_id()] | []) :: result()
@@ -111,9 +108,6 @@ defmodule FusionAuth.Reports do
   ## Parameters
     - applicationid :: String.t() :: Optional\n
     A specific application to query for. If not provided a "Global" (across all applications) monthly active users report will be returned.
-
-  ## Examples
-      iex>
 
   For more information, visit the FusionAuth API Documentation for [Generate Monthly Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-monthly-active-users-report).
   """

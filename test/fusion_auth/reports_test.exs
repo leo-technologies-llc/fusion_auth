@@ -34,9 +34,52 @@ defmodule FusionAuth.ReportsTest do
 
   describe "Generate the daily active users report" do
     test "get_daily_active_users_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
+      parameters = [applicationId: @application_id]
+
+      Helpers.mock_request(
+        path: @reports_daily_active_users_url,
+        method: :get,
+        status: 200,
+        response_body: %{},
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id
+        ]
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+              FusionAuth.Reports.get_daily_active_users_report(
+                client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
 
-    test "get_daily_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid", %{client: client} do
+    test "get_daily_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid" do
+      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      parameters = [applicationId: @application_id]
+
+      Helpers.mock_request(
+        path: @reports_daily_active_users_url,
+        method: :get,
+        status: 401,
+        response_body: "",
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id
+        ]
+      )
+
+      assert {:error, "", %Tesla.Env{status: 401}} =
+              FusionAuth.Reports.get_daily_active_users_report(
+                invalid_client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
   end
 
@@ -81,7 +124,7 @@ defmodule FusionAuth.ReportsTest do
         path: @reports_logins_url,
         method: :get,
         status: 401,
-        response_body: %{},
+        response_body: "",
         query_parameters: [
           start: @start_date,
           end: @end_date,
@@ -90,7 +133,7 @@ defmodule FusionAuth.ReportsTest do
         ]
       )
 
-      assert {:error, %{}, %Tesla.Env{status: 401}} =
+      assert {:error, "", %Tesla.Env{status: 401}} =
               FusionAuth.Reports.get_login_report(
                 invalid_client,
                 @start_date,
@@ -102,9 +145,52 @@ defmodule FusionAuth.ReportsTest do
 
   describe "Generate Monthly Active Users Report" do
     test "get_monthly_active_users_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
+      parameters = [applicationId: @application_id]
+
+      Helpers.mock_request(
+        path: @reports_monthly_active_users_url,
+        method: :get,
+        status: 200,
+        response_body: %{},
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id
+        ]
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+              FusionAuth.Reports.get_monthly_active_users_report(
+                client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
 
-    test "get_monthly_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid", %{client: client} do
+    test "get_monthly_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid" do
+      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      parameters = [applicationId: @application_id]
+
+      Helpers.mock_request(
+        path: @reports_monthly_active_users_url,
+        method: :get,
+        status: 401,
+        response_body: "",
+        query_parameters: [
+          start: @start_date,
+          end: @end_date,
+          applicationId: @application_id
+        ]
+      )
+
+      assert {:error, "", %Tesla.Env{status: 401}} =
+              FusionAuth.Reports.get_monthly_active_users_report(
+                invalid_client,
+                @start_date,
+                @end_date,
+                parameters
+              )
     end
   end
 
@@ -142,7 +228,7 @@ defmodule FusionAuth.ReportsTest do
         path: @reports_registration_url,
         method: :get,
         status: 401,
-        response_body: %{},
+        response_body: "",
         query_parameters: [
           start: @start_date,
           end: @end_date,
@@ -150,7 +236,7 @@ defmodule FusionAuth.ReportsTest do
         ]
       )
 
-      assert {:error, %{}, %Tesla.Env{status: 401}} =
+      assert {:error, "", %Tesla.Env{status: 401}} =
               FusionAuth.Reports.get_registration_report(
                 invalid_client,
                 @start_date,
