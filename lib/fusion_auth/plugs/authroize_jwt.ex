@@ -45,6 +45,11 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     case_format: :underscore
   ]
 
+  @formatter [
+    underscore: &Recase.to_snake/1,
+    camelcase: &Recase.to_camel/1
+  ]
+
   @spec init(keyword()) :: keyword()
   def init(opts \\ []), do: opts
 
@@ -69,20 +74,15 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     end
   end
 
-  defp format(claims, atomize, key_format),
+  defp format(claims, false, key_format),
     do:
       claims
-      |> case_keys(key_format)
-      |> atomize_keys(atomize)
+      |> Recase.Enumerable.convert_keys(@formatter[key_format])
 
-  defp atomize_keys(claims, false),
-    do: claims
-
-  defp atomize_keys(claims, true),
+  defp format(claims, true, key_format),
     do:
       claims
-      |> Jason.encode!()
-      |> Jason.decode!(keys: :atoms)
+      |> Recase.Enumerable.atomize_keys(@formatter[key_format])
 
   defp case_keys(claims, :underscore),
     do: Recase.Enumerable.convert_keys(claims, &Recase.to_snake/1)
