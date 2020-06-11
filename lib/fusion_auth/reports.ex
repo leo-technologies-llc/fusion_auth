@@ -22,12 +22,6 @@ defmodule FusionAuth.Reports do
   @type login_id :: String.t()
   @type user_id :: String.t()
 
-  @reports_daily_active_users_url "/api/report/daily-active-user"
-  @reports_logins_url "/api/report/login"
-  @reports_monthly_active_users_url "/api/report/monthly-active-user"
-  @reports_registration_url "/api/report/registration"
-  @reports_totals_url "/api/report/totals"
-
   @doc """
   Generate the daily active users report
 
@@ -64,7 +58,7 @@ defmodule FusionAuth.Reports do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
     Tesla.get(
       client,
-      @reports_daily_active_users_url <>
+      "/api/report/daily-active-user" <>
       Utils.build_query_parameters(params)
     ) |> FusionAuth.result()
   end
@@ -90,19 +84,30 @@ defmodule FusionAuth.Reports do
 
   ## Examples
       iex> client = FusionAuth.client()
-      iex> end_date = 1591830136785
-      iex> start_date = 1588316400000
-      iex> params = [applicationId: "473f2618-c526-45ba-9c35-8739ba6cfc2e"]
-      iex> FusionAuth.Reports.get_login_report(client, start_date, end_date, params)
+      iex> end_date = 1591913469434
+      iex> start_date = 1577865600000
+      iex> FusionAuth.Reports.get_login_report(client, start_date, end_date)
       {
         :ok,
         %{
           "hourlyCounts" => [
             %{"count" => 1, "interval" => 442050},
+            %{"count" => 1, "interval" => 442051},
+            %{"count" => 1, "interval" => 442054},
+            %{"count" => 3, "interval" => 442055},
+            %{"count" => 1, "interval" => 442120},
+            %{"count" => 2, "interval" => 442122},
+            %{"count" => 1, "interval" => 442146},
+            %{"count" => 1, "interval" => 442149},
+            %{"count" => 1, "interval" => 442151},
+            %{"count" => 1, "interval" => 442168},
+            %{"count" => 3, "interval" => 442170},
+            %{"count" => 3, "interval" => 442171},
             %{"count" => 1, "interval" => 442174},
-            ...
+            %{"count" => 1, "interval" => 442194},
+            %{"count" => 1, "interval" => 442197}
           ],
-          "total" => 20
+          "total" => 22
         },
         %Tesla.Env{...}
       }
@@ -114,7 +119,7 @@ defmodule FusionAuth.Reports do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
     Tesla.get(
       client,
-      @reports_logins_url <>
+      "/api/report/login" <>
       Utils.build_query_parameters(params)
     ) |> FusionAuth.result()
   end
@@ -137,7 +142,15 @@ defmodule FusionAuth.Reports do
       iex> FusionAuth.Reports.get_monthly_active_users_report(client, start_date, end_date, params)
       {
         :ok,
-        %{"total" => 0},
+        %{
+          "monthlyActiveUsers" => [
+            %{"count" => 10, "interval" => 543},
+            %{"count" => 10, "interval" => 544},
+            %{"count" => 10, "interval" => 545},
+            %{"count" => 9, "interval" => 546}
+          ],
+          "total": 39,
+        },
         %Tesla.Env{...}
       }
 
@@ -148,7 +161,7 @@ defmodule FusionAuth.Reports do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
     Tesla.get(
       client,
-      @reports_monthly_active_users_url <>
+      "/api/report/monthly-active-user" <>
       Utils.build_query_parameters(params)
     ) |> FusionAuth.result()
   end
@@ -158,7 +171,7 @@ defmodule FusionAuth.Reports do
 
   This report retrieves the number of registrations for a given application or across all applications.
   You must specify a date range for the report. The report is always generated in hours.
-  Tf you want to calculate daily registrations, you’ll need to roll up the results in the response.
+  If you want to calculate daily registrations, you’ll need to roll up the results in the response.
 
   ## Parameters
     - applicationid :: String.t() :: Optional\n
@@ -191,7 +204,7 @@ defmodule FusionAuth.Reports do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
     Tesla.get(
       client,
-      @reports_registration_url <>
+      "/api/report/registration" <>
       Utils.build_query_parameters(params)
     ) |> FusionAuth.result()
   end
@@ -235,6 +248,6 @@ defmodule FusionAuth.Reports do
   """
   @spec get_totals_report(client()) :: result()
   def get_totals_report(client) do
-    Tesla.get(client, @reports_totals_url) |> FusionAuth.result()
+    Tesla.get(client, "/api/report/totals") |> FusionAuth.result()
   end
 end
