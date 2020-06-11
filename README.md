@@ -18,7 +18,7 @@ The following are the APIs that are currently implemented:
 - [X] [Login](https://fusionauth.io/docs/v1/tech/apis/login)
 - [ ] [Passwordless](https://fusionauth.io/docs/v1/tech/apis/passwordless)
 - [X] [Registrations](https://fusionauth.io/docs/v1/tech/apis/registrations)
-- [ ] [Reports](https://fusionauth.io/docs/v1/tech/apis/reports)
+- [X] [Reports](https://fusionauth.io/docs/v1/tech/apis/reports)
 - [ ] [System](https://fusionauth.io/docs/v1/tech/apis/system)
 - [ ] [Tenants](https://fusionauth.io/docs/v1/tech/apis/tenants)
 - [ ] [Themes](https://fusionauth.io/docs/v1/tech/apis/themes)
