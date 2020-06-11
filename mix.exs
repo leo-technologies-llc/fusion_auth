@@ -41,7 +41,7 @@ defmodule FusionAuth.MixProject do
       {:hackney, "~> 1.16.0"},
       {:jason, ">= 1.0.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:recase, git: "git@github.com:kempt09/recase"},
+      {:recase, git: "https://github.com/kempt09/recase.git"},
       {:excoveralls, "~> 0.10", only: :test}
     ]
   end
