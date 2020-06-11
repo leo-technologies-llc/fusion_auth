@@ -214,7 +214,7 @@ defmodule FusionAuth.Reports do
 
   This report retrieves the number of registrations for a given application or across all applications.
   You must specify a date range for the report. The report is always generated in hours.
-  Tf you want to calculate daily registrations, you’ll need to roll up the results in the response.
+  If you want to calculate daily registrations, you’ll need to roll up the results in the response.
 
   ## Examples
       iex> FusionAuth.Reports.get_totals_report(client)
