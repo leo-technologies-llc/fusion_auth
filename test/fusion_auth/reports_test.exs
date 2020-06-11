@@ -11,7 +11,7 @@ defmodule FusionAuth.ReportsTest do
   @start_date 1588316400000
   @end_date 1590908400000
   @application_id "473f2618-c526-45ba-9c35-8739ba6cfc2e"
-  @login_id "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
+  @user_id "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
 
   @reports_daily_active_users_url "/api/report/daily-active-user"
   @reports_logins_url "/api/report/login"
@@ -88,7 +88,7 @@ defmodule FusionAuth.ReportsTest do
     test "get_login_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
       parameters = [
         applicationId: @application_id,
-        loginId: @login_id
+        userId: @user_id
       ]
 
       Helpers.mock_request(
@@ -100,7 +100,7 @@ defmodule FusionAuth.ReportsTest do
           start: @start_date,
           end: @end_date,
           applicationId: @application_id,
-          loginId: @login_id
+          userId: @user_id
         ]
       )
 
@@ -117,7 +117,7 @@ defmodule FusionAuth.ReportsTest do
       invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
       parameters = [
         applicationId: @application_id,
-        loginId: @login_id
+        userId: @user_id
       ]
 
       Helpers.mock_request(
@@ -129,7 +129,7 @@ defmodule FusionAuth.ReportsTest do
           start: @start_date,
           end: @end_date,
           applicationId: @application_id,
-          loginId: @login_id
+          userId: @user_id
         ]
       )
 
