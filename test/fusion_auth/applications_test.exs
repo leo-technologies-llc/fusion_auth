@@ -2,7 +2,7 @@ defmodule FusionAuth.ApplicationsTest do
   use ExUnit.Case
 
   alias FusionAuth.Applications
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
   @applications_url "/api/application"
   @valid_application_id "0dd9f903-7874-4a91-ab7d-000b8cc159eb"
@@ -29,7 +29,7 @@ defmodule FusionAuth.ApplicationsTest do
   setup do
     api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
     tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
-    client = FusionAuth.client(Helpers.base_url(), api_key, tenant_id)
+    client = FusionAuth.client(Mock.base_url(), api_key, tenant_id)
 
     {:ok, %{client: client}}
   end
@@ -38,7 +38,7 @@ defmodule FusionAuth.ApplicationsTest do
     test "create_application/2 returns the newly created application", %{client: client} do
       response_body = %{"application" => @application}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url,
         method: :post,
         status: 200,
@@ -65,7 +65,7 @@ defmodule FusionAuth.ApplicationsTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url,
         method: :post,
         status: 400,
@@ -84,7 +84,7 @@ defmodule FusionAuth.ApplicationsTest do
     } do
       response_body = %{"applications" => [@application]}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url,
         method: :get,
         status: 200,
@@ -101,7 +101,7 @@ defmodule FusionAuth.ApplicationsTest do
 
       response_body = %{"applications" => [application]}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url,
         query_parameters: [
           inactive: true
@@ -121,7 +121,7 @@ defmodule FusionAuth.ApplicationsTest do
         "fieldErrors" => %{}
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url,
         query_parameters: [
           invalidQp: "invalid"
@@ -142,7 +142,7 @@ defmodule FusionAuth.ApplicationsTest do
     } do
       response_body = %{"application" => @application}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         method: :get,
         status: 200,
@@ -156,7 +156,7 @@ defmodule FusionAuth.ApplicationsTest do
     test "get_application/2 returns a 404 status code if the application is not found", %{
       client: client
     } do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}",
         method: :get,
         status: 404,
@@ -171,7 +171,7 @@ defmodule FusionAuth.ApplicationsTest do
   describe "Get OAuth Configuration" do
     test "get_oauth_configuration/2 returns a 200 status code with oauth configs for the ID passed",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/oauth-configuration",
         method: :get,
         status: 200,
@@ -197,7 +197,7 @@ defmodule FusionAuth.ApplicationsTest do
         ]
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}" <> "/oauth-configuration",
         method: :get,
         status: 500,
@@ -217,7 +217,7 @@ defmodule FusionAuth.ApplicationsTest do
 
       response_body = %{"application" => updated_application}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         method: :patch,
         status: 200,
@@ -244,7 +244,7 @@ defmodule FusionAuth.ApplicationsTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         method: :patch,
         status: 400,
@@ -260,7 +260,7 @@ defmodule FusionAuth.ApplicationsTest do
          %{client: client} do
       updated_application = Map.put(@application, "name", "Updated Test Application")
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}",
         method: :patch,
         status: 404,
@@ -283,7 +283,7 @@ defmodule FusionAuth.ApplicationsTest do
     } do
       response_body = %{"application" => @application}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         query_parameters: [
           reactivate: true
@@ -299,7 +299,7 @@ defmodule FusionAuth.ApplicationsTest do
 
     test "reactivate_application/2 returns a 404 status code if the user is not found",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}",
         query_parameters: [
           reactivate: true
@@ -317,7 +317,7 @@ defmodule FusionAuth.ApplicationsTest do
   describe "Delete Application" do
     test "delete_application/3 returns a 200 status code with an empty body if a deactivation request is successful",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         method: :delete,
         status: 200,
@@ -330,7 +330,7 @@ defmodule FusionAuth.ApplicationsTest do
 
     test "delete_application/3 returns a 200 status code with an empty body if a hard delete request is successful",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}",
         query_parameters: [
           hardDelete: true
@@ -346,7 +346,7 @@ defmodule FusionAuth.ApplicationsTest do
 
     test "delete_application/3 returns a 404 status code if the application is not found",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}",
         method: :delete,
         status: 404,
@@ -362,7 +362,7 @@ defmodule FusionAuth.ApplicationsTest do
     test "create_role/3 returns the newly created role", %{client: client} do
       response_body = %{"role" => @role}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role",
         method: :post,
         status: 200,
@@ -389,7 +389,7 @@ defmodule FusionAuth.ApplicationsTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role",
         method: :post,
         status: 400,
@@ -416,7 +416,7 @@ defmodule FusionAuth.ApplicationsTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}" <> "/role",
         method: :post,
         status: 400,
@@ -435,7 +435,7 @@ defmodule FusionAuth.ApplicationsTest do
 
       response_body = %{"role" => updated_role}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role/#{@valid_role_id}",
         method: :patch,
         status: 200,
@@ -468,7 +468,7 @@ defmodule FusionAuth.ApplicationsTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role/#{@valid_role_id}",
         method: :patch,
         status: 400,
@@ -502,7 +502,7 @@ defmodule FusionAuth.ApplicationsTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}" <> "/role/#{@valid_role_id}",
         method: :patch,
         status: 400,
@@ -523,7 +523,7 @@ defmodule FusionAuth.ApplicationsTest do
          %{client: client} do
       updated_role = %{name: "Updated Test Role"}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role/#{@invalid_role_id}",
         method: :patch,
         status: 404,
@@ -544,7 +544,7 @@ defmodule FusionAuth.ApplicationsTest do
   describe "Delete Role by ID" do
     test "delete_role_by_id/3 returns a 200 status code with an empty body if the request is successful",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role/#{@valid_role_id}",
         method: :delete,
         status: 200,
@@ -570,7 +570,7 @@ defmodule FusionAuth.ApplicationsTest do
         ]
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}" <> "/role/#{@valid_role_id}",
         method: :delete,
         status: 500,
@@ -583,7 +583,7 @@ defmodule FusionAuth.ApplicationsTest do
 
     test "delete_role_by_id/3 returns a 404 status code if the role is not found",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role/#{@invalid_role_id}",
         method: :delete,
         status: 404,
@@ -600,7 +600,7 @@ defmodule FusionAuth.ApplicationsTest do
          %{client: client} do
       name = "Test Role"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role",
         query_parameters: [
           name: name
@@ -631,7 +631,7 @@ defmodule FusionAuth.ApplicationsTest do
         ]
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@invalid_application_id}" <> "/role",
         query_parameters: [
           name: name
@@ -649,7 +649,7 @@ defmodule FusionAuth.ApplicationsTest do
          %{client: client} do
       name = "Does not exist"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @applications_url <> "/#{@valid_application_id}" <> "/role",
         query_parameters: [
           name: name

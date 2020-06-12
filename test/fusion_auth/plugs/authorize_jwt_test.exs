@@ -2,9 +2,9 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
   use ExUnit.Case
 
   alias FusionAuth.Plugs.AuthorizeJWT
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
-  @base_url Helpers.base_url()
+  @base_url Mock.base_url()
   @api_key "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
   @tenant_id "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
   @validate_jwt_url "/api/jwt/validate"
@@ -48,7 +48,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
 
   describe "init/1" do
     test "accepts options", %{client: client} do
-      base_url = Helpers.base_url()
+      base_url = Mock.base_url()
 
       assert [
                conn_key: :current_user,
@@ -135,7 +135,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
     end
 
     test "failed fusion_auth validation" do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @validate_jwt_url,
         method: :get,
         status: 404,
@@ -164,7 +164,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
     end
 
     test "invalid roles" do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @validate_jwt_url,
         method: :get,
         status: 200,
@@ -180,7 +180,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
   end
 
   defp mock_http_request() do
-    Helpers.mock_request(
+    Mock.mock_request(
       path: @validate_jwt_url,
       method: :get,
       status: 200,

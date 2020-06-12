@@ -2,7 +2,7 @@ defmodule FusionAuth.LoginTest do
   use ExUnit.Case
 
   alias FusionAuth.Login
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
   @login_url "/api/login"
   @logout_url "/api/logout"
@@ -52,7 +52,7 @@ defmodule FusionAuth.LoginTest do
 
   setup do
     application_id = Application.get_env(:fusion_auth, :application_id)
-    client = FusionAuth.client(Helpers.base_url(), @api_key, @tenant_id)
+    client = FusionAuth.client(Mock.base_url(), @api_key, @tenant_id)
 
     on_exit(fn ->
       Application.put_env(:fusion_auth, :application_id, application_id)
@@ -65,7 +65,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "login_user/3" do
     test "can login user", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 200,
@@ -77,7 +77,7 @@ defmodule FusionAuth.LoginTest do
     end
 
     test "user not found", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 404,
@@ -90,7 +90,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "login_user/4" do
     test "can login user with additional options", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 200,
@@ -102,7 +102,7 @@ defmodule FusionAuth.LoginTest do
     end
 
     test "can login user with application_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 200,
@@ -118,7 +118,7 @@ defmodule FusionAuth.LoginTest do
     test "nil application_id does not return a refreshToken", %{client: client} do
       modified_response = Map.drop(@login_response, ["refreshToken"])
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 200,
@@ -130,7 +130,7 @@ defmodule FusionAuth.LoginTest do
     end
 
     test "with all valid attributes", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 200,
@@ -146,7 +146,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "login_one_time_password/2" do
     test "invalid one_time_passowrd", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 400,
@@ -158,7 +158,7 @@ defmodule FusionAuth.LoginTest do
     end
 
     test "valid one_time_passowrd", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url,
         method: :post,
         status: 200,
@@ -172,7 +172,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "two_factor_login/3" do
     test "can login using 2FA", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url,
         method: :post,
         status: 200,
@@ -188,7 +188,7 @@ defmodule FusionAuth.LoginTest do
     end
 
     test "invalid 2FA attempt", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url,
         method: :post,
         status: 404,
@@ -206,7 +206,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "two_factor_login/4" do
     test "can login using 2FA with specified application_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url,
         method: :post,
         status: 200,
@@ -227,7 +227,7 @@ defmodule FusionAuth.LoginTest do
     test "response will not have refresh token in no application_id", %{client: client} do
       modified_response = Map.drop(@login_response, ["refreshToken"])
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url,
         method: :post,
         status: 200,
@@ -247,7 +247,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "update_login_instant/2" do
     test "can record user login manually", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url <> "/#{@user_id}/#{@application_id}?ipAddress=",
         method: :put,
         status: 200,
@@ -264,7 +264,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "update_login_instant/3" do
     test "can record user login manually", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url <> "/#{@user_id}/#{@application_id}?ipAddress=",
         method: :put,
         status: 200,
@@ -282,7 +282,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "update_login_instant/4" do
     test "can record user login manually", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url <> "/#{@user_id}/#{@application_id}?ipAddress=#{@ip_address}",
         method: :put,
         status: 200,
@@ -299,7 +299,7 @@ defmodule FusionAuth.LoginTest do
     end
 
     test "can handle nil application_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_url <> "/#{@user_id}?ipAddress=#{@ip_address}",
         method: :put,
         status: 200,
@@ -318,7 +318,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "search/2" do
     test "can search logins", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @login_search_url,
         method: :get,
         status: 200,
@@ -346,7 +346,7 @@ defmodule FusionAuth.LoginTest do
 
   describe "logout_user/3" do
     test "can logout user", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @logout_url,
         method: :post,
         status: 200,
