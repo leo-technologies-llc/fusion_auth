@@ -2,14 +2,14 @@ defmodule FusionAuth.UsersTest do
   use ExUnit.Case
 
   alias FusionAuth.Users
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
   @users_url "/api/user"
 
   setup do
     api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
     tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
-    client = FusionAuth.client(Helpers.base_url(), api_key, tenant_id)
+    client = FusionAuth.client(Mock.base_url(), api_key, tenant_id)
 
     {:ok, %{client: client}}
   end
@@ -18,7 +18,7 @@ defmodule FusionAuth.UsersTest do
     test "get_user_by_id/2 returns a 200 status code with the user based on the ID", %{
       client: client
     } do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/06da543e-df3e-4011-b122-a9ff04326599",
         method: :get,
         status: 200,
@@ -30,7 +30,7 @@ defmodule FusionAuth.UsersTest do
     end
 
     test "get_user_by_id/2 returns a 404 status code if the user is not found", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/12345",
         method: :get,
         status: 404,
@@ -46,7 +46,7 @@ defmodule FusionAuth.UsersTest do
     test "get_user_by_email/2 returns a 200 status code with the user based on the email", %{
       client: client
     } do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "?email=cogadmin@cogility.com",
         method: :get,
         status: 200,
@@ -60,7 +60,7 @@ defmodule FusionAuth.UsersTest do
     test "get_user_by_email/2 returns a 404 status code if the user is not found", %{
       client: client
     } do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "?email=invalid@invalid.com",
         method: :get,
         status: 404,
@@ -75,7 +75,7 @@ defmodule FusionAuth.UsersTest do
   describe "Get User by Username" do
     test "get_user_by_username/2 returns a 200 status code with the user based on the username",
          %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "?username=cogadmin",
         method: :get,
         status: 200,
@@ -88,7 +88,7 @@ defmodule FusionAuth.UsersTest do
     test "get_user_by_username/2 returns a 404 status code if the user is not found", %{
       client: client
     } do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "?username=invalid",
         method: :get,
         status: 404,
@@ -103,7 +103,7 @@ defmodule FusionAuth.UsersTest do
     test "create_user/2 returns the newly created user", %{client: client} do
       user = %{username: "johndoe", password: "password"}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url,
         method: :post,
         status: 200,
@@ -143,7 +143,7 @@ defmodule FusionAuth.UsersTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url,
         method: :post,
         status: 400,
@@ -160,7 +160,7 @@ defmodule FusionAuth.UsersTest do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
       updated_user = %{username: "updatedjohndoe"}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/#{user_id}",
         method: :patch,
         status: 200,
@@ -181,7 +181,7 @@ defmodule FusionAuth.UsersTest do
         "fieldErrors" => %{}
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/#{user_id}",
         method: :patch,
         status: 400,
@@ -199,7 +199,7 @@ defmodule FusionAuth.UsersTest do
          %{client: client} do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/#{user_id}",
         method: :delete,
         status: 200,
@@ -212,7 +212,7 @@ defmodule FusionAuth.UsersTest do
     test "delete_user/2 returns a 404 status code if the user is not found", %{client: client} do
       user_id = "abcde"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/#{user_id}",
         method: :delete,
         status: 404,
@@ -237,7 +237,7 @@ defmodule FusionAuth.UsersTest do
         "userIds" => user_ids
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/bulk",
         query_parameters: [
           userId: user_two,
@@ -260,7 +260,7 @@ defmodule FusionAuth.UsersTest do
     } do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/#{user_id}",
         query_parameters: [reactivate: true],
         method: :put,
@@ -279,7 +279,7 @@ defmodule FusionAuth.UsersTest do
       user_two = %{username: "usertwo"}
       users = [user_one, user_two]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/import",
         method: :post,
         status: 200,
@@ -300,7 +300,7 @@ defmodule FusionAuth.UsersTest do
         "fieldErrors" => %{}
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/import",
         method: :post,
         status: 400,
@@ -328,7 +328,7 @@ defmodule FusionAuth.UsersTest do
         startRow: 0
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/search",
         method: :post,
         status: 200,
@@ -349,7 +349,7 @@ defmodule FusionAuth.UsersTest do
         "fieldErrors" => %{}
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/search",
         method: :post,
         status: 400,
@@ -367,7 +367,7 @@ defmodule FusionAuth.UsersTest do
     } do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/recent-login",
         method: :get,
         query_parameters: [userId: user_id],
@@ -385,7 +385,7 @@ defmodule FusionAuth.UsersTest do
     } do
       user_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/recent-login",
         query_parameters: [userId: user_id],
         method: :get,
@@ -404,7 +404,7 @@ defmodule FusionAuth.UsersTest do
          %{client: client} do
       verification_id = "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/verify-email/#{verification_id}",
         method: :post,
         status: 200,
@@ -418,7 +418,7 @@ defmodule FusionAuth.UsersTest do
          %{client: client} do
       verification_id = "abcd"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/verify-email/#{verification_id}",
         method: :post,
         status: 400,
@@ -439,7 +439,7 @@ defmodule FusionAuth.UsersTest do
         "verificationId" => "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/verify-email?email=#{email}",
         method: :put,
         status: 200,
@@ -458,7 +458,7 @@ defmodule FusionAuth.UsersTest do
         "fieldErrors" => %{}
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/verify-email?email=#{email}",
         method: :put,
         status: 400,
@@ -479,7 +479,7 @@ defmodule FusionAuth.UsersTest do
         "changePasswordId" => "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/forgot-password",
         method: :post,
         status: 200,
@@ -498,7 +498,7 @@ defmodule FusionAuth.UsersTest do
         "changePasswordId" => "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/forgot-password",
         method: :post,
         status: 200,
@@ -513,7 +513,7 @@ defmodule FusionAuth.UsersTest do
          %{client: client} do
       login_id = "12345"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/forgot-password",
         method: :post,
         status: 400,
@@ -530,7 +530,7 @@ defmodule FusionAuth.UsersTest do
       change_password_id = "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
       password_data = %{current_password: "hello", password: "updated"}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/change-password/#{change_password_id}",
         method: :post,
         status: 200,
@@ -547,7 +547,7 @@ defmodule FusionAuth.UsersTest do
       change_password_id = "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
       password_data = %{}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/change-password/#{change_password_id}",
         method: :post,
         status: 400,
@@ -569,7 +569,7 @@ defmodule FusionAuth.UsersTest do
         loginId: "cogadmin@cogility.com"
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/change-password",
         method: :post,
         status: 200,
@@ -585,7 +585,7 @@ defmodule FusionAuth.UsersTest do
          %{client: client} do
       password_data = %{}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @users_url <> "/change-password",
         method: :post,
         status: 400,

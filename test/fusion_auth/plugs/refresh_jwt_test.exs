@@ -2,9 +2,9 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
   use ExUnit.Case
 
   alias FusionAuth.Plugs.RefreshJWT
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
-  @base_url Helpers.base_url()
+  @base_url Mock.base_url()
   @api_key "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
   @tenant_id "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
 
@@ -25,7 +25,7 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
 
   describe "call/2" do
     test "can generate new response headers", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         method: :post,
         status: 200,
@@ -46,7 +46,7 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
     end
 
     test "failure does not return response headers", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         method: :post,
         status: 422,
@@ -69,7 +69,7 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
         |> Plug.Conn.put_req_header("authorization", @token)
         |> Plug.Conn.put_req_header("refresh", @refresh)
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         method: :post,
         status: 200,

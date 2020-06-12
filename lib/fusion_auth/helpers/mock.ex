@@ -1,4 +1,4 @@
-defmodule FusionAuth.TestSupport.Helpers do
+defmodule FusionAuth.Helpers.Mock do
   @moduledoc false
 
   import Tesla.Mock

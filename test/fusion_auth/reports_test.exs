@@ -2,7 +2,7 @@ defmodule FusionAuth.ReportsTest do
   use ExUnit.Case
 
   alias FusionAuth.Reports
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
   @api_key "jnx6HeVRrLkulpwiUNh9s52qlJqp5dox77NcDVkf9YI"
   @invalid_api_key "invalid-key"
@@ -21,7 +21,7 @@ defmodule FusionAuth.ReportsTest do
 
   setup do
     application_id = Application.get_env(:fusion_auth, :application_id)
-    client = FusionAuth.client(Helpers.base_url(), @api_key, @tenant_id)
+    client = FusionAuth.client(Mock.base_url(), @api_key, @tenant_id)
 
     on_exit(fn ->
       Application.put_env(:fusion_auth, :application_id, application_id)
@@ -36,7 +36,7 @@ defmodule FusionAuth.ReportsTest do
     test "get_daily_active_users_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
       parameters = [applicationId: @application_id]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_daily_active_users_url,
         method: :get,
         status: 200,
@@ -58,10 +58,10 @@ defmodule FusionAuth.ReportsTest do
     end
 
     test "get_daily_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid" do
-      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      invalid_client = FusionAuth.client(Mock.base_url(), @invalid_api_key, @tenant_id)
       parameters = [applicationId: @application_id]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_daily_active_users_url,
         method: :get,
         status: 401,
@@ -91,7 +91,7 @@ defmodule FusionAuth.ReportsTest do
         userId: @user_id
       ]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_logins_url,
         method: :get,
         status: 200,
@@ -114,13 +114,13 @@ defmodule FusionAuth.ReportsTest do
     end
 
     test "get_login_report/4 send a 401 along with an empty JSON body when API key is not valid" do
-      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      invalid_client = FusionAuth.client(Mock.base_url(), @invalid_api_key, @tenant_id)
       parameters = [
         applicationId: @application_id,
         userId: @user_id
       ]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_logins_url,
         method: :get,
         status: 401,
@@ -147,7 +147,7 @@ defmodule FusionAuth.ReportsTest do
     test "get_monthly_active_users_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
       parameters = [applicationId: @application_id]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_monthly_active_users_url,
         method: :get,
         status: 200,
@@ -169,10 +169,10 @@ defmodule FusionAuth.ReportsTest do
     end
 
     test "get_monthly_active_users_report/4 send a 401 along with an empty JSON body when API key is not valid" do
-      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      invalid_client = FusionAuth.client(Mock.base_url(), @invalid_api_key, @tenant_id)
       parameters = [applicationId: @application_id]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_monthly_active_users_url,
         method: :get,
         status: 401,
@@ -199,7 +199,7 @@ defmodule FusionAuth.ReportsTest do
     test "get_registration_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
       parameters = [applicationId: @application_id]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_registration_url,
         method: :get,
         status: 200,
@@ -221,10 +221,10 @@ defmodule FusionAuth.ReportsTest do
     end
 
     test "get_registration_report/4 send a 401 along with an empty JSON body when API key is not valid" do
-      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
+      invalid_client = FusionAuth.client(Mock.base_url(), @invalid_api_key, @tenant_id)
       parameters = [applicationId: @application_id]
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_registration_url,
         method: :get,
         status: 401,
@@ -249,7 +249,7 @@ defmodule FusionAuth.ReportsTest do
 
   describe "Generate Totals Report" do
     test "get_totals_report/4 send a 200 along with a JSON body on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @reports_totals_url,
         method: :get,
         status: 200,
@@ -261,8 +261,8 @@ defmodule FusionAuth.ReportsTest do
     end
 
     test "get_totals_report/4 send a 401 along with an empty JSON body when API key is not valid" do
-      invalid_client = FusionAuth.client(Helpers.base_url(), @invalid_api_key, @tenant_id)
-      Helpers.mock_request(
+      invalid_client = FusionAuth.client(Mock.base_url(), @invalid_api_key, @tenant_id)
+      Mock.mock_request(
         path: @reports_totals_url,
         method: :get,
         status: 401,
