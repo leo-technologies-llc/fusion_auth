@@ -22,7 +22,7 @@ The following are the APIs that are currently implemented:
 - [ ] [System](https://fusionauth.io/docs/v1/tech/apis/system)
 - [ ] [Tenants](https://fusionauth.io/docs/v1/tech/apis/tenants)
 - [ ] [Themes](https://fusionauth.io/docs/v1/tech/apis/themes)
-- [ ] [Two Factor](https://fusionauth.io/docs/v1/tech/apis/two-factor)
+- [X] [Two Factor](https://fusionauth.io/docs/v1/tech/apis/two-factor)
 - [X] [Users](https://fusionauth.io/docs/v1/tech/apis/users)
 - [ ] [User Actions](https://fusionauth.io/docs/v1/tech/apis/user-actions)
 - [ ] [User Action Reasons](https://fusionauth.io/docs/v1/tech/apis/user-action-reasons)
