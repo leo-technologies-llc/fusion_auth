@@ -329,7 +329,7 @@ defmodule FusionAuth.Login do
       %Tesla.Env{...}}
   ```
 
-  For more information visit the FusionAuth API Documentation for [Logout a User](https://fusionauth.io/docs/v1/tech/apis/login#logout-a-user)
+  For more information visit the FusionAuth API Documentation for [Search Login Records](https://fusionauth.io/docs/v1/tech/apis/login#search-login-records)
   """
   @spec search(client(), search_parameters()) :: result()
   def search(client, search_parameters \\ %{}) do
