@@ -36,9 +36,18 @@ defmodule FusionAuth.ResponseTest do
                end)
     end
 
-    test "when success" do
+    test "when success w/list" do
       assert {:ok, [%{"id" => "id", "name" => "processed"}]} =
                Response.format(@success_payload, "groups", fn record ->
+                 Map.put(record, "name", "processed")
+               end)
+    end
+
+    test "when success w/map" do
+      response = {:ok, %{"group" => %{"id" => "id", "name" => "name"}}, %Tesla.Env{}}
+
+      assert {:ok, %{"id" => "id", "name" => "processed"}} =
+               Response.format(response, "group", fn record ->
                  Map.put(record, "name", "processed")
                end)
     end
