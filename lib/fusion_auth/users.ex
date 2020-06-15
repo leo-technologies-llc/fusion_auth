@@ -293,7 +293,7 @@ defmodule FusionAuth.Users do
 
   For more information visit the FusionAuth API Documentation for [Delete a User](https://fusionauth.io/docs/v1/tech/apis/users#delete-a-user).
   """
-  @spec delete_user(FusionAuth.client(), key: boolean()) :: FusionAuth.result()
+  @spec delete_user(FusionAuth.client(), String.t(), key: boolean()) :: FusionAuth.result()
   def delete_user(client, user_id, parameters \\ []) do
     Tesla.delete(client, @users_url <> "/#{user_id}" <> Utils.build_query_parameters(parameters))
     |> FusionAuth.result()
