@@ -2,7 +2,7 @@ defmodule FusionAuth.TwoFactorTest do
   use ExUnit.Case
 
   alias FusionAuth.TwoFactor
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
   @api_key "jnx6HeVRrLkulpwiUNh9s52qlJqp5dox77NcDVkf9YI"
   @tenant_id "d577a020-30cb-85de-bf30-785cb65997d6"
@@ -26,7 +26,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   setup do
     application_id = Application.get_env(:fusion_auth, :application_id)
-    client = FusionAuth.client(Helpers.base_url(), @api_key, @tenant_id)
+    client = FusionAuth.client(Mock.base_url(), @api_key, @tenant_id)
 
     on_exit(fn ->
       Application.put_env(:fusion_auth, :application_id, application_id)
@@ -39,7 +39,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Enable Two Factor Authentication by User Id" do
     test "enable_two_factor_by_user_id/5 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "/#{@user_id}",
         method: :post,
         status: 200,
@@ -57,7 +57,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "enable_two_factor_by_user_id/5 send a 404 when the user does not exist", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "/#{@invalid_user_id}",
         method: :post,
         status: 404,
@@ -75,7 +75,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "enable_two_factor_by_user_id/5 send a 421 when code request parameter is not valid", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "/#{@user_id}",
         method: :post,
         status: 421,
@@ -95,7 +95,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Enable Two Factor Authentication by JWT" do
     test "enable_two_factor_by_jwt/5 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url,
         method: :post,
         status: 200,
@@ -113,7 +113,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "enable_two_factor_by_jwt/5 send a 404 when the user does not exist", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url,
         method: :post,
         status: 404,
@@ -131,7 +131,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "enable_two_factor_by_jwt/5 send a 421 when code request parameter is not valid", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url,
         method: :post,
         status: 421,
@@ -151,7 +151,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Disable Two Factor by User Id" do
     test "disable_two_factor_by_user_id/3 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "/#{@user_id}?code=#{@code}",
         method: :delete,
         status: 200,
@@ -167,7 +167,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "disable_two_factor_by_user_id/3 send a 404 when the user does not exist", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "/#{@invalid_user_id}?code=#{@code}",
         method: :delete,
         status: 404,
@@ -183,7 +183,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "disable_two_factor_by_user_id/3 send a 421 when code request parameter is not valid", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "/#{@user_id}?code=#{@invalid_code}",
         method: :delete,
         status: 421,
@@ -201,7 +201,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Disable Two Factor by JWT" do
     test "disable_two_factor_by_jwt/3 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "?code=#{@code}",
         method: :delete,
         status: 200,
@@ -217,7 +217,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "disable_two_factor_by_jwt/3 send a 404 when the user does not exist", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "?code=#{@code}",
         method: :delete,
         status: 404,
@@ -233,7 +233,7 @@ defmodule FusionAuth.TwoFactorTest do
     end
 
     test "disable_two_factor_by_jwt/3 send a 421 when code request parameter is not valid", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_url <> "?code=#{@invalid_code}",
         method: :delete,
         status: 421,
@@ -251,7 +251,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Send a Two Factor code to an existing User by Id" do
     test "send_two_factor_code_by_user_id/3 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_send_url,
         method: :post,
         status: 200,
@@ -269,7 +269,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Send a Two Factor code to a mobile phone" do
     test "send_two_factor_code_to_mobile_phone/3 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_send_url,
         method: :post,
         status: 200,
@@ -287,7 +287,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Send a Two Factor code to complete Two Factor Login" do
     test "send_two_factor_code_to_complete_login/2 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_send_url <> "/#{@two_factor_id}",
         method: :post,
         status: 200,
@@ -304,7 +304,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Send a Two Factor code to an authenticated User using a JWT" do
     test "send_two_factor_code_by_jwt/2 send a 200 on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_send_url,
         method: :post,
         status: 200,
@@ -321,7 +321,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Generate a Two Factor Secret" do
     test "generate_secret/1 send a 200 along with a JSON body on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_secret_url,
         method: :get,
         status: 200,
@@ -334,7 +334,7 @@ defmodule FusionAuth.TwoFactorTest do
 
   describe "Generate a Two Factor Secret by JWT" do
     test "generate_secret_for_jwt/2 send a 200 along with a JSON body on successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @two_factor_secret_url,
         method: :get,
         status: 200,
