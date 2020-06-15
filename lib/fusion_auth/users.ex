@@ -225,12 +225,12 @@ defmodule FusionAuth.Users do
           number_of_results: integer() | nil,
           sort_fields: list(sort_field()) | nil,
           start_row: integer() | nil
-        }
+        } | map()
   @type sort_field() :: %{
           missing: String.t() | nil,
           name: String.t(),
           order: String.t() | nil
-        }
+        } | map()
 
   @doc """
   Create a new user. You must specify either the email or the username or both for the User. Either of these values
