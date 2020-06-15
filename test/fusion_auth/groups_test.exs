@@ -2,7 +2,7 @@ defmodule FusionAuth.GroupsTest do
   use ExUnit.Case
 
   alias FusionAuth.Groups
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
   @groups_url "/api/group"
   @members_url "/api/group/member"
@@ -40,13 +40,13 @@ defmodule FusionAuth.GroupsTest do
   setup do
     api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
     tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
-    client = FusionAuth.client(Helpers.base_url(), api_key, tenant_id)
+    client = FusionAuth.client(Mock.base_url(), api_key, tenant_id)
     {:ok, %{client: client}}
   end
 
   describe "get_groups/1" do
     test "returns list of groups", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url,
         method: :get,
         status: 200,
@@ -62,7 +62,7 @@ defmodule FusionAuth.GroupsTest do
     test "returns a 200 status code with the group based on the ID", %{client: client} do
       group_id = "06da543e-df3e-4011-b122-a9ff04326599"
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url <> "/#{group_id}",
         method: :get,
         status: 200,
@@ -73,7 +73,7 @@ defmodule FusionAuth.GroupsTest do
     end
 
     test "returns a 404 status code if the user is not found", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url <> "/12345",
         method: :get,
         status: 404,
@@ -86,7 +86,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "create_group/3" do
     test "creates group with roles", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url,
         method: :post,
         status: 200,
@@ -103,7 +103,7 @@ defmodule FusionAuth.GroupsTest do
     end
 
     test "creates group without roles", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url,
         method: :post,
         status: 200,
@@ -130,7 +130,7 @@ defmodule FusionAuth.GroupsTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url,
         method: :post,
         status: 400,
@@ -149,7 +149,7 @@ defmodule FusionAuth.GroupsTest do
     test "update group with roles", %{client: client} do
       group = Map.put(@group, "name", "Modified Group")
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url <> "/#{@group_id}",
         method: :patch,
         status: 200,
@@ -166,7 +166,7 @@ defmodule FusionAuth.GroupsTest do
     test "update group without roles", %{client: client} do
       group = Map.put(@group, "name", "Modified Group")
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url <> "/#{@group_id}",
         method: :patch,
         status: 200,
@@ -183,7 +183,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "delete_group/2" do
     test "can delete group", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @groups_url <> "/#{@group_id}",
         method: :delete,
         status: 200,
@@ -198,7 +198,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "add_member/3" do
     test "add member by user_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url,
         method: :post,
         status: 200,
@@ -216,7 +216,7 @@ defmodule FusionAuth.GroupsTest do
     end
 
     test "add member by member map", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url,
         method: :post,
         status: 200,
@@ -238,7 +238,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "add_members/3" do
     test "add member by user_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url,
         method: :post,
         status: 200,
@@ -260,7 +260,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "remove_member/2" do
     test "remove member by member_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url <> "/#{@member_id}",
         method: :delete,
         status: 200,
@@ -275,7 +275,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "remove_member/3" do
     test "remove member by group_id and user_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url,
         query_parameters: [
           groupId: @group_id,
@@ -294,7 +294,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "remove_members/2" do
     test "when list of member_ids", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url,
         method: :delete,
         status: 200,
@@ -307,7 +307,7 @@ defmodule FusionAuth.GroupsTest do
     end
 
     test "when group_id", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url,
         query_parameters: [
           groupId: @group_id
@@ -325,7 +325,7 @@ defmodule FusionAuth.GroupsTest do
 
   describe "remove_members/3" do
     test "remove member from group with user_ids", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @members_url,
         method: :delete,
         status: 200,

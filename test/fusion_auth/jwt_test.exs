@@ -2,7 +2,7 @@ defmodule FusionAuth.JWTTest do
   use ExUnit.Case
 
   alias FusionAuth.JWT
-  alias FusionAuth.TestSupport.Helpers
+  alias FusionAuth.Helpers.Mock
 
   @jwt_issue_url "/api/jwt/issue"
   @jwt_reconcile_url "/api/jwt/reconcile"
@@ -21,7 +21,7 @@ defmodule FusionAuth.JWTTest do
 
   setup do
     application_id = Application.get_env(:fusion_auth, :application_id)
-    client = FusionAuth.client(Helpers.base_url(), @api_key, @tenant_id)
+    client = FusionAuth.client(Mock.base_url(), @api_key, @tenant_id)
 
     on_exit(fn ->
       Application.put_env(:fusion_auth, :application_id, application_id)
@@ -36,7 +36,7 @@ defmodule FusionAuth.JWTTest do
     test "issue_jwt_by_application_id/4 send a 200 along with a JSON body on successful request", %{client: client} do
       resp_body = %{ "token" => @token }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_issue_url,
         query_parameters: [
           applicationId: @application_id,
@@ -54,7 +54,7 @@ defmodule FusionAuth.JWTTest do
     test "issue_jwt_by_application_id/4 send a 202 along with a JSON body on successful but denied request", %{client: client} do
       resp_body = %{ "token" => @token }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_issue_url,
         query_parameters: [
           applicationId: @application_id,
@@ -70,7 +70,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "issue_jwt_by_application_id/4 sends 401 on invalid Authorization header", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_issue_url,
         query_parameters: [
           applicationId: @application_id,
@@ -90,7 +90,7 @@ defmodule FusionAuth.JWTTest do
     test "reconcile_jwt/4 returns a 200 status code for successful request", %{client: client} do
       data = %{ "token" => @token }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_reconcile_url,
         method: :post,
         status: 200,
@@ -104,7 +104,7 @@ defmodule FusionAuth.JWTTest do
     test "reconcile_jwt/4 returns a 400 when the request was invalid and/or malformed", %{client: client} do
       data = %{ "token" => @token}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_reconcile_url,
         method: :post,
         status: 400,
@@ -118,7 +118,7 @@ defmodule FusionAuth.JWTTest do
     test "reconcile_jwt/4 returns a 401 when the request cannot be completed", %{client: client} do
       data = %{ "token" => @token}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_reconcile_url,
         method: :post,
         status: 401,
@@ -132,7 +132,7 @@ defmodule FusionAuth.JWTTest do
     test "reconcile_jwt/4 returns a 404 when the user is not found or the password is incorrect", %{client: client} do
       data = %{ "token" => @token}
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_reconcile_url,
         method: :post,
         status: 404,
@@ -146,7 +146,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Retrieve all Public Keys" do
     test "get_public_keys/1 returns a 200 status code for successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_public_key_url,
         method: :get,
         status: 200,
@@ -157,7 +157,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "get_public_keys/1 returns a 401 status code for incorrect Authorization header", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_public_key_url,
         method: :get,
         status: 401,
@@ -170,7 +170,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Retrieve a single Public Key for a specific Application by Application ID" do
     test "get_public_key_by_application_id/2 returns a 200 status code for successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_public_key_url,
         query_parameters: [
           applicationId: @application_id
@@ -185,11 +185,11 @@ defmodule FusionAuth.JWTTest do
 
     test "get_public_key_by_application_id/2 returns a 401 status code for incorrect Authorization header" do
       invalid_client = FusionAuth.client(
-        Helpers.base_url(),
+        Mock.base_url(),
         "-b6xI0gKV4ae2WKdcnnsEfaqgHR7u_m2MlQBQZWmCRk",
         @tenant_id
       )
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_public_key_url,
         query_parameters: [
           applicationId: @application_id
@@ -203,7 +203,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "get_public_key_by_application_id/2 returns a 404 status code when object doesn't exist", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_public_key_url,
         query_parameters: [
           applicationId: "asdf"
@@ -219,7 +219,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Retrieve a single Public Key by Key Identifier" do
     test "get_public_key_by_key_id/2 returns a 200 status code for successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_public_key_url,
         query_parameters: [
           kid: @public_key_id
@@ -233,7 +233,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "get_public_key_by_key_id/2 returns a 401 status code for incorrect Authorization header", %{client: client} do
-        Helpers.mock_request(
+        Mock.mock_request(
           path: @jwt_public_key_url,
           query_parameters: [
             kid: @public_key_id
@@ -247,7 +247,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "get_public_key_by_key_id/2 returns a 404 status code when object doesn't exist", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_public_key_url,
         query_parameters: [
           kid: @public_key_id
@@ -263,7 +263,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Request a new Access Token by presenting a valid Refresh Token" do
     test "refresh_jwt/3 returns a 200 status code for successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         method: :post,
         status: 200,
@@ -276,7 +276,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Retrieve Refresh Tokens issued to a User by User ID" do
     test "get_user_refresh_tokens_by_user_id/2 returns a 200 status code for successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         query_parameters: [
           userId: @user_id
@@ -290,7 +290,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "get_user_refresh_tokens_by_user_id/2 returns a 401 status code for incorrect Authorization header", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         query_parameters: [
           userId: @user_id
@@ -306,7 +306,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Retrieve Refresh Tokens issued to a User" do
     test "get_user_refresh_tokens/2 returns a 200 status code for a successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         method: :get,
         status: 200,
@@ -317,7 +317,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "get_user_refresh_tokens/2 returns a 401 status code for invalid Authorization header", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         method: :get,
         status: 401,
@@ -330,7 +330,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Revoke all Refresh Tokens for an entire Application by Application ID" do
     test "revoke_refresh_tokens_by_application_id/2 returns a 200 status code for a successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         query_parameters: [
           applicationId: @application_id
@@ -346,7 +346,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Revoke all Refresh Tokens issued to a User by User ID" do
     test "revoke_refresh_tokens_by_user_id/2 returns a 200 for success", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         query_parameters: [
           userId: @user_id
@@ -360,7 +360,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "revoke_refresh_tokens_by_user_id/2 returns a 401 when you did not supply Authorization header", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         query_parameters: [
           userId: @user_id
@@ -375,7 +375,7 @@ defmodule FusionAuth.JWTTest do
 
     test "revoke_refresh_tokens_by_user_id/2 returns a 404 when object doesn't exist", %{client: client} do
       invalid_user_id = "123456789"
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         query_parameters: [
           userId: invalid_user_id
@@ -391,7 +391,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Revoke a single Refresh Token" do
     test "revoke_refresh_token/2 return a 200 status code for a successful request", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_refresh_url,
         query_parameters: [
           token: @refresh_token
@@ -420,7 +420,7 @@ defmodule FusionAuth.JWTTest do
         }
       }
 
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_validate_url,
         method: :get,
         status: 200,
@@ -431,7 +431,7 @@ defmodule FusionAuth.JWTTest do
     end
 
     test "validate_jwt/2 returns a 401 status code for an invalid access token", %{client: client} do
-      Helpers.mock_request(
+      Mock.mock_request(
         path: @jwt_validate_url,
         method: :get,
         status: 401,
