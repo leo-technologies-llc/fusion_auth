@@ -1,13 +1,13 @@
 defmodule FusionAuth.Response do
   @moduledoc """
-  The `FusionAuth.Reports` module provides functions to format the response from FusionAuth.result.
+  The `FusionAuth.Response` module provides functions to format the response from FusionAuth.result.
 
   ## Example
 
   ```
     iex> FusionAuth.client()
-    iex> |> FusionAuth.Groups.get_groups()
-    iex> |> FusionAuth.Response.format("groups", &atomize_keys/1)
+         |> FusionAuth.Groups.get_groups()
+         |> FusionAuth.Response.format("groups", &atomize_keys/1)
 
     {:ok, [%{id: "id", name: "name"}]
   ```
