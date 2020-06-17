@@ -19,7 +19,7 @@ defmodule FusionAuth.Helpers.Mock do
 
     mock(fn
       %{method: ^method, url: ^url} ->
-        {:ok, %Tesla.Env{status: status, body: response_body}}
+        {:ok, %Tesla.Env{status: status, body: response_body, url: url}}
     end)
   end
 
