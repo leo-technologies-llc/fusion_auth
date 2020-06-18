@@ -17,10 +17,21 @@ defmodule FusionAuth.Helpers.Mock do
     response_body = Keyword.get(opts, :response_body)
     url = build_url(base_url, path, query_parameters)
 
-    mock(fn
-      %{method: ^method, url: ^url} ->
-        {:ok, %Tesla.Env{status: status, body: response_body}}
-    end)
+    case Keyword.get(opts, :include_url, false) do
+      true ->
+        mock(fn
+          %{method: ^method, url: ^url} ->
+            {:ok, %Tesla.Env{status: status, body: response_body, url: url}}
+        end)
+
+      false ->
+        mock(fn
+          %{method: ^method, url: ^url} ->
+            {:ok, %Tesla.Env{status: status, body: response_body}}
+        end)
+    end
+
+
   end
 
   @doc false
