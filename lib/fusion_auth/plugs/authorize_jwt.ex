@@ -84,12 +84,6 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
       claims
       |> Recase.Enumerable.atomize_keys(@formatter[key_format])
 
-  defp case_keys(claims, :underscore),
-    do: Recase.Enumerable.convert_keys(claims, &Recase.to_snake/1)
-
-  defp case_keys(claims, :camelcase),
-    do: Recase.Enumerable.convert_keys(claims, &Recase.to_camel/1)
-
   defp check_access_roles(%{"roles" => roles}) do
     case Application.get_env(:fusion_auth, :enable_access_roles, false) do
       false -> true
