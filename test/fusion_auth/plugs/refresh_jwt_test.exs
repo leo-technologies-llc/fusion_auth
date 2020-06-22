@@ -30,8 +30,7 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
         method: :post,
         status: 200,
         response_body: %{
-          "token" => "new_token",
-          "refreshToken" => "new_refresh_token"
+          "token" => "new_token"
         }
       )
 
@@ -42,7 +41,6 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
       result = test_fn.(response)
 
       assert ["new_token"] = Plug.Conn.get_resp_header(result, "authorization")
-      assert ["new_refresh_token"] = Plug.Conn.get_resp_header(result, "refresh")
     end
 
     test "failure does not return response headers", %{client: client} do
@@ -60,7 +58,6 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
       result = test_fn.(response)
 
       assert [] = Plug.Conn.get_resp_header(result, "authorization")
-      assert [] = Plug.Conn.get_resp_header(result, "refresh")
     end
 
     test "missing token does not return response headers", %{client: client} do
@@ -83,7 +80,6 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
       result = test_fn.(response)
 
       assert [] = Plug.Conn.get_resp_header(result, "authorization")
-      assert [] = Plug.Conn.get_resp_header(result, "refresh")
     end
   end
 

@@ -40,16 +40,12 @@ defmodule FusionAuth.Plugs.RefreshJWT do
     Plug.Conn.register_before_send(conn, fn conn ->
       with {:ok, token} <- Utils.fetch_token(conn),
            {:ok, refresh} <- Utils.fetch_refresh(conn),
-           {:ok, %{"token" => new_token, "refreshToken" => new_refresh}, _} <-
+           {:ok, %{"token" => new_token}, _} <-
              FusionAuth.JWT.refresh_jwt(client, refresh, token) do
         conn
         |> Plug.Conn.put_resp_header(
           Application.get_env(:fusion_auth, :token_header_key),
           new_token
-        )
-        |> Plug.Conn.put_resp_header(
-          Application.get_env(:fusion_auth, :refresh_header_key),
-          new_refresh
         )
       else
         _ ->
