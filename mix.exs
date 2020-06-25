@@ -1,18 +1,23 @@
 defmodule FusionAuth.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @url "https://github.com/Cogility/fusion_auth"
+  @name "FusionAuth"
+  @description "Elixir SDK for #{@name}"
+
   def project do
     [
       app: :fusion_auth,
-      version: "1.0.0",
+      version: @version,
       elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      description: description(),
       package: package(),
+      name: @name,
       source_url: "https://github.com/Cogility/fusion_auth",
-      docs: [main: "FusionAuth"],
+      docs: [main: @name, source_ref: "v#{@version}", source_url: @url],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -44,15 +49,19 @@ defmodule FusionAuth.MixProject do
     ]
   end
 
-  defp description() do
-    "Elixir SDK for FusionAuth APIs"
-  end
-
   defp package() do
     [
-      name: "fusion_auth",
-      licenses: ["MIT License"],
-      links: %{"GitHub" => "https://github.com/Cogility/fusion_auth"}
+      description: @description,
+      files: ["lib", "config", "mix.exs", "README*"],
+      maintainers: [
+        "Brennan Karrer",
+        "Shawn Liang",
+        "Christopher Kempton",
+        "Maurice Roy",
+        "Axl Jon Dela Cruz"
+      ],
+      licenses: ["MIT"],
+      links: %{github: @url}
     ]
   end
 end
