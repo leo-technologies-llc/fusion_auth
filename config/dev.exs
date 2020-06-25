@@ -5,4 +5,8 @@ config :fusion_auth,
   api_url: System.get_env("FUSION_AUTH_URL"),
   tenant_id: System.get_env("FUSION_AUTH_TENANT_ID"),
   application_id: System.get_env("FUSION_AUTH_APPLICATION_ID"),
-  enable_jwt: true
+  enable_jwt: true,
+  token_header_key: "authorization",
+  refresh_header_key: "refresh",
+  enable_access_roles: false,
+  access_roles: ["superadmin", "admin", "user"]

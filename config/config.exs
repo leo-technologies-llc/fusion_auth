@@ -9,13 +9,18 @@ use Mix.Config
 # third-party users, it should be done in your "mix.exs" file.
 
 # You can configure your application as:
-#
-#     config :fusion_auth,
-#       api_key: "FUSION_AUTH_API_KEY",
-#       api_url: "FUSION_AUTH_URL"
-#       tenant_id: "FUSION_AUTH_TENANT_ID"
-#       application_id: "FUSION_AUTH_APPLICATION_ID"
-#       enable_jwt: true || false
+
+# config :fusion_auth,
+#   api_key: "FUSION_AUTH_API_KEY",
+#   api_url: "FUSION_AUTH_URL",
+#   tenant_id: "FUSION_AUTH_TENANT_ID",
+#   application_id: "FUSION_AUTH_APPLICATION_ID",
+#   enable_jwt: true,
+#   token_header_key: "authorization"
+#   refresh_header_key: "refresh"
+#   enable_access_roles: false,
+#   access_roles: ["superadmin", "admin", "user"]
+
 #
 # and access this configuration in your application as:
 #

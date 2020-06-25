@@ -225,12 +225,12 @@ defmodule FusionAuth.Users do
           number_of_results: integer() | nil,
           sort_fields: list(sort_field()) | nil,
           start_row: integer() | nil
-        }
+        } | map()
   @type sort_field() :: %{
           missing: String.t() | nil,
           name: String.t(),
           order: String.t() | nil
-        }
+        } | map()
 
   @doc """
   Create a new user. You must specify either the email or the username or both for the User. Either of these values
@@ -293,7 +293,7 @@ defmodule FusionAuth.Users do
 
   For more information visit the FusionAuth API Documentation for [Delete a User](https://fusionauth.io/docs/v1/tech/apis/users#delete-a-user).
   """
-  @spec delete_user(FusionAuth.client(), key: boolean()) :: FusionAuth.result()
+  @spec delete_user(FusionAuth.client(), String.t(), key: boolean()) :: FusionAuth.result()
   def delete_user(client, user_id, parameters \\ []) do
     Tesla.delete(client, @users_url <> "/#{user_id}" <> Utils.build_query_parameters(parameters))
     |> FusionAuth.result()
