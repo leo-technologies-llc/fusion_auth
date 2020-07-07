@@ -37,13 +37,6 @@ defmodule FusionAuth.GroupsTest do
     "userId" => @user_id
   }
 
-  @member_with_data %{
-    "data" => %{"name" => "test group"},
-    "id" => @member_id,
-    "insertInstant" => 1_591_303_565_005,
-    "userId" => @user_id
-  }
-
   setup do
     api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
     tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
@@ -238,28 +231,6 @@ defmodule FusionAuth.GroupsTest do
 
       {:ok, %{"members" => %{@group_id => [member]}}, _} =
         Groups.add_member(client, @group_id, member)
-
-      assert member["userId"] == @user_id
-    end
-  end
-
-  describe "add_member/4" do
-    test "add member by user_id with custom data", %{client: client} do
-      Mock.mock_request(
-        path: @members_url,
-        method: :post,
-        status: 200,
-        response_body: %{
-          "members" => %{
-            @group_id => [@member_with_data]
-          }
-        }
-      )
-
-      data = %{name: "test group"}
-
-      {:ok, %{"members" => %{@group_id => [member]}}, _} =
-        Groups.add_member(client, @group_id, @user_id, data)
 
       assert member["userId"] == @user_id
     end
