@@ -163,6 +163,15 @@ defmodule FusionAuth.Groups do
     do: add_members(client, group_id, [member])
 
   @doc """
+  Add member to a group by user_id with custom data
+
+  For more information visit the FusionAuth API Documentation for [Add Users to a Group](https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
+  """
+  @spec add_member(client(), group_id(), user_id(), map()) :: result()
+  def add_member(client, group_id, user_id, data \\ %{}) when is_binary(user_id),
+    do: add_members(client, group_id, [%{userId: user_id, data: data}])
+
+  @doc """
   Add multiple members to a group.
 
   For more information visit the FusionAuth API Documentation for [Add Users to a Group](https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
