@@ -10,7 +10,7 @@ defmodule FusionAuth.MixProject do
     [
       app: :fusion_auth,
       version: @version,
-      elixir: "~> 1.10",
+      elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
