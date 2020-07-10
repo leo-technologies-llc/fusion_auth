@@ -1,10 +1,6 @@
 defmodule FusionAuth.Plugs.AuthorizeJWT do
   @moduledoc """
   The `FusionAuth.Plugs.AuthorizeJWT` module provides authentication of JWT tokens on incoming requests.
-  Enabling access roles will can be utilized to ensure the user making the request has the proper roles. If
-  the users roles dont match one of the specified roles in the config a 401 response will be sent. This option
-  is useful when implementing Single Sign On (SSO) applications where groups/roles are used to segment what
-  application a user has access to.
 
   ## Examples
 
@@ -12,9 +8,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     config/{env}.exs
 
     config :fusion_auth,
-      token_header_key: "authorization",
-      enable_access_roles: false,
-      access_roles: ["superadmin", "admin", "user"]
+      token_header_key: "authorization"
   ```
 
   ```
@@ -59,8 +53,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     client = options[:client] || FusionAuth.client()
 
     with {:ok, token} <- Utils.fetch_token(conn),
-         {:ok, claims} <- verify_token(client, token),
-         true <- check_access_roles(claims) do
+         {:ok, claims} <- verify_token(client, token) do
       Plug.Conn.assign(
         conn,
         options[:conn_key],
@@ -84,19 +77,10 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
       claims
       |> Recase.Enumerable.atomize_keys(@formatter[key_format])
 
-  defp check_access_roles(%{"roles" => roles}) do
-    case Application.get_env(:fusion_auth, :enable_access_roles, false) do
-      false -> true
-      true -> Enum.any?(access_roles(), &Enum.member?(roles, &1))
-    end
-  end
-
   defp verify_token(client, token) do
     case FusionAuth.JWT.validate_jwt(client, token) do
       {:ok, %{"jwt" => claims}, _} -> {:ok, claims}
       _ -> :error
     end
   end
-
-  defp access_roles(), do: Application.get_env(:fusion_auth, :access_roles, [])
 end

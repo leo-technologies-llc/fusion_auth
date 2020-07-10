@@ -7,6 +7,4 @@ config :fusion_auth,
   application_id: System.get_env("FUSION_AUTH_APPLICATION_ID"),
   enable_jwt: true,
   token_header_key: "authorization",
-  refresh_header_key: "refresh",
-  enable_access_roles: false,
-  access_roles: ["superadmin", "admin", "user"]
+  refresh_header_key: "refresh"
