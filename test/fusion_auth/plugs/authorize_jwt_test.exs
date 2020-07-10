@@ -150,35 +150,6 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
     end
   end
 
-  describe "call/2 [enabled_access_roles: true]" do
-    setup do
-      enable_access_roles = Application.get_env(:fusion_auth, :enable_access_roles)
-
-      Application.put_env(:fusion_auth, :enable_access_roles, true)
-
-      on_exit(fn ->
-        Application.put_env(:fusion_auth, :enable_access_roles, enable_access_roles)
-      end)
-
-      :ok
-    end
-
-    test "invalid roles" do
-      Mock.mock_request(
-        path: @validate_jwt_url,
-        method: :get,
-        status: 200,
-        response_body: put_in(@valid_response, ["jwt", "roles"], ["superuser"]),
-        headers: [authorization: "JWT" <> @token]
-      )
-
-      assert %Plug.Conn{status: 401, halted: true} =
-               conn()
-               |> Plug.Conn.put_req_header("authorization", "Bearer " <> @token)
-               |> AuthorizeJWT.call()
-    end
-  end
-
   defp mock_http_request() do
     Mock.mock_request(
       path: @validate_jwt_url,
