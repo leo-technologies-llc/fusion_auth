@@ -49,7 +49,7 @@ defmodule FusionAuth.AuditLogs do
           start: integer() | nil,
           startRow: integer() | nil,
           user: String.t() | nil
-        }
+        } | map()
   @type export_criteria :: %{
           end: integer() | nil,
           message: String.t() | nil,
