@@ -5,7 +5,7 @@ The fusion_auth library provides an Elixir API for accessing the [FusionAuth Dev
 The following are the APIs that are currently implemented:
 - [ ] [Actioning Users](https://fusionauth.io/docs/v1/tech/apis/actioning-users)
 - [X] [Applications](https://fusionauth.io/docs/v1/tech/apis/applications)
-- [ ] [Audit Logs](https://fusionauth.io/docs/v1/tech/apis/audit-logs)
+- [X] [Audit Logs](https://fusionauth.io/docs/v1/tech/apis/audit-logs)
 - [ ] [Consent](https://fusionauth.io/docs/v1/tech/apis/consent)
 - [ ] [Emails](https://fusionauth.io/docs/v1/tech/apis/emails)
 - [ ] [Event Logs](https://fusionauth.io/docs/v1/tech/apis/event-logs)

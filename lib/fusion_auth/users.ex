@@ -24,7 +24,7 @@ defmodule FusionAuth.Users do
     - email :: String.t()\n
       The User’s email address.
 
-    - expiry :: float()\n
+    - expiry :: integer()\n
       The expiration instant of the User’s account. An expired user is not permitted to login.
 
     - firstName :: String.t()\n
@@ -39,10 +39,10 @@ defmodule FusionAuth.Users do
     - imageUrl :: String.t()\n
       The URL that points to an image file that is the User’s profile image.
 
-    - insertInstant :: float()\n
+    - insertInstant :: integer()\n
       The instant when user was created.
 
-    - lastLoginInstant :: float()\n
+    - lastLoginInstant :: integer()\n
       The instant when the User logged in last.
 
     - lastName :: String.t()\n
@@ -60,7 +60,7 @@ defmodule FusionAuth.Users do
     - passwordChangeRequired :: boolean()\n
       Indicates that the User’s password needs to be changed during their next login attempt.
 
-    - passwordLastUpdateInstant :: float()\n
+    - passwordLastUpdateInstant :: integer()\n
       The instant that the User last changed their password.
 
     - preferredLanguages :: list()\n
@@ -216,21 +216,21 @@ defmodule FusionAuth.Users do
   """
   alias FusionAuth.Utils
 
-  @users_url "/api/user"
-
   @type search_criteria() :: %{
           ids: list() | nil,
           query: String.t() | nil,
-          query_string: String.t() | nil,
-          number_of_results: integer() | nil,
-          sort_fields: list(sort_field()) | nil,
-          start_row: integer() | nil
+          queryString: String.t() | nil,
+          numberOfResults: integer() | nil,
+          sortFields: list(sort_field()) | nil,
+          startRow: integer() | nil
         } | map()
   @type sort_field() :: %{
           missing: String.t() | nil,
           name: String.t(),
           order: String.t() | nil
         } | map()
+
+  @users_url "/api/user"
 
   @doc """
   Create a new user. You must specify either the email or the username or both for the User. Either of these values

@@ -25,3 +25,5 @@ fusion_auth-*.tar
 # Editor
 .vscode/
 
+# Env
+.env
