@@ -42,6 +42,8 @@ defmodule FusionAuth.JWT do
   """
   @spec issue_jwt_by_application_id(client(), String.t(), String.t(), String.t()) :: result()
   def issue_jwt_by_application_id(client, token, application_id, refresh_token) do
+    client = jwt_client(client, "Bearer #{token}")
+
     parameters = [
       applicationId: application_id,
       refreshToken: refresh_token
@@ -49,8 +51,7 @@ defmodule FusionAuth.JWT do
 
     Tesla.get(
       client,
-      @jwt_issue_url <> Utils.build_query_parameters(parameters),
-      headers: [{"Authorization", "Bearer " <> token}]
+      @jwt_issue_url <> Utils.build_query_parameters(parameters)
     )
     |> FusionAuth.result()
   end
@@ -185,10 +186,11 @@ defmodule FusionAuth.JWT do
   """
   @spec get_user_refresh_tokens(client(), String.t()) :: result()
   def get_user_refresh_tokens(client, token) do
+    client = jwt_client(client, "Bearer #{token}")
+
     Tesla.get(
       client,
-      @jwt_refresh_url,
-      headers: [{"Authorization", "Bearer " <> token}]
+      @jwt_refresh_url
     )
     |> FusionAuth.result()
   end
@@ -285,11 +287,30 @@ defmodule FusionAuth.JWT do
   """
   @spec validate_jwt(client(), String.t()) :: result()
   def validate_jwt(client, token) do
+    client = jwt_client(client, "JWT #{token}")
+
     Tesla.get(
       client,
-      @jwt_validate_url,
-      headers: [{"Authorization", "JWT " <> token}]
+      @jwt_validate_url
     )
     |> FusionAuth.result()
+  end
+
+  defp jwt_client(client, authorization) do
+    tenant_id = Application.get_env(:fusion_auth, :tenant_id)
+    config = Map.get(client, :pre)
+
+    headers =
+      {Tesla.Middleware.Headers, :call,
+       [
+         [
+           {"X-FusionAuth-TenantId", tenant_id},
+           {"Authorization", authorization}
+         ]
+       ]}
+
+    {_, config} = List.pop_at(config, -1)
+
+    Map.put(client, :pre, [headers | config])
   end
 end
