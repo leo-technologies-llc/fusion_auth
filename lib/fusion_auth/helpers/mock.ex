@@ -30,8 +30,6 @@ defmodule FusionAuth.Helpers.Mock do
             {:ok, %Tesla.Env{status: status, body: response_body}}
         end)
     end
-
-
   end
 
   @doc false
@@ -41,5 +39,11 @@ defmodule FusionAuth.Helpers.Mock do
 
   defp build_url(base_url, path, query_parameters) do
     base_url <> path <> Utils.build_query_parameters(query_parameters)
+  end
+
+  def create_token() do
+    FusionAuth.client()
+    |> FusionAuth.Login.login_user("email", "password")
+    |> FusionAuth.Response.format()
   end
 end
