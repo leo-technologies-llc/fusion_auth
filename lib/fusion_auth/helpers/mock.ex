@@ -35,15 +35,16 @@ defmodule FusionAuth.Helpers.Mock do
   @doc false
   def base_url(), do: "http://localhost:9011"
 
-  defp build_url(base_url, path, []), do: base_url <> path
-
-  defp build_url(base_url, path, query_parameters) do
-    base_url <> path <> Utils.build_query_parameters(query_parameters)
-  end
-
+  @doc false
   def create_token() do
     FusionAuth.client()
     |> FusionAuth.Login.login_user("email", "password")
     |> FusionAuth.Response.format()
+  end
+
+  defp build_url(base_url, path, []), do: base_url <> path
+
+  defp build_url(base_url, path, query_parameters) do
+    base_url <> path <> Utils.build_query_parameters(query_parameters)
   end
 end
