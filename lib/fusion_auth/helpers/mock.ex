@@ -30,12 +30,17 @@ defmodule FusionAuth.Helpers.Mock do
             {:ok, %Tesla.Env{status: status, body: response_body}}
         end)
     end
-
-
   end
 
   @doc false
   def base_url(), do: "http://localhost:9011"
+
+  @doc false
+  def create_token() do
+    FusionAuth.client()
+    |> FusionAuth.Login.login_user("email", "password")
+    |> FusionAuth.Response.format()
+  end
 
   defp build_url(base_url, path, []), do: base_url <> path
 
