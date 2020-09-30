@@ -216,19 +216,23 @@ defmodule FusionAuth.Users do
   """
   alias FusionAuth.Utils
 
-  @type search_criteria() :: %{
-          ids: list() | nil,
-          query: String.t() | nil,
-          queryString: String.t() | nil,
-          numberOfResults: integer() | nil,
-          sortFields: list(sort_field()) | nil,
-          startRow: integer() | nil
-        } | map()
-  @type sort_field() :: %{
-          missing: String.t() | nil,
-          name: String.t(),
-          order: String.t() | nil
-        } | map()
+  @type search_criteria() ::
+          %{
+            ids: list() | nil,
+            query: String.t() | nil,
+            queryString: String.t() | nil,
+            numberOfResults: integer() | nil,
+            sortFields: list(sort_field()) | nil,
+            startRow: integer() | nil
+          }
+          | map()
+  @type sort_field() ::
+          %{
+            missing: String.t() | nil,
+            name: String.t(),
+            order: String.t() | nil
+          }
+          | map()
 
   @users_url "/api/user"
 
@@ -280,7 +284,7 @@ defmodule FusionAuth.Users do
   """
   @spec update_user(FusionAuth.client(), String.t(), map()) :: FusionAuth.result()
   def update_user(client, user_id, user) do
-    Tesla.patch(client, @users_url <> "/#{user_id}", %{user: user}) |> FusionAuth.result()
+    Tesla.put(client, @users_url <> "/#{user_id}", %{user: user}) |> FusionAuth.result()
   end
 
   @doc """
