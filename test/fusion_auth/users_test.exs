@@ -162,7 +162,7 @@ defmodule FusionAuth.UsersTest do
 
       Mock.mock_request(
         path: @users_url <> "/#{user_id}",
-        method: :patch,
+        method: :put,
         status: 200,
         body: updated_user,
         response_body: %{}
@@ -183,7 +183,7 @@ defmodule FusionAuth.UsersTest do
 
       Mock.mock_request(
         path: @users_url <> "/#{user_id}",
-        method: :patch,
+        method: :put,
         status: 400,
         body: updated_user,
         response_body: response_body
