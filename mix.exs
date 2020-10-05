@@ -46,8 +46,10 @@ defmodule FusionAuth.MixProject do
       {:hackney, "~> 1.16.0"},
       {:jason, ">= 1.0.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:recase, path: "~/cogility/recase", override: true},
-      # {:recase, git: "https://github.com/kempt09/recase.git"},
+      {:recase,
+       git: "https://github.com/kempt09/recase.git",
+       branch: "mo/task/ve-1004-replace-caseformatter",
+       override: true},
       {:excoveralls, "~> 0.10", only: :test}
     ]
   end
