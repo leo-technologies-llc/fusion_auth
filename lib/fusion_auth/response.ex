@@ -36,10 +36,18 @@ defmodule FusionAuth.Response do
     {:ok, process(payload, formatter)}
   end
 
+  @spec format(result(), String.t(), fun(), fun()) :: {:ok, map() | list()}
+  def format({:ok, data, _}, payload_key, formatter, format_helper) do
+    payload = Map.get(data, payload_key, nil)
+    {:ok, process(payload, formatter, format_helper)}
+  end
+
   defp process(nil, _), do: nil
 
   defp process(data, formatter) when is_list(data),
     do: Enum.map(data, &process(&1, formatter))
 
   defp process(data, formatter) when is_map(data), do: formatter.(data)
+
+  defp process(data, formatter, format_helper) when is_map(data), do: formatter.(data, format_helper)
 end
