@@ -258,6 +258,16 @@ defmodule FusionAuth.Users do
   end
 
   @doc """
+  Get a user by the user’s login ID.
+
+  For more information visit the FusionAuth API Documentation for [Retrieve a User](https://fusionauth.io/docs/v1/tech/apis/users#retrieve-a-user).
+  """
+  @spec get_user_by_login_id(FusionAuth.client(), String.t()) :: FusionAuth.result()
+  def get_user_by_login_id(client, login_id) do
+    Tesla.get(client, @users_url <> "?loginId=#{login_id}") |> FusionAuth.result()
+  end
+
+  @doc """
   Get a user by the user’s email.
 
   For more information visit the FusionAuth API Documentation for [Retrieve a User](https://fusionauth.io/docs/v1/tech/apis/users#retrieve-a-user).

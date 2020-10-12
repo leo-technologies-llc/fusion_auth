@@ -42,6 +42,36 @@ defmodule FusionAuth.UsersTest do
     end
   end
 
+  describe "Get User by login ID" do
+    test "get_user_by_login_id/2 returns a 200 status code with the user based on the login ID", %{
+      client: client
+    } do
+      Mock.mock_request(
+        path: @users_url <> "?loginId=cogadmin@cogility.com",
+        method: :get,
+        status: 200,
+        response_body: %{}
+      )
+
+      assert {:ok, %{}, %Tesla.Env{status: 200}} =
+               Users.get_user_by_login_id(client, "cogadmin@cogility.com")
+    end
+
+    test "get_user_by_login_id/2 returns a 404 status code if the user is not found", %{
+      client: client
+    } do
+      Mock.mock_request(
+        path: @users_url <> "?loginId=invalid@invalid.com",
+        method: :get,
+        status: 404,
+        response_body: ""
+      )
+
+      assert {:error, "", %Tesla.Env{status: 404}} =
+               Users.get_user_by_login_id(client, "invalid@invalid.com")
+    end
+  end
+
   describe "Get User by Email" do
     test "get_user_by_email/2 returns a 200 status code with the user based on the email", %{
       client: client
