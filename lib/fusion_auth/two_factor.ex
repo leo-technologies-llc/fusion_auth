@@ -204,8 +204,7 @@ defmodule FusionAuth.TwoFactor do
   ## Examples
       iex> client = FusionAuth.client()
       iex> user_id = "fffc8648-bab2-4bdd-b2eb-a48e853d9217"
-      iex> secret = "Jgg8eQTTcXJeHdfPRv1q"
-      iex> FusionAuth.TwoFactor.send_two_factor_code_by_user_id(client, user_id, secret)
+      iex> FusionAuth.TwoFactor.send_two_factor_code_by_user_id(client, user_id)
       {
         :ok,
         "",
@@ -214,9 +213,9 @@ defmodule FusionAuth.TwoFactor do
 
   For more information, visit the FusionAuth API Documentation for [Send a Two Factor Code](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-two-factor-code).
   """
-  @spec send_two_factor_code_by_user_id(client(), user_id(), secret()) :: result()
-  def send_two_factor_code_by_user_id(client, user_id, secret) do
-    data = %{userId: user_id, secret: secret}
+  @spec send_two_factor_code_by_user_id(client(), user_id()) :: result()
+  def send_two_factor_code_by_user_id(client, user_id) do
+    data = %{userId: user_id}
     Tesla.post(client, @two_factor_send_url, data)
     |> FusionAuth.result()
   end

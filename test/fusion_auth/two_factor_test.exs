@@ -261,8 +261,7 @@ defmodule FusionAuth.TwoFactorTest do
       assert {:ok, %{}, %Tesla.Env{status: 200}} =
               TwoFactor.send_two_factor_code_by_user_id(
                 client,
-                @user_id,
-                @secret
+                @user_id
               )
     end
   end
