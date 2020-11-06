@@ -338,7 +338,7 @@ defmodule FusionAuth.Users do
   """
 
   @spec bulk_delete_users(FusionAuth.client(), [String.t()], list(Keyword.t())) ::
-          FusionAuth.request()
+          FusionAuth.result()
   def bulk_delete_users(client, user_ids, query \\ []) do
     user_list = Enum.reduce(user_ids, [], fn id, acc -> [userId: id] ++ acc end)
     params = Utils.build_query_parameters(user_list ++ query)
