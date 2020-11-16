@@ -1,4 +1,6 @@
 defmodule FusionAuth do
+  require Logger
+
   @moduledoc """
   The `FusionAuth` module provides functions for building a dynamic HTTP client as well as standardizing the responses returned from the FusionAuth API.
 
@@ -77,6 +79,10 @@ defmodule FusionAuth do
   """
   @spec result({:ok, Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status >= 300 do
+    Logger.error("""
+          FusionAuth request resulted in a status code >= 300.
+          Env: #{inspect(env)}
+        """)
     {:error, body, env}
   end
 
@@ -84,7 +90,13 @@ defmodule FusionAuth do
   Standardizes the response to be returned from the FusionAuth API request.
   """
   @spec result({:error, any}) :: result()
-  def result({:error, any}), do: {:error, %{}, any}
+  def result({:error, any}) do
+    Logger.error("""
+          FusionAuth request resulted in an error.
+          Error: #{inspect(any)}
+        """)
+    {:error, %{}, any}
+  end
 
   @doc false
   def adapter do
