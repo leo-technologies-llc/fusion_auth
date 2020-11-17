@@ -2,6 +2,8 @@ use Mix.Config
 
 config :fusion_auth, :tesla, adapter: Tesla.Mock
 
+config :logger, level: :error
+
 config :fusion_auth,
   api_key: System.get_env("FUSION_AUTH_API_KEY"),
   api_url: System.get_env("FUSION_AUTH_URL"),
