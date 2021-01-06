@@ -1,6 +1,8 @@
 defmodule FusionAuthTest do
   use ExUnit.Case
 
+  import ExUnit.CaptureLog
+
   @base_url "http://localhost:9011"
   @api_key "123456"
   @tenant_id "234567"
@@ -60,6 +62,7 @@ defmodule FusionAuthTest do
   end
 
   test "results that fail return an error tuple" do
-    assert {:error, %{}, _} = FusionAuth.result({:error, ""})
+    assert capture_log(fn -> FusionAuth.result({:error, ""}) end) =~
+               "FusionAuth request resulted in an error.\n  Error: \"\""
   end
 end

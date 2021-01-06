@@ -145,7 +145,7 @@ defmodule FusionAuth.LoginTest do
   end
 
   describe "login_one_time_password/2" do
-    test "invalid one_time_passowrd", %{client: client} do
+    test "invalid one_time_password", %{client: client} do
       Mock.mock_request(
         path: @login_url,
         method: :post,
@@ -157,7 +157,7 @@ defmodule FusionAuth.LoginTest do
                Login.login_one_time_password(client, @one_time_password)
     end
 
-    test "valid one_time_passowrd", %{client: client} do
+    test "valid one_time_password", %{client: client} do
       Mock.mock_request(
         path: @login_url,
         method: :post,
