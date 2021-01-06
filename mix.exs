@@ -42,9 +42,9 @@ defmodule FusionAuth.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:tesla, "~> 1.3.0"},
+      {:tesla, "~> 1.4.0"},
       {:hackney, "~> 1.16.0"},
-      {:jason, ">= 1.0.0"},
+      {:jason, "~> 1.1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:recase, "~> 0.7.0"},
       {:excoveralls, "~> 0.10", only: :test}
