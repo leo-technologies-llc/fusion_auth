@@ -14,3 +14,6 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 20
+    ignore:
+    - dependency-name: "hackney"
+    - dependency-name: "jason"
