@@ -56,6 +56,7 @@ defmodule FusionAuth do
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON,
+      Tesla.Middleware.Telemetry,
       {Tesla.Middleware.Headers,
        [
          {"Authorization", api_key},
