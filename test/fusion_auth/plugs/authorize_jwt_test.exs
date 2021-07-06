@@ -61,6 +61,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                  pre: [
                    {Tesla.Middleware.BaseUrl, :call, [^base_url]},
                    {Tesla.Middleware.JSON, :call, [[]]},
+                   {Tesla.Middleware.Telemetry, :call, [[]]},
                    {Tesla.Middleware.Headers, :call,
                     [[{"Authorization", @api_key}, {"X-FusionAuth-TenantId", @tenant_id}]]}
                  ]
