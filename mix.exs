@@ -2,7 +2,7 @@ defmodule FusionAuth.MixProject do
   use Mix.Project
 
   @version "0.1.0"
-  @url "https://github.com/Cogility/fusion_auth"
+  @url "https://github.com/leo-technologies-llc/fusion_auth"
   @name "FusionAuth"
   @description "Elixir SDK for #{@name}"
 
@@ -16,7 +16,7 @@ defmodule FusionAuth.MixProject do
       deps: deps(),
       package: package(),
       name: @name,
-      source_url: "https://github.com/Cogility/fusion_auth",
+      source_url: "https://github.com/leo-technologies-llc/fusion_auth",
       docs: [main: @name, source_ref: "v#{@version}", source_url: @url],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
