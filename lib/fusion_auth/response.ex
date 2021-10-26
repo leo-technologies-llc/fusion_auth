@@ -50,8 +50,12 @@ defmodule FusionAuth.Response do
   defp process(data, formatter) when is_list(data),
     do: Enum.map(data, &process(&1, formatter))
 
-  defp process(data, formatter) when is_map(data), do: formatter.(data)
+  defp process(data, formatter) when is_map(data),
+    do: formatter.(data)
 
   defp process(data, formatter, format_helper) when is_map(data),
     do: formatter.(data, format_helper)
+
+  defp process(data, formatter, format_helper) when is_list(data),
+    do: Enum.map(data, &process(&1, formatter, format_helper))
 end

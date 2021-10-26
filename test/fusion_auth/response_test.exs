@@ -52,4 +52,38 @@ defmodule FusionAuth.ResponseTest do
                end)
     end
   end
+
+  describe "format/4" do
+    test "when error" do
+      assert {:error, "error"} =
+               Response.format(
+                 @error_payload,
+                 "groups",
+                 &Recase.Enumerable.atomize_keys/2,
+                 &Recase.to_snake/1
+               )
+    end
+
+    test "when success w/list" do
+      assert {:ok, [%{id: "id", name: "name"}]} =
+               Response.format(
+                 @success_payload,
+                 "groups",
+                 &Recase.Enumerable.atomize_keys/2,
+                 &Recase.to_snake/1
+               )
+    end
+
+    test "when success w/map" do
+      response = {:ok, %{"group" => %{"id" => "id", "name" => "name"}}, %Tesla.Env{}}
+
+      assert {:ok, %{id: "id", name: "name"}} =
+               Response.format(
+                 response,
+                 "group",
+                 &Recase.Enumerable.atomize_keys/2,
+                 &Recase.to_snake/1
+               )
+    end
+  end
 end
