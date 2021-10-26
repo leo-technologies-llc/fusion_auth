@@ -36,6 +36,9 @@ defmodule FusionAuth.Response do
     {:ok, process(payload, formatter)}
   end
 
+  @spec format(result(), String.t(), fun(), fun()) :: {:error, any()}
+  def format({:error, error, _}, _, _, _), do: {:error, error}
+
   @spec format(result(), String.t(), fun(), fun()) :: {:ok, map() | list()}
   def format({:ok, data, _}, payload_key, formatter, format_helper) do
     payload = Map.get(data, payload_key, nil)
@@ -49,5 +52,6 @@ defmodule FusionAuth.Response do
 
   defp process(data, formatter) when is_map(data), do: formatter.(data)
 
-  defp process(data, formatter, format_helper) when is_map(data), do: formatter.(data, format_helper)
+  defp process(data, formatter, format_helper) when is_map(data),
+    do: formatter.(data, format_helper)
 end
