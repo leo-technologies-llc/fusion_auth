@@ -145,19 +145,16 @@ defmodule FusionAuth.Groups do
   end
 
   @doc """
-  Add member to a group by user_id
-
-  For more information visit the FusionAuth API Documentation for [Add Users to a Group](https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
-  """
-  @spec add_member(client(), group_id(), user_id()) :: result()
-  def add_member(client, group_id, user_id) when is_binary(user_id),
-    do: add_members(client, group_id, [%{userId: user_id, data: %{}}])
-
-  @doc """
   Add member to a group.
 
   For more information visit the FusionAuth API Documentation for [Add Users to a Group](https://fusionauth.io/docs/v1/tech/apis/groups#add-users-to-a-group)
   """
+  def add_member(client, group_id, user_id)
+
+  @spec add_member(client(), group_id(), user_id()) :: result()
+  def add_member(client, group_id, user_id) when is_binary(user_id),
+    do: add_members(client, group_id, [%{userId: user_id, data: %{}}])
+
   @spec add_member(client(), group_id(), member()) :: result()
   def add_member(client, group_id, member) when is_map(member),
     do: add_members(client, group_id, [member])
@@ -204,21 +201,18 @@ defmodule FusionAuth.Groups do
   end
 
   @doc """
-  Remove members by member_ids
+  Remove members by member_ids or a group_id
 
   For more information visit the FusionAuth API Documentation for [Remove Users from a Group](https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
   """
+  def remove_members(_, _)
+
   @spec remove_members(client(), member_ids()) :: result()
   def remove_members(client, member_ids) when is_list(member_ids) do
     Tesla.delete(client, @member_url, body: %{memberIds: member_ids})
     |> FusionAuth.result()
   end
 
-  @doc """
-  Remove all members by group_id
-
-  For more information visit the FusionAuth API Documentation for [Remove Users from a Group](https://fusionauth.io/docs/v1/tech/apis/groups#remove-users-from-a-group)
-  """
   @spec remove_members(client(), group_id()) :: result()
   def remove_members(client, group_id) do
     url = Tesla.build_url(@member_url, groupId: group_id)
