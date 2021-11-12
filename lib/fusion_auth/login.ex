@@ -130,6 +130,8 @@ defmodule FusionAuth.Login do
 
   For more information visit the FusionAuth API Documentation for [Authenticate a User](https://fusionauth.io/docs/v1/tech/apis/login#authenticate-a-user)
   """
+  def login_user(_, _, _, _)
+
   @spec login_user(client(), String.t(), String.t(), options()) :: result()
   def login_user(client, login_id, password, options) when is_map(options) do
     login_user(
@@ -141,12 +143,6 @@ defmodule FusionAuth.Login do
     )
   end
 
-  @doc """
-  Login user with login_id, password and application_id.
-  No default application_id will be applied.
-
-  For more information visit the FusionAuth API Documentation for [Authenticate a User](https://fusionauth.io/docs/v1/tech/apis/login#authenticate-a-user)
-  """
   @spec login_user(client(), String.t(), String.t(), String.t()) :: result()
   def login_user(client, application_id, login_id, password) do
     login_user(

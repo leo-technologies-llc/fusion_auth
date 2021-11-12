@@ -70,14 +70,13 @@ defmodule FusionAuth do
   @doc """
   Standardizes the response to be returned from the FusionAuth API request.
   """
+  def result(_)
+
   @spec result({:ok, Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status < 300 do
     {:ok, body, env}
   end
 
-  @doc """
-  Standardizes the response to be returned from the FusionAuth API request.
-  """
   @spec result({:ok, Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status >= 300 do
     Logger.warn("""
@@ -87,9 +86,6 @@ defmodule FusionAuth do
     {:error, body, env}
   end
 
-  @doc """
-  Standardizes the response to be returned from the FusionAuth API request.
-  """
   @spec result({:error, any}) :: result()
   def result({:error, any}) do
     Logger.error("""

@@ -1,7 +1,7 @@
 defmodule FusionAuth.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @url "https://github.com/leo-technologies-llc/fusion_auth"
   @name "FusionAuth"
   @description "Elixir SDK for #{@name}"
@@ -10,7 +10,7 @@ defmodule FusionAuth.MixProject do
     [
       app: :fusion_auth,
       version: @version,
-      elixir: "~> 1.8",
+      elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -44,7 +44,7 @@ defmodule FusionAuth.MixProject do
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:tesla, "~> 1.4.2"},
       {:hackney, "~> 1.16.0"},
-      {:jason, "~> 1.1.0"},
+      {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:recase, "~> 0.7.0"},
       {:excoveralls, "~> 0.14", only: :test}

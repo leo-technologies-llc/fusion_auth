@@ -181,7 +181,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.create_user(client, user)
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} = Users.create_user(client, user)
     end
   end
 
@@ -219,7 +219,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Users.update_user(client, user_id, updated_user)
     end
   end
@@ -279,7 +279,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Users.bulk_delete_users(client, user_ids, hardDelete: true)
     end
   end
@@ -338,7 +338,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.import_users(client, users)
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} = Users.import_users(client, users)
     end
   end
 
@@ -387,7 +387,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} = Users.search_users(client, search)
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} = Users.search_users(client, search)
     end
   end
 
@@ -476,7 +476,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Users.resend_verification_email(client, email)
     end
 
@@ -495,7 +495,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Users.resend_verification_email(client, email)
     end
   end
@@ -516,7 +516,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Users.forgot_password(client, login_id)
     end
 
@@ -535,7 +535,7 @@ defmodule FusionAuth.UsersTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Users.forgot_password(client, login_id)
     end
 

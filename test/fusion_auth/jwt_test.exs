@@ -34,7 +34,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Issue an Access Token by Application ID" do
     test "issue_jwt_by_application_id/4 send a 200 along with a JSON body on successful request", %{client: client} do
-      resp_body = %{ "token" => @token }
+      response_body = %{ "token" => @token }
 
       Mock.mock_request(
         path: @jwt_issue_url,
@@ -44,15 +44,15 @@ defmodule FusionAuth.JWTTest do
         ],
         method: :get,
         status: 200,
-        response_body: resp_body
+        response_body: response_body
       )
 
-      assert {:ok, resp_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
         JWT.issue_jwt_by_application_id(client, @token, @application_id, @refresh_token)
     end
 
     test "issue_jwt_by_application_id/4 send a 202 along with a JSON body on successful but denied request", %{client: client} do
-      resp_body = %{ "token" => @token }
+      response_body = %{ "token" => @token }
 
       Mock.mock_request(
         path: @jwt_issue_url,
@@ -62,10 +62,10 @@ defmodule FusionAuth.JWTTest do
         ],
         method: :get,
         status: 202,
-        response_body: resp_body
+        response_body: response_body
       )
 
-      assert {:ok, resp_body, %Tesla.Env{status: 202}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 202}} =
         JWT.issue_jwt_by_application_id(client, @token, @application_id, @refresh_token)
     end
 
@@ -407,7 +407,7 @@ defmodule FusionAuth.JWTTest do
 
   describe "Validate Access Token" do
     test "validate_jwt/2 returns a 200 status code and jwt object for a successful request", %{client: client} do
-      resp_body = %{
+      response_body = %{
         "jwt" => %{
           "applicationId" => "3c219e58-ed0e-4b18-ad48-f4f92793ae32",
           "exp" => 1487975407000,
@@ -424,10 +424,10 @@ defmodule FusionAuth.JWTTest do
         path: @jwt_validate_url,
         method: :get,
         status: 200,
-        response_body: resp_body
+        response_body: response_body
       )
 
-      assert {:ok, resp_body, %Tesla.Env{status: 200}} = JWT.validate_jwt(client, @token)
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} = JWT.validate_jwt(client, @token)
     end
 
     test "validate_jwt/2 returns a 401 status code for an invalid access token", %{client: client} do

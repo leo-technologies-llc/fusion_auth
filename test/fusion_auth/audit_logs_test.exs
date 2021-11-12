@@ -37,7 +37,7 @@ defmodule FusionAuth.AuditLogsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                AuditLogs.create_audit_log(client, audit_log)
     end
 
@@ -70,7 +70,7 @@ defmodule FusionAuth.AuditLogsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                AuditLogs.create_audit_log(client, audit_log)
     end
   end
@@ -97,7 +97,7 @@ defmodule FusionAuth.AuditLogsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200, body: response_body}} ==
+      assert {:ok, ^response_body, %Tesla.Env{status: 200, body: ^response_body}} =
                AuditLogs.get_audit_log(client, audit_log_id)
     end
 
@@ -148,7 +148,7 @@ defmodule FusionAuth.AuditLogsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200, body: response_body}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200, body: ^response_body}} =
                AuditLogs.search_audit_logs(client, search)
     end
   end

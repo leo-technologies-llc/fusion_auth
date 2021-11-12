@@ -36,7 +36,7 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
 
       response = RefreshJWT.call(conn(), client: client)
 
-      [test_fn] = response.before_send
+      [test_fn] = response.private.before_send
 
       result = test_fn.(response)
 
@@ -53,7 +53,7 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
 
       response = RefreshJWT.call(conn(), client: client)
 
-      [test_fn] = response.before_send
+      [test_fn] = response.private.before_send
 
       result = test_fn.(response)
 
@@ -75,7 +75,7 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
 
       response = RefreshJWT.call(request, client: client)
 
-      [test_fn] = response.before_send
+      [test_fn] = response.private.before_send
 
       result = test_fn.(response)
 
