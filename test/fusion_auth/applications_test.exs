@@ -46,7 +46,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.create_application(client, @application)
     end
 
@@ -73,7 +73,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Applications.create_application(client, application)
     end
   end
@@ -91,7 +91,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.list_applications(client)
     end
 
@@ -111,7 +111,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.list_applications(client, inactive: true)
     end
 
@@ -131,7 +131,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Applications.list_applications(client, invalidQp: "invalid")
     end
   end
@@ -149,7 +149,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.get_application(client, @valid_application_id)
     end
 
@@ -204,7 +204,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 500}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 500}} =
                Applications.get_oauth_configuration(client, @invalid_application_id)
     end
   end
@@ -225,7 +225,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.update_application(client, @valid_application_id, updated_application)
     end
 
@@ -252,7 +252,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Applications.update_application(client, @valid_application_id, updated_application)
     end
 
@@ -293,7 +293,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.reactivate_application(client, @valid_application_id)
     end
 
@@ -370,7 +370,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.create_role(client, @valid_application_id, @role)
     end
 
@@ -397,7 +397,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Applications.create_role(client, @valid_application_id, role)
     end
 
@@ -424,7 +424,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Applications.create_role(client, @invalid_application_id, @role)
     end
   end
@@ -443,7 +443,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:ok, response_body, %Tesla.Env{status: 200}} =
+      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
                Applications.update_role(
                  client,
                  @valid_application_id,
@@ -476,7 +476,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Applications.update_role(
                  client,
                  @valid_application_id,
@@ -510,7 +510,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 400}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                Applications.update_role(
                  client,
                  @invalid_application_id,
@@ -577,7 +577,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 500}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 500}} =
                Applications.delete_role_by_id(client, @invalid_application_id, @valid_role_id)
     end
 
@@ -641,7 +641,7 @@ defmodule FusionAuth.ApplicationsTest do
         response_body: response_body
       )
 
-      assert {:error, response_body, %Tesla.Env{status: 500}} =
+      assert {:error, ^response_body, %Tesla.Env{status: 500}} =
                Applications.delete_role_by_name(client, @invalid_application_id, name)
     end
 
