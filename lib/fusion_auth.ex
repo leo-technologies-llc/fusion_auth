@@ -80,26 +80,32 @@ defmodule FusionAuth do
   @spec result({:ok, Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status >= 300 do
     Logger.warn("""
-          FusionAuth request resulted in a status code >= 300.
-          Env: #{inspect(env)}
-        """)
+      FusionAuth request resulted in a status code >= 300.
+      Env: #{inspect(env)}
+    """)
+
     {:error, body, env}
   end
 
   @spec result({:error, any}) :: result()
   def result({:error, any}) do
     Logger.error("""
-          FusionAuth request resulted in an error.
-          Error: #{inspect(any)}
-        """)
+      FusionAuth request resulted in an error.
+      Error: #{inspect(any)}
+    """)
+
     {:error, %{}, any}
   end
 
   @doc false
   def adapter do
     case Application.get_env(:fusion_auth, :tesla) do
-      nil -> {Tesla.Adapter.Hackney, [recv_timeout: 30_000]}
-      tesla -> tesla[:adapter]
+      nil ->
+        {Tesla.Adapter.Hackney,
+         [pool: false, recv_timeout: 30_000, ssl_options: [verify: :verify_none]]}
+
+      tesla ->
+        tesla[:adapter]
     end
   end
 end
