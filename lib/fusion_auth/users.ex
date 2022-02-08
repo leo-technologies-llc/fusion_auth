@@ -248,6 +248,17 @@ defmodule FusionAuth.Users do
   end
 
   @doc """
+  Create a new user with the specified unique ID. You must specify either the email or the username or both for the User. Either of these values
+  may be used to uniquely identify the User and may be used to authenticate the User.
+
+  For more information visit the FusionAuth API Documentation for [Create a User](https://fusionauth.io/docs/v1/tech/apis/users#create-a-user).
+  """
+  @spec create_user_with_id(FusionAuth.client(), map(), binary()) :: FusionAuth.result()
+  def create_user_with_id(client, user, user_id) do
+    Tesla.post(client, @users_url <> "/#{user_id}", %{user: user}) |> FusionAuth.result()
+  end
+
+  @doc """
   Get a user by the user’s ID.
 
   For more information visit the FusionAuth API Documentation for [Retrieve a User](https://fusionauth.io/docs/v1/tech/apis/users#retrieve-a-user).
