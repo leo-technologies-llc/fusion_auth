@@ -491,11 +491,5 @@ defmodule FusionAuth.OpenIdConnectTest do
       assert {:error, ^response_body, %Tesla.Env{status: 409}} =
                OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
     end
-
-
   end
-
-
-
-
 end

@@ -93,7 +93,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Lookup an identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/#lookup-an-identity-provider)
   """
-  @spec lookup_identity_provider(client(), domain()) :: FusionAuth.result()
+  @spec lookup_identity_provider(client(), domain()) :: result()
   def lookup_identity_provider(client, domain) do
     Tesla.get(client, @connect_url <> "/lookup?domain=#{domain}")
     |> FusionAuth.result()
@@ -104,7 +104,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Create an OpenID connect identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#create-an-openid-connect-identity-provider)
   """
-  @spec create_openid_connect_identity_provider(client(), identity_provider()) :: FusionAuth.result()
+  @spec create_openid_connect_identity_provider(client(), identity_provider()) :: result()
   def create_openid_connect_identity_provider(client, identity_provider) do
     Tesla.post(client, @connect_url, %{identity_provider: identity_provider})
     |> FusionAuth.result()
@@ -115,7 +115,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Create an OpenID connect identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#create-an-openid-connect-identity-provider)
   """
-  @spec create_openid_connect_identity_provider_uuid(client(), identity_provider(), identity_provider_id()) :: FusionAuth.result()
+  @spec create_openid_connect_identity_provider_uuid(client(), identity_provider(), identity_provider_id()) :: result()
   def create_openid_connect_identity_provider_uuid(client, identity_provider, identity_provider_id) do
     Tesla.post(client, @connect_url <> "/#{identity_provider_id}", %{identity_provider: identity_provider})
     |> FusionAuth.result()
@@ -127,7 +127,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Retrieve an OpenID connect identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#retrieve-an-openid-connect-identity-provider)
   """
-  @spec retrieve_openid_connect_identity_provider(client(), identity_provider_id()) :: FusionAuth.result()
+  @spec retrieve_openid_connect_identity_provider(client(), identity_provider_id()) :: result()
   def retrieve_openid_connect_identity_provider(client, identity_provider_id) do
     Tesla.get(client, @connect_url <> "/#{identity_provider_id}")
     |> FusionAuth.result()
@@ -140,7 +140,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Update an OpenID connect identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#update-an-openid-connect-identity-provider)
   """
-  @spec update_openid_connect_identity_provider(client(), identity_provider(), identity_provider_id()) :: FusionAuth.result()
+  @spec update_openid_connect_identity_provider(client(), identity_provider(), identity_provider_id()) :: result()
   def update_openid_connect_identity_provider(client, identity_provider, identity_provider_id) do
     Tesla.patch(client, @connect_url <> "/#{identity_provider_id}", %{identity_provider: identity_provider})
     |> FusionAuth.result()
@@ -151,7 +151,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Delete an OpenID connect identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#delete-an-openid-connect-identity-provider)
   """
-  @spec delete_openid_connect_identity_provider(client(), identity_provider_id()) :: FusionAuth.result()
+  @spec delete_openid_connect_identity_provider(client(), identity_provider_id()) :: result()
   def delete_openid_connect_identity_provider(client, identity_provider_id) do
     Tesla.delete(client, @connect_url <> "/#{identity_provider_id}")
     |> FusionAuth.result()
@@ -174,7 +174,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_openid_connect_login(client(),login_request_body()) :: FusionAuth.result()
+  @spec complete_openid_connect_login(client(),login_request_body()) :: result()
   def complete_openid_connect_login(client, login_request_body) do
     Tesla.post(client, @connect_url <> "/login", login_request_body)
     |> FusionAuth.result()
@@ -212,7 +212,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_openid_connect_login(client(),login_request_body(), headers()) :: FusionAuth.result()
+  @spec complete_openid_connect_login(client(),login_request_body(), headers()) :: result()
   def complete_openid_connect_login(client, login_request_body, headers) do
     Tesla.post(client, @connect_url <> "/login", login_request_body, headers: headers)
     |> FusionAuth.result()
