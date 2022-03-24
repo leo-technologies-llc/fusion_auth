@@ -202,7 +202,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok,  %{"all_identity_providers" => all_identity_providers}, %Tesla.Env{status: 200}} =
-                OpenIdConnect.retrieve_all_identity_providers(client)
+               OpenIdConnect.retrieve_all_identity_providers(client)
       assert all_identity_providers == @all_identity_providers
     end
   end
@@ -219,7 +219,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, %{"identity_provider" => @identity_provider}, %Tesla.Env{status: 200}} =
-                OpenIdConnect.lookup_identity_provider(client, domain)
+               OpenIdConnect.lookup_identity_provider(client, domain)
     end
 
     test "lookup_identity_providers/2 with an invalid domain returns a 404 status code",
@@ -232,7 +232,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 404, body: ""}} =
-                OpenIdConnect.lookup_identity_provider(client, "12345")
+               OpenIdConnect.lookup_identity_provider(client, "12345")
     end
   end
 
@@ -249,7 +249,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, %{"identity_provider" => @identity_provider}, %Tesla.Env{status: 200}} =
-        OpenIdConnect.create_openid_connect_identity_provider(client, request_body)
+               OpenIdConnect.create_openid_connect_identity_provider(client, request_body)
     end
 
 
@@ -265,7 +265,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:error, @duplicate_name_error, %Tesla.Env{status: 400}} =
-        OpenIdConnect.create_openid_connect_identity_provider(client, request_body)
+               OpenIdConnect.create_openid_connect_identity_provider(client, request_body)
     end
   end
 
@@ -283,7 +283,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, %{"identity_provider" => @identity_provider}, %Tesla.Env{status: 200}} =
-        OpenIdConnect.create_openid_connect_identity_provider_uuid(client, request_body, new_identity_provider_id)
+               OpenIdConnect.create_openid_connect_identity_provider_uuid(client, request_body, new_identity_provider_id)
     end
 
     test "creates an identity provider with a bad uuid",
@@ -299,7 +299,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:error, @duplicate_id_error, %Tesla.Env{status: 400}} =
-        OpenIdConnect.create_openid_connect_identity_provider_uuid(client, request_body, new_identity_provider_id)
+               OpenIdConnect.create_openid_connect_identity_provider_uuid(client, request_body, new_identity_provider_id)
     end
   end
 
@@ -315,7 +315,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, %{"identity_provider" => @identity_provider}, %Tesla.Env{status: 200}} =
-        OpenIdConnect.retrieve_openid_connect_identity_provider(client, identity_provider_id)
+               OpenIdConnect.retrieve_openid_connect_identity_provider(client, identity_provider_id)
     end
 
     test "retrieve_openid_connect_identity_provider/2 with an invalid provider ID returns a 404 status code",
@@ -329,7 +329,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 404}} =
-        OpenIdConnect.retrieve_openid_connect_identity_provider(client, identity_provider_id)
+              OpenIdConnect.retrieve_openid_connect_identity_provider(client, identity_provider_id)
     end
   end
 
@@ -347,7 +347,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, %{"identity_provider" => @identity_provider}, %Tesla.Env{status: 200}} =
-        OpenIdConnect.update_openid_connect_identity_provider(client, request_body, identity_provider_id)
+               OpenIdConnect.update_openid_connect_identity_provider(client, request_body, identity_provider_id)
     end
 
     test "update_openid_connect_identity_provider/3 uses a domain already managed by another provider",
@@ -363,7 +363,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:error, @duplicate_domain_error, %Tesla.Env{status: 400}} =
-        OpenIdConnect.update_openid_connect_identity_provider(client, request_body, identity_provider_id)
+               OpenIdConnect.update_openid_connect_identity_provider(client, request_body, identity_provider_id)
     end
 
     test "update_openid_connect_identity_provider/3 with an invalid provider ID returns a 404 status code",
@@ -379,7 +379,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:error, "", %Tesla.Env{status: 404}} =
-        OpenIdConnect.update_openid_connect_identity_provider(client, request_body, identity_provider_id)
+               OpenIdConnect.update_openid_connect_identity_provider(client, request_body, identity_provider_id)
     end
 
   end
@@ -396,7 +396,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, "", %Tesla.Env{status: 200}} =
-        OpenIdConnect.delete_openid_connect_identity_provider(client, identity_provider_id)
+               OpenIdConnect.delete_openid_connect_identity_provider(client, identity_provider_id)
     end
 
     test "delete_openid_connect_identity_provider/2 with an invalid provider ID returns a 404 status code",
@@ -410,7 +410,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, "", %Tesla.Env{status: 200}} =
-        OpenIdConnect.delete_openid_connect_identity_provider(client, identity_provider_id)
+               OpenIdConnect.delete_openid_connect_identity_provider(client, identity_provider_id)
     end
   end
 
@@ -426,7 +426,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, @login_response_body, %Tesla.Env{status: 200}} =
-        OpenIdConnect.complete_openid_connect_login(client, @login_response_body)
+               OpenIdConnect.complete_openid_connect_login(client, @login_response_body)
     end
 
     test "completes an openid connect login with headers",
@@ -441,7 +441,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, @login_response_body, %Tesla.Env{status: 200}} =
-        OpenIdConnect.complete_openid_connect_login(client, @login_response_body, @headers)
+               OpenIdConnect.complete_openid_connect_login(client, @login_response_body, @headers)
     end
 
     test "completes an openid connect login where the user is required to change their password, returns a 203 status code",
@@ -457,7 +457,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, ^response_body, %Tesla.Env{status: 203}} =
-        OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
+               OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
     end
 
     test "completes an openid connect login where the user is required to change their password, returns a 242 status code",
@@ -473,7 +473,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:ok, ^response_body, %Tesla.Env{status: 242}} =
-        OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
+               OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
     end
 
     test "attempts to login, but the request is prevented due to actions preventing a login, returns a 409 status code",
@@ -489,7 +489,7 @@ defmodule FusionAuth.OpenIdConnectTest do
       )
 
       assert {:error, ^response_body, %Tesla.Env{status: 409}} =
-        OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
+               OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
     end
 
 
