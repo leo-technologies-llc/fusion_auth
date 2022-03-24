@@ -13,6 +13,7 @@ The following are the APIs that are currently implemented:
 - [ ] [Families](https://fusionauth.io/docs/v1/tech/apis/families)
 - [x] [Groups](https://fusionauth.io/docs/v1/tech/apis/groups)
 - [ ] [Identity Providers](https://fusionauth.io/docs/v1/tech/apis/identity-providers)
+  - [x] [OpenID Connect](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect)
 - [ ] [Integrations](https://fusionauth.io/docs/v1/tech/apis/integrations)
 - [x] [JWT](https://fusionauth.io/docs/v1/tech/apis/jwt)
 - [ ] [Keys](https://fusionauth.io/docs/v1/tech/apis/keys)
