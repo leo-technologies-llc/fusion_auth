@@ -1,0 +1,37 @@
+{
+  "variables": {
+    "apiKey": "#{ENV.FUSIONAUTH_API_KEY}",
+    "adminEmail": "#{ENV.FUSIONAUTH_ADMIN_EMAIL}",
+    "adminId": "#{ENV.FUSIONAUTH_ADMIN_ID}",
+    "adminPassword": "#{ENV.FUSIONAUTH_ADMIN_PASSWORD}",
+    "adminUsername": "#{ENV.FUSIONAUTH_ADMIN_USERNAME}"
+  },
+  "apiKeys": [
+    {
+      "__comment": "Creates the default API key to be leveraged for the development tenant.",
+      "key": "#{apiKey}",
+      "description": "Default API key for the development tenant."
+    }
+  ],
+  "requests": [
+    {
+      "__comment": "Creates the default FusionAuth admin user.",
+      "method": "POST",
+      "url": "/api/user/registration",
+      "body": {
+        "user": {
+          "email": "#{adminEmail}",
+          "password": "#{adminPassword}",
+          "firstName": "FusionAuth",
+          "fullName": "FusionAuth Admin",
+          "lastName": "Admin",
+          "username": "#{adminUsername}"
+        },
+        "registration": {
+          "applicationId": "3c219e58-ed0e-4b18-ad48-f4f92793ae32",
+          "roles": ["admin"]
+        }
+      }
+    }
+  ]
+}
