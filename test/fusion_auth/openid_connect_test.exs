@@ -200,15 +200,15 @@ defmodule FusionAuth.OpenIdConnectTest do
   }
 
   setup do
-    fa_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :test_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 
-    client = FusionAuth.client(fa_url, api_key, "")
+    client = FusionAuth.client(base_url, api_key, "")
     TestUtilities.create_tenant(client, tenant_id)
-    client_with_tenant = FusionAuth.client(fa_url, api_key, tenant_id)
+    client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
-    TestUtilities.create_application(client_with_tenant, @application_id)
+    TestUtilities.create_application_with_id(client_with_tenant, @application_id)
 
     on_exit(fn ->
       cleanup_identity_providers(client)
@@ -529,29 +529,5 @@ defmodule FusionAuth.OpenIdConnectTest do
         FusionAuth.OpenIdConnect.delete_openid_connect_identity_provider(client, provider["id"])
       end)
     end
-  end
-
-  defp cleanup_tenant(client, tenant_id) do
-    Tesla.delete(client, "/api/tenant/" <> tenant_id)
-  end
-
-  defp create_tenant(client, tenant_id) do
-    tenant = %{
-      "tenant" => %{
-        "name" => "Test Tenant"
-      }
-    }
-
-    Tesla.post(client, "/api/tenant/" <> tenant_id, tenant)
-  end
-
-  defp create_application(client_with_tenant, application_id) do
-    application = %{
-      "application" => %{
-        "name" => "Test Application"
-      }
-    }
-
-    Tesla.post(client_with_tenant, "/api/application/" <> application_id, application)
   end
 end

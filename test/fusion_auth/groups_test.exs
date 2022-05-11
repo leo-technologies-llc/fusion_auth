@@ -28,13 +28,13 @@ defmodule FusionAuth.GroupsTest do
   }
 
   setup do
-    fa_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :test_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 
-    client = FusionAuth.client(fa_url, api_key, "")
+    client = FusionAuth.client(base_url, api_key, "")
     TestUtilities.create_tenant(client, tenant_id)
-    client_with_tenant = FusionAuth.client(fa_url, api_key, tenant_id)
+    client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
     on_exit(fn ->
       TestUtilities.cleanup_tenant(client, tenant_id)
