@@ -143,6 +143,7 @@ defmodule FusionAuth.JWTTest do
     test "get_public_key_by_key_id/2 returns a 200 status code for successful request", %{
       client: client
     } do
+      Process.sleep(500)
       {:ok, keys, _} = JWT.get_public_keys(client)
       key_id = Map.keys(keys["publicKeys"]) |> Enum.at(0)
 

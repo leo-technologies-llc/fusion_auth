@@ -2,7 +2,6 @@ defmodule FusionAuth.ApplicationsTest do
   use ExUnit.Case
 
   alias FusionAuth.Applications
-  alias FusionAuth.Helpers.Mock
   alias FusionAuth.TestUtilities
 
   @invalid_application_id "32c54ee1-3d5a-4085-9ec5-4731d9e0f752"
@@ -143,6 +142,8 @@ defmodule FusionAuth.ApplicationsTest do
       {:ok, application, _} = Applications.create_application(client, @application)
       created_id = application["application"]["id"]
       created_oauth_config_id = application["application"]["oauthConfiguration"]["id"]
+
+      Process.sleep(500)
 
       {:ok, retrieved_oauth_config, _} = Applications.get_oauth_configuration(client, created_id)
       retrieved_oauth_config_id = retrieved_oauth_config["oauthConfiguration"]["id"]
