@@ -459,7 +459,9 @@ defmodule FusionAuth.Users do
   @spec change_password(FusionAuth.client(), String.t(), map()) ::
           FusionAuth.result()
   def change_password(client, change_password_id, password_data) do
-    Tesla.post(client, @users_url <> "/change-password/#{change_password_id}", password_data)
+    password_data = Map.put(password_data, "changePasswordId", change_password_id)
+
+    Tesla.post(client, @users_url <> "/change-password", password_data)
     |> FusionAuth.result()
   end
 

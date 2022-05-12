@@ -204,7 +204,7 @@ defmodule FusionAuth.ApplicationsTest do
                )
     end
 
-    test "update_application/3 returns a 404 status code if the user is not found",
+    test "update_application/3 returns a 404 status code if the application is not found",
          %{client: client} do
       updated_application = Map.put(@application, "name", "Updated Test Application")
 

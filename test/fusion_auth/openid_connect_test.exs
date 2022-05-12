@@ -211,7 +211,7 @@ defmodule FusionAuth.OpenIdConnectTest do
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
 
     on_exit(fn ->
-      cleanup_identity_providers(client)
+      TestUtilities.cleanup_identity_providers(client)
       TestUtilities.cleanup_tenant(client, tenant_id)
     end)
 
@@ -520,14 +520,4 @@ defmodule FusionAuth.OpenIdConnectTest do
   #              OpenIdConnect.complete_openid_connect_login(client, response_body, @headers)
   #   end
   # end
-
-  defp cleanup_identity_providers(client) do
-    {:ok, identity_providers, _} = OpenIdConnect.retrieve_all_identity_providers(client)
-
-    if identity_providers != %{} do
-      Enum.map(identity_providers["identityProviders"], fn provider ->
-        FusionAuth.OpenIdConnect.delete_openid_connect_identity_provider(client, provider["id"])
-      end)
-    end
-  end
 end

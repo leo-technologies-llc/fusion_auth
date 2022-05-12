@@ -17,7 +17,6 @@ defmodule FusionAuth.UsersTest do
     client = FusionAuth.client(base_url, api_key, "")
     TestUtilities.create_tenant_with_email_template(client, tenant_id)
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
-    base_url
 
     on_exit(fn ->
       TestUtilities.cleanup_users(client)
@@ -464,7 +463,7 @@ defmodule FusionAuth.UsersTest do
       {:ok, %{"changePasswordId" => change_password_id}, %Tesla.Env{status: 200}} =
         Users.forgot_password(client, @user[:username])
 
-      password_data = %{current_password: "password", password: "updated_password"}
+      password_data = %{password: "updated_password"}
 
       assert {:ok, %{"oneTimePassword" => _}, %Tesla.Env{status: 200}} =
                Users.change_password(client, change_password_id, password_data)

@@ -16,6 +16,7 @@ defmodule FusionAuth.AuditLogsTest do
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
     on_exit(fn ->
+      TestUtilities.cleanup_users(client)
       TestUtilities.cleanup_tenant(client, tenant_id)
     end)
 
