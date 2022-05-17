@@ -66,6 +66,20 @@ function test {
     docker-compose down
 }
 
+function clean {
+    VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
+    docker-compose down
+    docker-compose rm -f
+
+    if [ -z "$VOLUMES" ]; then
+        echo "No test containers/volumes to prune ..."
+    else
+        docker volume rm $VOLUMES
+    fi
+
+    docker-compose "${@}"
+}
+
 function help {
     printf "%s <task> [args]\n\nTasks:\n" "${0}"
     compgen -A function | grep -v "^_" | cat -n

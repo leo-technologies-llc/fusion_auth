@@ -1,6 +1,11 @@
 defmodule FusionAuth.UsersTest do
   use ExUnit.Case
 
+  alias FusionAuth.Repo
+  import Ecto
+  import Ecto.Query
+  import FusionAuth.Repo
+
   alias FusionAuth.Users
   alias FusionAuth.TestUtilities
 
@@ -19,8 +24,10 @@ defmodule FusionAuth.UsersTest do
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
     on_exit(fn ->
-      TestUtilities.cleanup_users(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
+      :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
+      Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
+      # TestUtilities.cleanup_users(client)
+      # TestUtilities.cleanup_tenant(client, tenant_id)
     end)
 
     {:ok, %{client: client_with_tenant}}

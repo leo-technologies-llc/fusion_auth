@@ -31,6 +31,7 @@ defmodule FusionAuth.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      mod: {FusionAuth.Application, []},
       extra_applications: [:logger]
     ]
   end
@@ -41,10 +42,12 @@ defmodule FusionAuth.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:ecto_sql, "~> 3.7.2"},
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:tesla, "~> 1.4.2"},
       {:hackney, "~> 1.18"},
       {:jason, "~> 1.2"},
+      {:postgrex, ">= 0.0.0"},
       {:plug_cowboy, "~> 2.5"},
       {:recase, "~> 0.7.0"},
       {:excoveralls, "~> 0.14", only: :test}

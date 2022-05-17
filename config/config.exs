@@ -2,6 +2,16 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
+config :fusion_auth, ecto_repos: [FusionAuth.Repo]
+
+config :fusion_auth, FusionAuth.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "fusionauth",
+  password: "hkaLBM3RVnyYeYeqE3WI1w2e4Avpy0Wd5O3s3",
+  database: "fusionauth",
+  hostname: "postgres",
+  port: 5432
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,

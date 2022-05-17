@@ -58,6 +58,16 @@ services:
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
 
+  kibana:
+    container_name: fa-kibana
+    image: docker.elastic.co/kibana/kibana:7.16.3
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    ports:
+      - 25601:5601
+
 networks:
   default:
     ipam:
