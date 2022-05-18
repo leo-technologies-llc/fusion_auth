@@ -2,12 +2,6 @@ defmodule FusionAuth.Application do
   use Application
 
   def start(_type, _args) do
-    IO.inspect("==========================================")
-    IO.inspect("==========================================")
-    IO.inspect("==========================================")
-
-    IO.inspect("==========================================")
-
     children = [
       FusionAuth.Repo
     ]

@@ -9,8 +9,8 @@ config :fusion_auth, FusionAuth.Repo,
   username: "fusionauth",
   password: "hkaLBM3RVnyYeYeqE3WI1w2e4Avpy0Wd5O3s3",
   database: "fusionauth",
-  hostname: "postgres",
-  port: 5432
+  hostname: "172.30.243.114",
+  port: 25432
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this

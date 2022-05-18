@@ -1,6 +1,5 @@
 defmodule FusionAuth.LoginTest do
-  use ExUnit.Case
-
+  use FusionAuth.DataCase
   alias FusionAuth.Login
   alias FusionAuth.TestUtilities
   alias FusionAuth.Registrations
@@ -52,10 +51,10 @@ defmodule FusionAuth.LoginTest do
     # sleeping to allow indexing for registration
     Process.sleep(500)
 
-    on_exit(fn ->
-      TestUtilities.cleanup_users(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
+    # on_exit(fn ->
+    #   TestUtilities.cleanup_users(client)
+    #   TestUtilities.cleanup_tenant(client, tenant_id)
+    # end)
 
     {:ok, %{client: client_with_tenant}}
   end

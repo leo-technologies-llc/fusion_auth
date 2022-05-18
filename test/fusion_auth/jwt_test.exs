@@ -1,5 +1,5 @@
 defmodule FusionAuth.JWTTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
   alias FusionAuth.JWT
   alias FusionAuth.TestUtilities
@@ -25,12 +25,6 @@ defmodule FusionAuth.JWTTest do
 
     %{token: token, refreshToken: refresh_token} =
       TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
-
-    on_exit(fn ->
-      TestUtilities.cleanup_users(client)
-      TestUtilities.cleanup_identity_providers(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
 
     {:ok,
      %{client: client_with_tenant, token: token, refresh_token: refresh_token, base_url: base_url}}

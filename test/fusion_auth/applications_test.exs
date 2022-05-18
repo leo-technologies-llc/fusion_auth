@@ -1,5 +1,5 @@
 defmodule FusionAuth.ApplicationsTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
   alias FusionAuth.Applications
   alias FusionAuth.TestUtilities
@@ -38,7 +38,8 @@ defmodule FusionAuth.ApplicationsTest do
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
     on_exit(fn ->
-      TestUtilities.cleanup_tenant(client, tenant_id)
+      nil
+      # TestUtilities.cleanup_tenant(client, tenant_id)
     end)
 
     {:ok, %{client: client_with_tenant}}

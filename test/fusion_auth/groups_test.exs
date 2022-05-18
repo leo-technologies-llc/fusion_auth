@@ -1,5 +1,5 @@
 defmodule FusionAuth.GroupsTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
   alias FusionAuth.Groups
   alias FusionAuth.Applications
@@ -36,11 +36,11 @@ defmodule FusionAuth.GroupsTest do
     TestUtilities.create_tenant(client, tenant_id)
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
-    on_exit(fn ->
-      TestUtilities.cleanup_users(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
-      cleanup_groups(client)
-    end)
+    # on_exit(fn ->
+    #   TestUtilities.cleanup_users(client)
+    #   TestUtilities.cleanup_tenant(client, tenant_id)
+    #   cleanup_groups(client)
+    # end)
 
     {:ok, %{client: client_with_tenant}}
   end

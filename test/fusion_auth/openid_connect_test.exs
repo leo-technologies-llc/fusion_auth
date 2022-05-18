@@ -1,5 +1,5 @@
 defmodule FusionAuth.OpenIdConnectTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
   alias FusionAuth.OpenIdConnect
   alias FusionAuth.TestUtilities
@@ -98,10 +98,10 @@ defmodule FusionAuth.OpenIdConnectTest do
 
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
 
-    on_exit(fn ->
-      TestUtilities.cleanup_identity_providers(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
+    # on_exit(fn ->
+    #   TestUtilities.cleanup_identity_providers(client)
+    #   TestUtilities.cleanup_tenant(client, tenant_id)
+    # end)
 
     {:ok, %{client: client}}
   end

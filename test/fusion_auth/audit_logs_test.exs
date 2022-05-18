@@ -1,5 +1,5 @@
 defmodule FusionAuth.AuditLogsTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
   alias FusionAuth.AuditLogs
   alias FusionAuth.TestUtilities
@@ -14,11 +14,6 @@ defmodule FusionAuth.AuditLogsTest do
     client = FusionAuth.client(base_url, api_key, "")
     TestUtilities.create_tenant(client, tenant_id)
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
-
-    on_exit(fn ->
-      TestUtilities.cleanup_users(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
 
     {:ok, %{client: client_with_tenant}}
   end

@@ -1,5 +1,5 @@
 defmodule FusionAuth.RegistrationsTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
   alias FusionAuth.Registrations
   alias FusionAuth.TestUtilities
@@ -36,11 +36,6 @@ defmodule FusionAuth.RegistrationsTest do
       @user,
       @user_id
     )
-
-    on_exit(fn ->
-      TestUtilities.cleanup_users(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
 
     {:ok, %{client: client}}
   end

@@ -1,5 +1,5 @@
 defmodule FusionAuth.ReportsTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
   alias FusionAuth.Reports
   alias FusionAuth.TestUtilities
@@ -24,10 +24,10 @@ defmodule FusionAuth.ReportsTest do
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
     create_records(client_with_tenant)
 
-    on_exit(fn ->
-      TestUtilities.cleanup_users(client)
-      TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
+    # on_exit(fn ->
+    #   TestUtilities.cleanup_users(client)
+    #   TestUtilities.cleanup_tenant(client, tenant_id)
+    # end)
 
     {:ok, %{client: client_with_tenant, base_url: base_url}}
   end

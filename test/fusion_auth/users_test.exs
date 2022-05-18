@@ -1,10 +1,5 @@
 defmodule FusionAuth.UsersTest do
-  use ExUnit.Case
-
-  alias FusionAuth.Repo
-  import Ecto
-  import Ecto.Query
-  import FusionAuth.Repo
+  use FusionAuth.DataCase
 
   alias FusionAuth.Users
   alias FusionAuth.TestUtilities
@@ -23,13 +18,6 @@ defmodule FusionAuth.UsersTest do
     TestUtilities.create_tenant_with_email_template(client, tenant_id)
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
-    on_exit(fn ->
-      :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
-      Ecto.Adapters.SQL.Sandbox.mode(Repo, {:shared, self()})
-      # TestUtilities.cleanup_users(client)
-      # TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
-
     {:ok, %{client: client_with_tenant}}
   end
 
@@ -42,6 +30,7 @@ defmodule FusionAuth.UsersTest do
       user_id = user["user"]["id"]
 
       {:ok, retrieved_user, _} = Users.get_user_by_id(client, user_id)
+
       retrieved_user_id = retrieved_user["user"]["id"]
 
       assert user_id == retrieved_user_id
@@ -291,6 +280,23 @@ defmodule FusionAuth.UsersTest do
   describe "Search Users" do
     test "search_users/2 returns a 200 status code with the list of users based on the search criteria",
          %{client: client} do
+      Process.sleep(1000)
+
+      query = %{
+        "query" => %{
+          "match_all" => %{}
+        }
+      }
+
+      client2 =
+        FusionAuth.client("http://172.30.243.114:29200", "", "", [:disable_authorization_headers])
+
+      # Tesla.post(client2, "/fusionauth_user/_refresh", "")
+      # Tesla.get(client2, "/fusionauth_user/_search", body: query)
+      # Tesla.post(client2, "/fusionauth_user/_delete_by_query", query)
+      # Tesla.post(client2, "/fusionauth_user/_refresh", "")
+      # Tesla.get(client2, "/fusionauth_user/_search", body: query)
+
       Users.create_user(client, @user)
       Users.create_user(client, @user2)
 
@@ -309,7 +315,6 @@ defmodule FusionAuth.UsersTest do
       }
 
       {:ok, response, %Tesla.Env{status: 200}} = Users.search_users(client, search)
-
       assert response["total"] == 2
     end
 
