@@ -49,12 +49,9 @@ defmodule FusionAuth.LoginTest do
     )
 
     # sleeping to allow indexing for registration
-    Process.sleep(500)
-
-    # on_exit(fn ->
-    #   TestUtilities.cleanup_users(client)
-    #   TestUtilities.cleanup_tenant(client, tenant_id)
-    # end)
+    TestUtilities.wait_for_process(fn ->
+      if TestUtilities.user_exists?(client, @user[:username]), do: :continue, else: :wait
+    end)
 
     {:ok, %{client: client_with_tenant}}
   end
@@ -116,81 +113,6 @@ defmodule FusionAuth.LoginTest do
                Login.login_one_time_password(client, one_time_password)
     end
   end
-
-  # describe "two_factor_login/3" do
-  #   test "can login using 2FA", %{client: client} do
-  #     Mock.mock_request(
-  #       path: @two_factor_url,
-  #       method: :post,
-  #       status: 200,
-  #       response_body: @login_response
-  #     )
-
-  #     assert {:ok, @login_response, %Tesla.Env{status: 200}} =
-  #              Login.two_factor_login(
-  #                client,
-  #                "12345",
-  #                "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
-  #              )
-  #   end
-
-  #   test "invalid 2FA attempt", %{client: client} do
-  #     Mock.mock_request(
-  #       path: @two_factor_url,
-  #       method: :post,
-  #       status: 404,
-  #       response_body: ""
-  #     )
-
-  #     assert {:error, "", %Tesla.Env{status: 404}} =
-  #              Login.two_factor_login(
-  #                client,
-  #                "12345",
-  #                "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
-  #              )
-  #   end
-  # end
-
-  # describe "two_factor_login/4" do
-  #   test "can login using 2FA with specified application_id", %{client: client} do
-  #     Mock.mock_request(
-  #       path: @two_factor_url,
-  #       method: :post,
-  #       status: 200,
-  #       response_body: @login_response
-  #     )
-
-  #     assert {:ok, @login_response, %Tesla.Env{status: 200}} =
-  #              Login.two_factor_login(
-  #                client,
-  #                @application_id,
-  #                "12345",
-  #                "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
-  #              )
-  #   end
-  # end
-
-  # describe "two_factor_login/5" do
-  #   test "response will not have refresh token in no application_id", %{client: client} do
-  #     modified_response = Map.drop(@login_response, ["refreshToken"])
-
-  #     Mock.mock_request(
-  #       path: @two_factor_url,
-  #       method: :post,
-  #       status: 200,
-  #       response_body: modified_response
-  #     )
-
-  #     assert {:ok, ^modified_response, %Tesla.Env{status: 200}} =
-  #              Login.two_factor_login(
-  #                client,
-  #                nil,
-  #                "12345",
-  #                "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4",
-  #                %{}
-  #              )
-  #   end
-  # end
 
   describe "update_login_instant/2" do
     test "can record user login manually", %{client: client} do

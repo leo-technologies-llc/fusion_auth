@@ -98,11 +98,6 @@ defmodule FusionAuth.OpenIdConnectTest do
 
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
 
-    # on_exit(fn ->
-    #   TestUtilities.cleanup_identity_providers(client)
-    #   TestUtilities.cleanup_tenant(client, tenant_id)
-    # end)
-
     {:ok, %{client: client}}
   end
 
@@ -131,21 +126,17 @@ defmodule FusionAuth.OpenIdConnectTest do
   describe "Lookup specific identity provider with given domain" do
     test "lookup_identity_providers/2 returns a json containing an identity provider",
          %{client: client} do
-      {:ok, provider, _} =
+      {:ok, _, _} =
         OpenIdConnect.create_openid_connect_identity_provider(
           client,
           @identity_provider
         )
 
-      # Sleeping for 500ms to allow ES index
-      Process.sleep(500)
+      assert TestUtilities.wait_for_process(fn ->
+               {status, _, _} = OpenIdConnect.lookup_identity_provider(client, "domain.com")
 
-      {:ok, lookup_result, _} = OpenIdConnect.lookup_identity_provider(client, "domain.com")
-
-      created_id = provider["identityProvider"]["id"]
-      lookup_id = lookup_result["identityProvider"]["id"]
-
-      assert created_id == lookup_id
+               if status == :ok, do: :continue, else: :wait
+             end)
     end
 
     test "lookup_identity_providers/2 with an unused domain returns a 404 status code",

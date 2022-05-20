@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - 25432:5432
+      - 25433:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -35,7 +35,7 @@ services:
       - elasticsearch
       - postgres
     ports:
-      - 29011:9011
+      - 29012:9011
     volumes:
       - fusionauth-config:/usr/local/fusionauth/config
       - ./priv/data/fusionauth:/usr/local/fusionauth/kickstart
@@ -50,7 +50,7 @@ services:
       - node.name=elasticsearch-01
       - "ES_JAVA_OPTS=${ES_JAVA_OPTS}"
     ports:
-      - 29200:9200
+      - 29201:9200
     ulimits:
       memlock:
         soft: -1
@@ -66,7 +66,7 @@ services:
     depends_on:
       - elasticsearch
     ports:
-      - 25601:5601
+      - 25602:5601
 
 networks:
   default:

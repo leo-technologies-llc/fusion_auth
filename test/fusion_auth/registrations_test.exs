@@ -369,16 +369,6 @@ defmodule FusionAuth.RegistrationsTest do
   end
 
   describe "Verify a user registration" do
-    # test "verify_user_registration/2 returns 200 status code for successful request", %{
-    #   client: client
-    # } do
-    #   assert {:ok, "", %Tesla.Env{status: 200, body: ""}} ==
-    #            Registrations.verify_user_registration(
-    #              client,
-    #              "good-code"
-    #            )
-    # end
-
     test "verify_user_registration/2 returns 404 status code for invalid request", %{
       client: client
     } do

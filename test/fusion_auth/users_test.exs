@@ -280,31 +280,12 @@ defmodule FusionAuth.UsersTest do
   describe "Search Users" do
     test "search_users/2 returns a 200 status code with the list of users based on the search criteria",
          %{client: client} do
-      Process.sleep(1000)
-
-      query = %{
-        "query" => %{
-          "match_all" => %{}
-        }
-      }
-
-      client2 =
-        FusionAuth.client("http://172.30.243.114:29200", "", "", [:disable_authorization_headers])
-
-      # Tesla.post(client2, "/fusionauth_user/_refresh", "")
-      # Tesla.get(client2, "/fusionauth_user/_search", body: query)
-      # Tesla.post(client2, "/fusionauth_user/_delete_by_query", query)
-      # Tesla.post(client2, "/fusionauth_user/_refresh", "")
-      # Tesla.get(client2, "/fusionauth_user/_search", body: query)
-
       Users.create_user(client, @user)
       Users.create_user(client, @user2)
 
-      Process.sleep(1000)
-
       search = %{
         numberOfResults: 10,
-        queryString: "",
+        queryString: "email:*@email.com",
         sortFields: [
           %{
             name: "username",
@@ -314,8 +295,12 @@ defmodule FusionAuth.UsersTest do
         startRow: 0
       }
 
-      {:ok, response, %Tesla.Env{status: 200}} = Users.search_users(client, search)
-      assert response["total"] == 2
+      assert TestUtilities.wait_for_process(fn ->
+               {:ok, %{"total" => count}, %Tesla.Env{status: 200}} =
+                 Users.search_users(client, search)
+
+               if count == 2, do: :continue, else: :wait
+             end)
     end
 
     test "search_users/2 returns a 400 status code if the request was invalid and/or malformed",
@@ -358,77 +343,6 @@ defmodule FusionAuth.UsersTest do
                Users.get_recent_logins(client, userId: @invalid_id)
     end
   end
-
-  # describe "Verify User Email" do
-  #   test "verify_user_email/2 with a verification_id returns a 200 status code with an empty body if the request to verify a user email was successful",
-  #        %{client: client} do
-  #     verification_id = "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
-
-  #     Mock.mock_request(
-  #       path: @users_url <> "/verify-email/#{verification_id}",
-  #       method: :post,
-  #       status: 200,
-  #       response_body: ""
-  #     )
-
-  #     assert {:ok, "", %Tesla.Env{status: 200}} = Users.verify_user_email(client, verification_id)
-  #   end
-
-  #   test "verify_user_email/2 returns a 400 status code if the request to verify a user email was invalid and/or malformed",
-  #        %{client: client} do
-  #     verification_id = "abcd"
-
-  #     Mock.mock_request(
-  #       path: @users_url <> "/verify-email/#{verification_id}",
-  #       method: :post,
-  #       status: 400,
-  #       response_body: ""
-  #     )
-
-  #     assert {:error, "", %Tesla.Env{status: 400}} =
-  #              Users.verify_user_email(client, verification_id)
-  #   end
-  # end
-
-  # describe "Resend Verification Email" do
-  #   test "resend_verification_email/2 with an email returns a 200 status code with a verification_id if the request to resend a verification email was successful",
-  #        %{client: client} do
-  #     email = "cogadmin@cogility.com"
-
-  #     response_body = %{
-  #       "verificationId" => "YkQY5Gsyo4RlfmDciBGRmvfj3RmatUqrbjoIZ19fmw4"
-  #     }
-
-  #     Mock.mock_request(
-  #       path: @users_url <> "/verify-email?email=#{email}",
-  #       method: :put,
-  #       status: 200,
-  #       response_body: response_body
-  #     )
-
-  #     assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
-  #              Users.resend_verification_email(client, email)
-  #   end
-
-  #   test "verify_user_email/2 returns a 400 status code if the request to resend a verification email was invalid and/or malformed",
-  #        %{client: client} do
-  #     email = "cogadmin@cogility.com"
-
-  #     response_body = %{
-  #       "fieldErrors" => %{}
-  #     }
-
-  #     Mock.mock_request(
-  #       path: @users_url <> "/verify-email?email=#{email}",
-  #       method: :put,
-  #       status: 400,
-  #       response_body: response_body
-  #     )
-
-  #     assert {:error, ^response_body, %Tesla.Env{status: 400}} =
-  #              Users.resend_verification_email(client, email)
-  #   end
-  # end
 
   describe "Forgot Password" do
     test "forgot_password/2returns a 200 status code with a token and sends a changePasswordID to the user's email if the request was successful",

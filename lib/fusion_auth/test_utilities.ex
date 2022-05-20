@@ -3,9 +3,47 @@ defmodule FusionAuth.TestUtilities do
   alias FusionAuth.Applications
   alias FusionAuth.Registrations
   alias FusionAuth.OpenIdConnect
+  alias FusionAuth.Groups
 
   defp rand_string() do
     for(_ <- 1..25, into: "", do: <<Enum.random('0123456789abcdef')>>)
+  end
+
+  def user_exists?(client, username) do
+    search = %{
+      numberOfResults: 10,
+      queryString: "username:" <> username,
+      sortFields: [
+        %{
+          name: "username",
+          order: "asc"
+        }
+      ],
+      startRow: 0
+    }
+
+    case Users.search_users(client, search) do
+      {:ok, %{"total" => 1}, _} -> true
+      {:ok, %{"total" => 0}, _} -> false
+      _ -> false
+    end
+  end
+
+  def wait_for_process(func, attempts \\ 1) do
+    case func.() do
+      :continue ->
+        true
+
+      :wait ->
+        cond do
+          attempts < 20 ->
+            Process.sleep(100)
+            wait_for_process(func, attempts + 1)
+
+          true ->
+            false
+        end
+    end
   end
 
   # Will only create a refresh token if the setting for the application is enabled
@@ -33,7 +71,7 @@ defmodule FusionAuth.TestUtilities do
     tokens = %{token: registration["token"]}
 
     if registration["refreshToken"] do
-      Map.put(tokens, :refreshToken, registration["refreshToken"])
+      Map.put(tokens, :refresh_token, registration["refreshToken"])
     end
   end
 
@@ -51,6 +89,16 @@ defmodule FusionAuth.TestUtilities do
 
   def cleanup_tenant(client, tenant_id) do
     Tesla.delete(client, "/api/tenant/" <> tenant_id)
+  end
+
+  def cleanup_groups(client) do
+    {:ok, groups, _} = Groups.get_groups(client)
+
+    if groups != %{} do
+      Enum.map(groups["groups"], fn group ->
+        Groups.delete_group(client, group["id"])
+      end)
+    end
   end
 
   def cleanup_identity_providers(client) do

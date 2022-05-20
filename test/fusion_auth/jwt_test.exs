@@ -23,7 +23,7 @@ defmodule FusionAuth.JWTTest do
     TestUtilities.enable_JWT(client, @application_id)
     TestUtilities.enable_refresh_tokens(client, @application_id)
 
-    %{token: token, refreshToken: refresh_token} =
+    %{token: token, refresh_token: refresh_token} =
       TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
 
     {:ok,
@@ -51,67 +51,6 @@ defmodule FusionAuth.JWTTest do
     end
   end
 
-  # describe "Reconcile a JWT" do
-  #   test "reconcile_jwt/4 returns a 200 status code for successful request", %{client: client} do
-  #     data = %{"token" => @token}
-
-  #     Mock.mock_request(
-  #       path: @jwt_reconcile_url,
-  #       method: :post,
-  #       status: 200,
-  #       response_body: %{}
-  #     )
-
-  #     assert {:ok, %{}, %Tesla.Env{status: 200}} =
-  #              JWT.reconcile_jwt(client, @application_id, data, @identity_provider_id)
-  #   end
-
-  #   test "reconcile_jwt/4 returns a 400 when the request was invalid and/or malformed", %{
-  #     client: client
-  #   } do
-  #     data = %{"token" => @token}
-
-  #     Mock.mock_request(
-  #       path: @jwt_reconcile_url,
-  #       method: :post,
-  #       status: 400,
-  #       response_body: %{}
-  #     )
-
-  #     assert {:error, %{}, %Tesla.Env{status: 400}} =
-  #              JWT.reconcile_jwt(client, @application_id, data, @identity_provider_id)
-  #   end
-
-  #   test "reconcile_jwt/4 returns a 401 when the request cannot be completed", %{client: client} do
-  #     data = %{"token" => @token}
-
-  #     Mock.mock_request(
-  #       path: @jwt_reconcile_url,
-  #       method: :post,
-  #       status: 401,
-  #       response_body: %{}
-  #     )
-
-  #     assert {:error, %{}, %Tesla.Env{status: 401}} =
-  #              JWT.reconcile_jwt(client, @application_id, data, @identity_provider_id)
-  #   end
-
-  #   test "reconcile_jwt/4 returns a 404 when the user is not found or the password is incorrect",
-  #        %{client: client} do
-  #     data = %{"token" => @token}
-
-  #     Mock.mock_request(
-  #       path: @jwt_reconcile_url,
-  #       method: :post,
-  #       status: 404,
-  #       response_body: %{}
-  #     )
-
-  #     assert {:error, %{}, %Tesla.Env{status: 404}} =
-  #              JWT.reconcile_jwt(client, @application_id, data, @identity_provider_id)
-  #   end
-  # end
-
   describe "Retrieve all Public Keys" do
     test "get_public_keys/1 returns a 200 status code for successful request", %{client: client} do
       assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_public_keys(client)
@@ -137,7 +76,6 @@ defmodule FusionAuth.JWTTest do
     test "get_public_key_by_key_id/2 returns a 200 status code for successful request", %{
       client: client
     } do
-      Process.sleep(500)
       {:ok, keys, _} = JWT.get_public_keys(client)
       key_id = Map.keys(keys["publicKeys"]) |> Enum.at(0)
 

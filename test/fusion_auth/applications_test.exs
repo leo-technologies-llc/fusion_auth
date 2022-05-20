@@ -37,11 +37,6 @@ defmodule FusionAuth.ApplicationsTest do
     TestUtilities.create_tenant(client, tenant_id)
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
-    on_exit(fn ->
-      nil
-      # TestUtilities.cleanup_tenant(client, tenant_id)
-    end)
-
     {:ok, %{client: client_with_tenant}}
   end
 
@@ -143,8 +138,6 @@ defmodule FusionAuth.ApplicationsTest do
       {:ok, application, _} = Applications.create_application(client, @application)
       created_id = application["application"]["id"]
       created_oauth_config_id = application["application"]["oauthConfiguration"]["id"]
-
-      Process.sleep(500)
 
       {:ok, retrieved_oauth_config, _} = Applications.get_oauth_configuration(client, created_id)
       retrieved_oauth_config_id = retrieved_oauth_config["oauthConfiguration"]["id"]

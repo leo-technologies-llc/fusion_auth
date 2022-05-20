@@ -36,12 +36,6 @@ defmodule FusionAuth.GroupsTest do
     TestUtilities.create_tenant(client, tenant_id)
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
-    # on_exit(fn ->
-    #   TestUtilities.cleanup_users(client)
-    #   TestUtilities.cleanup_tenant(client, tenant_id)
-    #   cleanup_groups(client)
-    # end)
-
     {:ok, %{client: client_with_tenant}}
   end
 
@@ -272,16 +266,6 @@ defmodule FusionAuth.GroupsTest do
       {:ok, response, _} = Groups.remove_members(client, group_id, [created_user_id])
 
       assert response == ""
-    end
-  end
-
-  def cleanup_groups(client) do
-    {:ok, groups, _} = Groups.get_groups(client)
-
-    if groups != %{} do
-      Enum.map(groups["groups"], fn group ->
-        Groups.delete_group(client, group["id"])
-      end)
     end
   end
 end

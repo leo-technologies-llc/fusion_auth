@@ -2,16 +2,6 @@
 # and its dependencies with the aid of the Mix.Config module.
 use Mix.Config
 
-config :fusion_auth, ecto_repos: [FusionAuth.Repo]
-
-config :fusion_auth, FusionAuth.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "fusionauth",
-  password: "hkaLBM3RVnyYeYeqE3WI1w2e4Avpy0Wd5O3s3",
-  database: "fusionauth",
-  hostname: "172.30.243.114",
-  port: 25432
-
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
@@ -21,8 +11,8 @@ config :fusion_auth, FusionAuth.Repo,
 # You can configure your application as:
 
 # config :fusion_auth,
-#   api_key: "FUSION_AUTH_API_KEY",
 #   api_url: "FUSION_AUTH_URL",
+#   api_key: "FUSION_AUTH_API_KEY",
 #   tenant_id: "FUSION_AUTH_TENANT_ID",
 #   application_id: "FUSION_AUTH_APPLICATION_ID",
 #   enable_jwt: true,
