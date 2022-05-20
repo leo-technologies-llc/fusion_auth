@@ -30,7 +30,7 @@ services:
       SEARCH_TYPE: elasticsearch
 
       # Kickstart Configuration
-      FUSIONAUTH_API_KEY: ${FUSIONAUTH_API_KEY}
+      FUSION_AUTH_API_KEY: ${FUSION_AUTH_API_KEY}
     depends_on:
       - elasticsearch
       - postgres

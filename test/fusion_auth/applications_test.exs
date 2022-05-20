@@ -136,12 +136,12 @@ defmodule FusionAuth.ApplicationsTest do
          %{client: client} do
       {:ok, application, _} = Applications.create_application(client, @application)
       created_id = application["application"]["id"]
-      created_oauth_config_id = application["application"]["oauthConfiguration"]["id"]
 
-      {:ok, retrieved_oauth_config, _} = Applications.get_oauth_configuration(client, created_id)
-      retrieved_oauth_config_id = retrieved_oauth_config["oauthConfiguration"]["id"]
+      assert TestUtilities.wait_for_process(fn ->
+               {status, _, _} = Applications.get_oauth_configuration(client, created_id)
 
-      assert created_oauth_config_id == retrieved_oauth_config_id
+               if status == :ok, do: :continue, else: :wait
+             end)
     end
 
     test "get_oauth_configuration/2 returns a 404 status code if application is not found",

@@ -1,6 +1,6 @@
 {
   "variables": {
-    "apiKey": "#{ENV.FUSIONAUTH_API_KEY}"
+    "apiKey": "#{ENV.FUSION_AUTH_API_KEY}"
   },
   "apiKeys": [
     {

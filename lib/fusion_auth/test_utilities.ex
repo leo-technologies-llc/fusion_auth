@@ -42,15 +42,17 @@ defmodule FusionAuth.TestUtilities do
   def create_tokens_and_user(client, application_id, user_id) do
     Users.delete_user(client, user_id, [{:hardDelete, true}])
 
+    user = %{
+      username: Faker.Internet.user_name(),
+      password: Faker.UUID.v4(),
+      email: Faker.Internet.email()
+    }
+
     data = %{
       registration: %{
         applicationId: application_id
       },
-      user: %{
-        username: Faker.Internet.user_name(),
-        password: Faker.UUID.v4(),
-        email: Faker.Internet.email()
-      }
+      user: user
     }
 
     {:ok, registration, _} =
@@ -59,6 +61,10 @@ defmodule FusionAuth.TestUtilities do
         data,
         user_id
       )
+
+    wait_for_process(fn ->
+      if user_exists?(client, user[:username]), do: :continue, else: :wait
+    end)
 
     tokens = %{token: registration["token"]}
 
