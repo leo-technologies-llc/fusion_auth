@@ -1,8 +1,7 @@
 defmodule FusionAuth.UsersTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.Users
-  alias FusionAuth.TestUtilities
+  alias FusionAuth.{Users, TestUtilities}
 
   @invalid_id "d6624a85-f006-4f61-825f-0cf3df9ca140"
 
@@ -10,7 +9,7 @@ defmodule FusionAuth.UsersTest do
   @user2 %{username: "janedoe", password: "password", email: "second_test@email.com"}
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

@@ -1,8 +1,7 @@
 defmodule FusionAuth.OpenIdConnectTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.OpenIdConnect
-  alias FusionAuth.TestUtilities
+  alias FusionAuth.{TestUtilities, OpenIdConnect}
 
   @application_id "3b0654ca-6870-4bf0-a0ce-2507c42d9998"
   @identity_provider_id "320a5cea-6893-42fe-9fba-bd31258a1a27"
@@ -88,7 +87,7 @@ defmodule FusionAuth.OpenIdConnectTest do
   }
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

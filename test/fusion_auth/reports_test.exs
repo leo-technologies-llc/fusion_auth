@@ -1,10 +1,7 @@
 defmodule FusionAuth.ReportsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.Reports
-  alias FusionAuth.TestUtilities
-  alias FusionAuth.Registrations
-  alias FusionAuth.Login
+  alias FusionAuth.{Reports, TestUtilities, Registrations, Login}
 
   @user %{username: "johndoe", password: "password", email: "email@email.com"}
 
@@ -15,7 +12,7 @@ defmodule FusionAuth.ReportsTest do
   @application_id "473f2618-c526-45ba-9c35-8739ba6cfc2e"
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

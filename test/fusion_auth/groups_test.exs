@@ -1,10 +1,7 @@
 defmodule FusionAuth.GroupsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.Groups
-  alias FusionAuth.Applications
-  alias FusionAuth.Users
-  alias FusionAuth.TestUtilities
+  alias FusionAuth.{Groups, Applications, Users, TestUtilities}
 
   @role %{
     "description" => "Test role description.",
@@ -28,7 +25,7 @@ defmodule FusionAuth.GroupsTest do
   }
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

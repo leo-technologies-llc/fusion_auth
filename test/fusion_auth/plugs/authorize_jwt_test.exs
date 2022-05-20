@@ -1,10 +1,9 @@
 defmodule FusionAuth.Plugs.AuthorizeJWTTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.Plugs.AuthorizeJWT
-  alias FusionAuth.TestUtilities
+  alias FusionAuth.{Plugs.AuthorizeJWT, TestUtilities}
 
-  @base_url Application.get_env(:fusion_auth, :test_url)
+  @base_url Application.get_env(:fusion_auth, :api_url)
   @api_key Application.get_env(:fusion_auth, :api_key)
   @tenant_id Application.get_env(:fusion_auth, :tenant_id)
   @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"

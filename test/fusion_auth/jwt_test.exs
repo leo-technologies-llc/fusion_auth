@@ -1,8 +1,7 @@
 defmodule FusionAuth.JWTTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.JWT
-  alias FusionAuth.TestUtilities
+  alias FusionAuth.{JWT, TestUtilities}
 
   @invalid_user_id "25a872da-bb44-4af8-a43d-e7bcb5351ebc"
   @invalid_token "123123"
@@ -11,7 +10,7 @@ defmodule FusionAuth.JWTTest do
   @user_id "84846873-89d2-44f8-91e9-dac80f420cb2"
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

@@ -1,9 +1,7 @@
 defmodule FusionAuth.RegistrationsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.Registrations
-  alias FusionAuth.TestUtilities
-  alias FusionAuth.Users
+  alias FusionAuth.{Registrations, TestUtilities, Users}
 
   @application_id "7d47523b-057d-4f91-b159-f196f9dbe7c9"
   @user_id "12104852-f534-475e-9332-9fc3c37432b8"
@@ -15,7 +13,7 @@ defmodule FusionAuth.RegistrationsTest do
   }
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

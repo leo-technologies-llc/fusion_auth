@@ -1,8 +1,7 @@
 defmodule FusionAuth.ApplicationsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.Applications
-  alias FusionAuth.TestUtilities
+  alias FusionAuth.{Applications, TestUtilities}
 
   @invalid_application_id "32c54ee1-3d5a-4085-9ec5-4731d9e0f752"
   @valid_role_id "8bd3db07-8d98-455a-bd86-b802263114b1"
@@ -29,7 +28,7 @@ defmodule FusionAuth.ApplicationsTest do
   }
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

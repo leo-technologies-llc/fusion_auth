@@ -47,7 +47,8 @@ defmodule FusionAuth.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:recase, "~> 0.7.0"},
-      {:excoveralls, "~> 0.14", only: :test}
+      {:excoveralls, "~> 0.14", only: :test},
+      {:faker, "~> 0.17", only: :test}
     ]
   end
 

@@ -1,13 +1,12 @@
 defmodule FusionAuth.AuditLogsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.AuditLogs
-  alias FusionAuth.TestUtilities
+  alias FusionAuth.{AuditLogs, TestUtilities}
 
   @audit_log %{insertUser: "john.doe@email.com", message: "This is an audit log."}
 
   setup do
-    base_url = Application.get_env(:fusion_auth, :test_url)
+    base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 

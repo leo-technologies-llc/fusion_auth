@@ -1,13 +1,5 @@
 defmodule FusionAuth.TestUtilities do
-  alias FusionAuth.Users
-  alias FusionAuth.Applications
-  alias FusionAuth.Registrations
-  alias FusionAuth.OpenIdConnect
-  alias FusionAuth.Groups
-
-  defp rand_string() do
-    for(_ <- 1..25, into: "", do: <<Enum.random('0123456789abcdef')>>)
-  end
+  alias FusionAuth.{Users, Applications, Registrations, OpenIdConnect, Groups}
 
   def user_exists?(client, username) do
     search = %{
@@ -55,9 +47,9 @@ defmodule FusionAuth.TestUtilities do
         applicationId: application_id
       },
       user: %{
-        username: rand_string(),
-        password: rand_string(),
-        email: rand_string() <> "@email.com"
+        username: Faker.Internet.user_name(),
+        password: Faker.UUID.v4(),
+        email: Faker.Internet.email()
       }
     }
 
@@ -120,7 +112,7 @@ defmodule FusionAuth.TestUtilities do
 
     tenant = %{
       "tenant" => %{
-        "name" => rand_string(),
+        "name" => Faker.Internet.domain_word(),
         "emailConfiguration" => %{
           "forgotPasswordEmailTemplateId" => template_id
         }
@@ -133,7 +125,7 @@ defmodule FusionAuth.TestUtilities do
   def create_tenant(client, tenant_id) do
     tenant = %{
       "tenant" => %{
-        "name" => rand_string()
+        "name" => Faker.Internet.domain_word()
       }
     }
 
@@ -143,7 +135,7 @@ defmodule FusionAuth.TestUtilities do
   def create_application_with_id(client, application_id) do
     application = %{
       "application" => %{
-        "name" => rand_string()
+        "name" => Faker.Internet.domain_word()
       }
     }
 
@@ -185,7 +177,7 @@ defmodule FusionAuth.TestUtilities do
   def create_email_template(client, template_id) do
     template = %{
       "emailTemplate" => %{
-        "name" => rand_string(),
+        "name" => Faker.Internet.domain_word(),
         "fromEmail" => "email@example.com",
         "defaultFromName" => "Administrator",
         "defaultSubject" => "Template Subject",
