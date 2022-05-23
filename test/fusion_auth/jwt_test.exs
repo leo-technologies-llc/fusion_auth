@@ -23,7 +23,9 @@ defmodule FusionAuth.JWTTest do
     TestUtilities.enable_refresh_tokens(client, @application_id)
 
     %{token: token, refresh_token: refresh_token} =
-      TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
+      IO.inspect(
+        TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
+      )
 
     {:ok,
      %{client: client_with_tenant, token: token, refresh_token: refresh_token, base_url: base_url}}
