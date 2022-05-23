@@ -104,6 +104,11 @@ defmodule FusionAuth.JWTTest do
   describe "Retrieve Refresh Tokens issued to a User by User ID" do
     test "get_user_refresh_tokens_by_user_id/2 returns a 200 status code for successful request",
          %{client: client} do
+      TestUtilities.wait_for_process(fn ->
+        {status, _, _} = FusionAuth.Users.get_user_by_id(client, @user_id)
+        if status == :ok, do: :continue, else: :wait
+      end)
+
       assert {:ok, %{}, %Tesla.Env{status: 200}} =
                JWT.get_user_refresh_tokens_by_user_id(client, @user_id)
     end
