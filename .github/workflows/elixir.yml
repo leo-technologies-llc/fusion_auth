@@ -37,6 +37,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: ./.github/actions/cache-restore
+        id: cache-mix-dependencies
+        with:
+          elixir-version: "1.13.0"
+          otp-version: "24.2"
       - name: Build the stack
         run: |
           touch .env
