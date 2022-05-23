@@ -59,9 +59,7 @@ jobs:
 
           # Kickstart Configuration
           FUSION_AUTH_API_KEY: WHYugARKzum-jHvzCk5-C558EKPaYEECz5k8fDZayIaFiZHRKqy9kaQn
-        depends_on:
-          - elasticsearch
-          - postgres
+
         ports:
           - 29012:9011
         volumes:
