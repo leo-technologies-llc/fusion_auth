@@ -63,7 +63,9 @@ defmodule FusionAuth.TestUtilities do
       )
 
     wait_for_process(fn ->
-      if user_exists?(client, user[:username]), do: :continue, else: :wait
+      if user_exists?(client, user[:username]) and Map.has_key?(registration, "refreshToken"),
+        do: :continue,
+        else: :wait
     end)
 
     tokens = %{token: registration["token"]}
