@@ -1,5 +1,4 @@
----
-name: Tests
+name: CI
 
 on:
   pull_request:
@@ -9,14 +8,105 @@ on:
       - master
 
 jobs:
-  test:
+  setup:
     runs-on: ubuntu-latest
-    name: Tests
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+
+      - uses: ./.github/actions/cache-restore
+        id: cache-mix-dependencies
+        with:
+          elixir-version: "1.13.0"
+          otp-version: "24.2"
+
+      - name: Install mix dependencies if cache is empty
+        if: steps.cache-mix-dependencies.outputs.cache-hit != 'true'
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+          mix deps.compile
+
+  unit-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    env:
+      ELASTIC_ENDPOINT: http://localhost:9201
+      ELASTIC_PASSWORD: elastic
+      ELASTIC_USERNAME: elastic
+      MIX_ENV: test
+      POSTGRES_HOSTNAME: localhost
+    services:
+      fusionauth:
+        image: fusionauth/fusionauth-app:1.35.0
+        env:
+          DATABASE_URL: jdbc:postgresql://localhost:5432/fusionauth
+          DATABASE_ROOT_USERNAME: postgres
+          DATABASE_ROOT_PASSWORD: postgres
+          DATABASE_USERNAME: fusionauth
+          DATABASE_PASSWORD: 4t*U^7XsSAzAztFAZ*&UL9VSwSp9H6unxw3D*Dx
+          FUSIONAUTH_APP_MEMORY: 512M
+          FUSIONAUTH_APP_RUNTIME_MODE: development
+          FUSIONAUTH_APP_URL: http://localhost:9011
+          FUSIONAUTH_APP_KICKSTART_FILE: /usr/local/fusionauth/kickstart/kickstart.json
+          SEARCH_SERVERS: http://localhost:9200
+          SEARCH_TYPE: elasticsearch
+
+          # Kickstart Configuration
+          FUSION_AUTH_API_KEY: WHYugARKzum-jHvzCk5-C558EKPaYEECz5k8fDZayIaFiZHRKqy9kaQn
+        depends_on:
+          - elasticsearch
+          - postgres
+        ports:
+          - 29012:9011
+        volumes:
+          - ./priv/data/fusionauth:/usr/local/fusionauth/kickstart
+        options: --name fa-test-fusionauth
+
+      postgres:
+        image: postgres:13.4
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      elasticsearch:
+        image: elasticsearch:7.17.3
+        ports:
+          - 9201:9200
+        options: >-
+          -e="discovery.type=single-node"
+          --health-cmd="curl http://localhost:9200/_cluster/health"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
       - uses: actions/checkout@v2
-      - uses: erlef/setup-elixir@v1
+
+      - uses: ./.github/actions/cache-restore
+        id: cache-mix-dependencies
         with:
-          otp-version: "24.1.5"
-          elixir-version: "1.12.3"
-      - run: mix deps.get
-      - run: mix coveralls
+          elixir-version: "1.13.0"
+          otp-version: "24.2"
+
+      - name: Run FA health check script
+        run: ./.github/scripts/fa-health-check.sh
+        shell: bash
+
+      - name: Run tests with coverage
+        run: mix coveralls.lcov
+
+      - name: Comment with test coverage
+        uses: romeovs/lcov-reporter-action@v0.2.19
+        with:
+          github-token: ${{ github.token }}
+          lcov-file: ./cover/lcov.info
