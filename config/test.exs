@@ -1,6 +1,9 @@
 use Mix.Config
 
-config :logger, level: :error
+# config :logger, level: :error
+config :logger,
+  backends: [:console],
+  compile_time_purge_level: :debug
 
 config :fusion_auth,
   api_url: System.get_env("FUSION_AUTH_TEST_URL"),
