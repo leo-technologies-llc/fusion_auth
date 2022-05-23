@@ -36,12 +36,10 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: 'Create env file'
-          run: |
-            touch .env
-            cp .env.example .env
-            source .env
-
       - uses: actions/checkout@v2
       - name: Build the stack
-        run: ./run coveralls
+        run: |
+          touch .env
+          cp .env.example .env
+          source .env
+          ./run coveralls
