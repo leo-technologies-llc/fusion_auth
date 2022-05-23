@@ -62,9 +62,8 @@ jobs:
 
         ports:
           - 29012:9011
-        volumes:
-          - ./priv/data/fusionauth:/usr/local/fusionauth/kickstart
-        options: --name fa-test-fusionauth
+
+        options: --name fa-test-fusionauth -v ./priv/data/fusionauth:/usr/local/fusionauth/kickstart
 
       postgres:
         image: postgres:13.4
