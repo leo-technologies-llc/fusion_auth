@@ -70,11 +70,14 @@ defmodule FusionAuth.TestUtilities do
     end)
 
     wait_for_process(fn ->
-      {status, _, _} = FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, user_id)
+      {status, response, _} = FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, user_id)
 
-      if status == :ok,
-        do: :continue,
-        else: :wait
+      if status == :ok do
+        :continue
+      else
+        IO.inspect(response)
+        :wait
+      end
     end)
 
     {:ok, refresh_token_response, _} =
