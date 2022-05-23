@@ -64,15 +64,27 @@ defmodule FusionAuth.TestUtilities do
       )
 
     wait_for_process(fn ->
-      if user_exists?(client, user[:username]) and Map.has_key?(registration, "refreshToken"),
+      if user_exists?(client, user[:username]),
         do: :continue,
         else: :wait
     end)
 
+    wait_for_process(fn ->
+      {status, _, _} = FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, user_id)
+
+      if status == :ok,
+        do: :continue,
+        else: :wait
+    end)
+
+    {:ok, refresh_token_response, _} =
+      FusionAuth.JWT.get_user_refresh_tokens_by_user_id(client, user_id)
+
+    refresh_token = Enum.at(refresh_token_response["refreshTokens"], 0)["token"]
     tokens = %{token: registration["token"]}
 
     if registration["refreshToken"] do
-      Map.put(tokens, :refresh_token, registration["refreshToken"])
+      Map.put(tokens, :refresh_token, refresh_token)
     end
   end
 
