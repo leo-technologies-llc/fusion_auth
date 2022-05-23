@@ -1,5 +1,6 @@
 defmodule FusionAuth.TestUtilities do
   alias FusionAuth.{Users, Applications, Registrations, OpenIdConnect, Groups}
+  alias Faker.{Internet, UUID}
 
   def user_exists?(client, username) do
     search = %{
@@ -43,9 +44,9 @@ defmodule FusionAuth.TestUtilities do
     Users.delete_user(client, user_id, [{:hardDelete, true}])
 
     user = %{
-      username: Faker.Internet.user_name(),
-      password: Faker.UUID.v4(),
-      email: Faker.Internet.email()
+      username: Internet.user_name(),
+      password: UUID.v4(),
+      email: Internet.email()
     }
 
     data = %{
@@ -120,7 +121,7 @@ defmodule FusionAuth.TestUtilities do
 
     tenant = %{
       "tenant" => %{
-        "name" => Faker.Internet.domain_word(),
+        "name" => Internet.domain_word(),
         "emailConfiguration" => %{
           "forgotPasswordEmailTemplateId" => template_id
         }
@@ -133,7 +134,7 @@ defmodule FusionAuth.TestUtilities do
   def create_tenant(client, tenant_id) do
     tenant = %{
       "tenant" => %{
-        "name" => Faker.Internet.domain_word()
+        "name" => Internet.domain_word()
       }
     }
 
@@ -143,7 +144,7 @@ defmodule FusionAuth.TestUtilities do
   def create_application_with_id(client, application_id) do
     application = %{
       "application" => %{
-        "name" => Faker.Internet.domain_word()
+        "name" => Internet.domain_word()
       }
     }
 
@@ -185,7 +186,7 @@ defmodule FusionAuth.TestUtilities do
   def create_email_template(client, template_id) do
     template = %{
       "emailTemplate" => %{
-        "name" => Faker.Internet.domain_word(),
+        "name" => Internet.domain_word(),
         "fromEmail" => "email@example.com",
         "defaultFromName" => "Administrator",
         "defaultSubject" => "Template Subject",
