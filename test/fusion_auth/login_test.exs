@@ -48,7 +48,7 @@ defmodule FusionAuth.LoginTest do
 
     # sleeping to allow indexing for registration
     TestUtilities.wait_for_process(fn ->
-      if TestUtilities.user_exists?(client, @user[:username]), do: :continue, else: :wait
+      if TestUtilities.user_exists?(client, @user), do: :continue, else: :wait
     end)
 
     {:ok, %{client: client_with_tenant}}

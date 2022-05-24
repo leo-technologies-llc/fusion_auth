@@ -2,22 +2,25 @@ defmodule FusionAuth.TestUtilities do
   alias FusionAuth.{Users, Applications, Registrations, OpenIdConnect, Groups}
   alias Faker.{Internet, UUID}
 
-  def user_exists?(client, username) do
+  def user_exists?(client, user) do
+    query_string =
+      case user do
+        %{username: username} ->
+          "username:" <> username
+
+        %{id: id} ->
+          "id:" <> id
+
+        %{email: email} ->
+          "email:" <> email
+      end
+
     search = %{
-      numberOfResults: 10,
-      queryString: "username:" <> username,
-      sortFields: [
-        %{
-          name: "username",
-          order: "asc"
-        }
-      ],
-      startRow: 0
+      queryString: query_string
     }
 
     case Users.search_users(client, search) do
       {:ok, %{"total" => 1}, _} -> true
-      {:ok, %{"total" => 0}, _} -> false
       _ -> false
     end
   end
@@ -29,7 +32,7 @@ defmodule FusionAuth.TestUtilities do
 
       :wait ->
         cond do
-          attempts < 20 ->
+          attempts < 50 ->
             Process.sleep(100)
             wait_for_process(func, attempts + 1)
 
@@ -41,7 +44,8 @@ defmodule FusionAuth.TestUtilities do
 
   # Will only create a refresh token if the setting for the application is enabled
   def create_tokens_and_user(client, application_id, user_id) do
-    Users.delete_user(client, user_id, [{:hardDelete, true}])
+    if user_exists?(client, %{id: user_id}),
+      do: Users.delete_user(client, user_id, [{:hardDelete, true}])
 
     user = %{
       username: Internet.user_name(),
@@ -64,7 +68,7 @@ defmodule FusionAuth.TestUtilities do
       )
 
     wait_for_process(fn ->
-      if user_exists?(client, user[:username]),
+      if user_exists?(client, user),
         do: :continue,
         else: :wait
     end)
