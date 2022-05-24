@@ -43,8 +43,10 @@ defmodule FusionAuth.TestUtilities do
   end
 
   def create_tokens_and_user(client, application_id, user_id) do
-    enable_JWT(client, application_id)
-    enable_refresh_tokens(client, application_id)
+    {enable_jwt_status, _, _} = enable_JWT(client, application_id)
+    {enable_refresh_status, _, _} = enable_refresh_tokens(client, application_id)
+    IO.inspect(enable_jwt_status, label: "jwt")
+    IO.inspect(enable_refresh_status, label: "refresh")
 
     if user_exists?(client, %{id: user_id}),
       do: Users.delete_user(client, user_id, [{:hardDelete, true}])
