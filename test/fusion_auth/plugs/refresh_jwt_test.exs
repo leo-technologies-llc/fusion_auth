@@ -19,8 +19,6 @@ defmodule FusionAuth.Plugs.RefreshJWTTest do
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
-    TestUtilities.enable_JWT(client, @application_id)
-    TestUtilities.enable_refresh_tokens(client, @application_id)
 
     %{token: token, refresh_token: refresh_token} =
       TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)

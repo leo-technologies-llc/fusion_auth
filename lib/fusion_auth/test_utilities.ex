@@ -42,8 +42,10 @@ defmodule FusionAuth.TestUtilities do
     end
   end
 
-  # Will only create a refresh token if the setting for the application is enabled
   def create_tokens_and_user(client, application_id, user_id) do
+    enable_JWT(client, application_id)
+    enable_refresh_tokens(client, application_id)
+
     if user_exists?(client, %{id: user_id}),
       do: Users.delete_user(client, user_id, [{:hardDelete, true}])
 
@@ -74,7 +76,6 @@ defmodule FusionAuth.TestUtilities do
     end)
 
     tokens = %{token: registration["token"]}
-    IO.inspect(registration)
 
     if registration["refreshToken"] do
       Map.put(tokens, :refresh_token, registration["refreshToken"])
