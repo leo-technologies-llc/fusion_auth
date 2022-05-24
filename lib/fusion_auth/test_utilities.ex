@@ -1,7 +1,14 @@
 defmodule FusionAuth.TestUtilities do
+  @moduledoc """
+  This is module provides various functions for writing tests utilizing this packages functions
+  """
   alias FusionAuth.{Users, Applications, Registrations, OpenIdConnect, Groups}
   alias Faker.{Internet, UUID}
 
+  @doc """
+  Checks if a given user object is currently available to be queried by FusionAuth
+  - Directly after creating a user in FusionAuth they might not be available to be queried
+  """
   def user_exists?(client, user) do
     query_string =
       case user do
@@ -25,6 +32,11 @@ defmodule FusionAuth.TestUtilities do
     end
   end
 
+  @doc """
+  Waits for a given function, returns true if successful and false if the max attempts is exceeded
+  There are several situations where after creating a FusionAuth object it is not available to be queried,
+  this function aids in waiting for said object to be available for use.
+  """
   def wait_for_process(func, attempts \\ 1) do
     case func.() do
       :continue ->
@@ -56,6 +68,10 @@ defmodule FusionAuth.TestUtilities do
     end
   end
 
+  @doc """
+  Takes an already created application id and user id (that may or may not exist) and creates tokens for a user with that id
+  - This does recreate the user if one already exists so the ID will be the same but the other information won't.
+  """
   def create_tokens_and_user(client, application_id, user_id) do
     enable_JWT(client, application_id)
     enable_refresh_tokens(client, application_id)
@@ -98,6 +114,9 @@ defmodule FusionAuth.TestUtilities do
     %{token: registration["token"], refresh_token: registration["refreshToken"]}
   end
 
+  @doc """
+  Hard Deletes all the users in FusionAuth.
+  """
   def cleanup_users(client) do
     {:ok, users, _} = Users.search_users(client, %{queryString: ""})
 
@@ -110,10 +129,16 @@ defmodule FusionAuth.TestUtilities do
     end
   end
 
+  @doc """
+  Deletes a specific tenant given the ID.
+  """
   def cleanup_tenant(client, tenant_id) do
     Tesla.delete(client, "/api/tenant/" <> tenant_id)
   end
 
+  @doc """
+  Deletes all the groups in FusionAuth.
+  """
   def cleanup_groups(client) do
     {:ok, groups, _} = Groups.get_groups(client)
 
@@ -124,6 +149,9 @@ defmodule FusionAuth.TestUtilities do
     end
   end
 
+  @doc """
+  Deletes all the identity providers in FusionAuth.
+  """
   def cleanup_identity_providers(client) do
     {:ok, identity_providers, _} = OpenIdConnect.retrieve_all_identity_providers(client)
 
@@ -134,6 +162,10 @@ defmodule FusionAuth.TestUtilities do
     end
   end
 
+  @doc """
+  creates a tenant and sets up an email template.
+  - Certain api calls require a template to be used for emails.
+  """
   def create_tenant_with_email_template(
         client,
         tenant_id,
@@ -153,6 +185,9 @@ defmodule FusionAuth.TestUtilities do
     Tesla.post(client, "/api/tenant/" <> tenant_id, tenant)
   end
 
+  @doc """
+  Creates a tenant with the given id.
+  """
   def create_tenant(client, tenant_id) do
     tenant = %{
       "tenant" => %{
@@ -163,6 +198,9 @@ defmodule FusionAuth.TestUtilities do
     Tesla.post(client, "/api/tenant/" <> tenant_id, tenant)
   end
 
+  @doc """
+  Creates an application with the given id.
+  """
   def create_application_with_id(client, application_id) do
     application = %{
       "application" => %{
@@ -173,6 +211,10 @@ defmodule FusionAuth.TestUtilities do
     Tesla.post(client, "/api/application/" <> application_id, application)
   end
 
+  @doc """
+  Enables registration verification for the application with the given id. It uses the provided template id
+  as the email template.
+  """
   def enable_registration_verification(client, application_id, template_id) do
     create_email_template(client, template_id)
 
@@ -184,6 +226,9 @@ defmodule FusionAuth.TestUtilities do
     Applications.update_application(client, application_id, app)
   end
 
+  @doc """
+  Enables refresh tokens for the application with the given id.
+  """
   def enable_refresh_tokens(client, application_id) do
     app = %{
       "loginConfiguration" => %{
@@ -195,6 +240,9 @@ defmodule FusionAuth.TestUtilities do
     Applications.update_application(client, application_id, app)
   end
 
+  @doc """
+  Enables JWT generation for the application with the given id.
+  """
   def enable_JWT(client, application_id) do
     app = %{
       "jwtConfiguration" => %{
@@ -205,6 +253,9 @@ defmodule FusionAuth.TestUtilities do
     Applications.update_application(client, application_id, app)
   end
 
+  @doc """
+  Creates a basic email template for the given template_id
+  """
   def create_email_template(client, template_id) do
     template = %{
       "emailTemplate" => %{

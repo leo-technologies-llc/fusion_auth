@@ -1,46 +1,9 @@
 #!/usr/bin/env bash
 
 set -eo pipefail
-
-function prune:test {
-    if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-        cat <<-'USAGE'
-Description:
-    Prune all test docker containers and volumes
-
-Usage:
-    ./run prune:test [options]
-
-Options:
-    OPTION                  See https://docs.docker.com/engine/reference/commandline/container_prune/#options for all possible options
-    -h | --help             Display function usage information
-
-Examples:
-    # Prune all test docker containers and volumes
-    ./run prune:test
-USAGE
-        exit 0
-    fi
-
-    TEST=$(docker ps --filter "name=fa-test" -aq)
-
-    if [ -z "$TEST" ]; then
-        echo "No test containers/volumes to prune ..."
-    else
-        echo "Removing test containers/volumes..."
-        docker container rm -f $TEST
-        docker volumes rm $TEST
-    fi
-}
+VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
 
 function test {
-
-
-    # until curl -s -f -o /dev/null "http://localhost:9011"
-    # do
-    #     sleep 1
-    # done
-    VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
     docker-compose down
     docker-compose rm -f
 
@@ -67,7 +30,6 @@ function test {
 }
 
 function coveralls {
-    VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
     docker-compose down
     docker-compose rm -f
 
@@ -93,7 +55,6 @@ function coveralls {
 }
 
 function up {
-    VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
     docker-compose down
     docker-compose rm -f
 
