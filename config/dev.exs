@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :fusion_auth,
   api_key: System.get_env("FUSION_AUTH_API_KEY"),
