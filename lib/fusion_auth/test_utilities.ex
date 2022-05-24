@@ -42,11 +42,24 @@ defmodule FusionAuth.TestUtilities do
     end
   end
 
+  defp valid_app_token_configs?(client, application_id) do
+    {:ok, application, _} = Applications.get_application(client, application_id)
+    jwt_enabled = application["application"]["jwtConfiguration"]["enabled"]
+    refresh_config = application["application"]["loginConfiguration"]
+    allow_token_refresh_enabled = refresh_config["allowTokenRefresh"]
+    generate_refresh_tokens_enabled = refresh_config["generateRefreshTokens"]
+
+    if jwt_enabled and allow_token_refresh_enabled and generate_refresh_tokens_enabled do
+      IO.inspect("All app configs are correct")
+      true
+    else
+      false
+    end
+  end
+
   def create_tokens_and_user(client, application_id, user_id) do
-    {enable_jwt_status, _, _} = enable_JWT(client, application_id)
-    {enable_refresh_status, _, _} = enable_refresh_tokens(client, application_id)
-    IO.inspect(enable_jwt_status, label: "jwt")
-    IO.inspect(enable_refresh_status, label: "refresh")
+    enable_JWT(client, application_id)
+    enable_refresh_tokens(client, application_id)
 
     if user_exists?(client, %{id: user_id}),
       do: Users.delete_user(client, user_id, [{:hardDelete, true}])
@@ -64,6 +77,8 @@ defmodule FusionAuth.TestUtilities do
       user: user
     }
 
+    valid_app_token_configs?(client, application_id)
+
     {:ok, registration, _} =
       Registrations.create_user_and_registration(
         client,
@@ -77,11 +92,7 @@ defmodule FusionAuth.TestUtilities do
         else: :wait
     end)
 
-    tokens = %{token: registration["token"]}
-
-    if registration["refreshToken"] do
-      Map.put(tokens, :refresh_token, registration["refreshToken"])
-    end
+    %{token: registration["token"], refresh_token: registration["refreshToken"]}
   end
 
   def cleanup_users(client) do
