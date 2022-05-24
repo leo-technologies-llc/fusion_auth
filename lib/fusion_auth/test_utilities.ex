@@ -50,7 +50,6 @@ defmodule FusionAuth.TestUtilities do
     generate_refresh_tokens_enabled = refresh_config["generateRefreshTokens"]
 
     if jwt_enabled and allow_token_refresh_enabled and generate_refresh_tokens_enabled do
-      IO.inspect("All app configs are correct")
       true
     else
       false
@@ -77,7 +76,11 @@ defmodule FusionAuth.TestUtilities do
       user: user
     }
 
-    valid_app_token_configs?(client, application_id)
+    wait_for_process(fn ->
+      if valid_app_token_configs?(client, application_id),
+        do: :continue,
+        else: :wait
+    end)
 
     {:ok, registration, _} =
       Registrations.create_user_and_registration(
