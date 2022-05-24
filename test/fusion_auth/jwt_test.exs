@@ -22,13 +22,8 @@ defmodule FusionAuth.JWTTest do
     TestUtilities.enable_JWT(client, @application_id)
     TestUtilities.enable_refresh_tokens(client, @application_id)
 
-    TestUtilities.wait_for_process(fn ->
-      result = TestUtilities.create_tokens_and_user(client, @application_id, @user_id)
-
-      if :token not in result,
-        do: :wait,
-        else: :continue
-    end)
+    %{token: token, refresh_token: refresh_token} =
+      TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
 
     {:ok,
      %{client: client_with_tenant, token: token, refresh_token: refresh_token, base_url: base_url}}
