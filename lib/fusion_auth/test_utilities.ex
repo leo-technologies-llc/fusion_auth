@@ -74,7 +74,7 @@ defmodule FusionAuth.TestUtilities do
     end)
 
     tokens = %{token: registration["token"]}
-    if tokens == nil, do: IO.inspect(registration)
+    IO.inspect(registration)
 
     if registration["refreshToken"] do
       Map.put(tokens, :refresh_token, registration["refreshToken"])
