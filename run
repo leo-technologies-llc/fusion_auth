@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
+
+function test {
+    docker-compose down
+    docker-compose rm -f
+
+    if [ -z "$VOLUMES" ]; then
+        echo "No test containers/volumes to prune ..."
+    else
+        docker volume rm $VOLUMES
+    fi
+
+    docker-compose up -d
+    echo "Checking to see if Kickstart has finished"
+    COUNT=0
+    echo -n "Waiting for Kickstart "
+    until  docker logs fa-test-fusionauth 2>&1 | grep -q "Created API key ending in" ||  [ $COUNT == 60 ] ; do
+        COUNT=$(( COUNT + 1 ))
+        echo -n "."
+        sleep 1
+    done
+    echo " Kickstart has finished"
+
+    echo "FusionAuth is healthy. Executing tests ..."
+    mix test "${@}"
+    docker-compose down
+}
+
+function coveralls {
+    docker-compose down
+    docker-compose rm -f
+
+    if [ -z "$VOLUMES" ]; then
+        echo "No test containers/volumes to prune ..."
+    else
+        docker volume rm $VOLUMES
+    fi
+
+    docker-compose up -d
+    echo "Checking to see if Kickstart has finished"
+    COUNT=0
+    echo -n "Waiting for Kickstart "
+    until  docker logs fa-test-fusionauth 2>&1 | grep -q "Created API key ending in" ||  [ $COUNT == 60 ] ; do
+        COUNT=$(( COUNT + 1 ))
+        echo -n "."
+        sleep 1
+    done
+    echo " Kickstart has finished"
+
+    echo "FusionAuth is healthy. Executing tests ..."
+    mix coveralls
+}
+
+function up {
+    docker-compose down
+    docker-compose rm -f
+
+    if [ -z "$VOLUMES" ]; then
+        echo "No test containers/volumes to prune ..."
+    else
+        docker volume rm $VOLUMES
+    fi
+
+    docker-compose up -d
+    echo "Checking to see if Kickstart has finished"
+    COUNT=0
+    echo -n "Waiting for Kickstart "
+    until  docker logs fa-test-fusionauth 2>&1 | grep -q "Created API key ending in" ||  [ $COUNT == 60 ] ; do
+        COUNT=$(( COUNT + 1 ))
+        echo -n "."
+        sleep 1
+    done
+    echo " Kickstart has finished"
+    echo "FusionAuth is healthy"
+    docker logs fa-test-fusionauth --follow
+}
+
+function help {
+    printf "%s <task> [args]\n\nTasks:\n" "${0}"
+    compgen -A function | grep -v "^_" | cat -n
+    printf "\nExtended help:\n  Each task has comments for general usage\n"
+}
+
+# This idea is heavily inspired by: https://github.com/adriancooney/Taskfile
+TIMEFORMAT=$'\nTask completed in %3lR'
+time "${@:-help}"

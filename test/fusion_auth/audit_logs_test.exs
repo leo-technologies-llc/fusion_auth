@@ -1,44 +1,30 @@
 defmodule FusionAuth.AuditLogsTest do
-  use ExUnit.Case
+  use FusionAuth.DataCase
 
-  alias FusionAuth.AuditLogs
-  alias FusionAuth.Helpers.Mock
+  alias FusionAuth.{AuditLogs, TestUtilities}
 
-  @audit_logs_url "/api/system/audit-log"
+  @audit_log %{insertUser: "john.doe@email.com", message: "This is an audit log."}
 
   setup do
-    api_key = "sQ9wwELaI0whHQqyQUxAJmZvVzZqUL-hpfmAmPgbIu8"
-    tenant_id = "6b40f9d6-cfd8-4312-bff8-b082ad45e93c"
-    client = FusionAuth.client(Mock.base_url(), api_key, tenant_id)
+    base_url = Application.get_env(:fusion_auth, :api_url)
+    api_key = Application.get_env(:fusion_auth, :api_key)
+    tenant_id = Application.get_env(:fusion_auth, :tenant_id)
 
-    {:ok, %{client: client}}
+    client = FusionAuth.client(base_url, api_key, "")
+    TestUtilities.create_tenant(client, tenant_id)
+    client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
+
+    {:ok, %{client: client_with_tenant}}
   end
 
   describe "Add an Entry to the Audit Log" do
     test "create_audit_log/2 returns a 200 status code with the newly created audit log", %{
       client: client
     } do
-      audit_log = %{user: "john.doe@email.com", message: "This is an audit log."}
+      {:ok, created_audit_log, _} = AuditLogs.create_audit_log(client, @audit_log)
 
-      response_body = %{
-        "auditLog" => %{
-          "id" => 212,
-          "insertInstant" => 1_594_942_979_998,
-          "insertUser" => "john.doe@email.com",
-          "message" => "This is a new audit log."
-        }
-      }
-
-      Mock.mock_request(
-        path: @audit_logs_url,
-        method: :post,
-        status: 200,
-        body: audit_log,
-        response_body: response_body
-      )
-
-      assert {:ok, ^response_body, %Tesla.Env{status: 200}} =
-               AuditLogs.create_audit_log(client, audit_log)
+      assert created_audit_log["auditLog"]["message"] == @audit_log[:message]
+      assert created_audit_log["auditLog"]["insertUser"] == @audit_log[:insertUser]
     end
 
     test "create_audit_log/2 returns a 400 status code if the request to creatre a new audit log was invalid and/or malformed",
@@ -62,14 +48,6 @@ defmodule FusionAuth.AuditLogsTest do
         }
       }
 
-      Mock.mock_request(
-        path: @audit_logs_url,
-        method: :post,
-        status: 400,
-        body: audit_log,
-        response_body: response_body
-      )
-
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
                AuditLogs.create_audit_log(client, audit_log)
     end
@@ -77,41 +55,18 @@ defmodule FusionAuth.AuditLogsTest do
 
   describe "Retrieve an Audit Log" do
     test "get_audit_log/2 returns a 200 status code with the audit log", %{client: client} do
-      audit_log_id = 211
+      {:ok, created_audit_log, _} = AuditLogs.create_audit_log(client, @audit_log)
+      created_audit_log_id = created_audit_log["auditLog"]["id"]
 
-      response_body = %{
-        "auditLog" => %{
-          "id" => audit_log_id,
-          "insertInstant" => 1_594_922_276_379,
-          "insertUser" => "john.doe@email.com",
-          "message" =>
-            "Deleted user registration for user with Id [12345] and the application with Id [67892]",
-          "reason" => "FusionAuth User Interface"
-        }
-      }
+      {:ok, retrieved_audit_log, _} = AuditLogs.get_audit_log(client, created_audit_log_id)
 
-      Mock.mock_request(
-        path: @audit_logs_url <> "/#{audit_log_id}",
-        method: :get,
-        status: 200,
-        response_body: response_body
-      )
-
-      assert {:ok, ^response_body, %Tesla.Env{status: 200, body: ^response_body}} =
-               AuditLogs.get_audit_log(client, audit_log_id)
+      assert retrieved_audit_log == created_audit_log
     end
 
     test "get_audit_log/2 returns a 404 status code if the audit_log is not found", %{
       client: client
     } do
-      audit_log_id = "not-found"
-
-      Mock.mock_request(
-        path: @audit_logs_url <> "/#{audit_log_id}",
-        method: :get,
-        status: 404,
-        response_body: ""
-      )
+      audit_log_id = "-1"
 
       assert {:error, "", %Tesla.Env{status: 404, body: ""}} =
                AuditLogs.get_audit_log(client, audit_log_id)
@@ -126,47 +81,29 @@ defmodule FusionAuth.AuditLogsTest do
         message: "Deleted*"
       }
 
-      response_body = %{
-        "auditLogs" => [
-          %{
-            "id" => 211,
-            "insertInstant" => 1_594_922_276_379,
-            "insertUser" => "john.doe@email.com",
-            "message" =>
-              "Deleted user registration for user with Id [12345] and the application with Id [67892]",
-            "reason" => "FusionAuth User Interface"
-          }
-        ],
-        "total" => 62
+      audit_log = %{
+        insertUser: "john.doe@email.com",
+        message:
+          "Deleted user registration for user with Id [12345] and the application with Id [67892]",
+        reason: "FusionAuth User Interface"
       }
 
-      Mock.mock_request(
-        path: @audit_logs_url <> "/search",
-        method: :post,
-        status: 200,
-        body: search,
-        response_body: response_body
-      )
+      {:ok, created_audit_log, _} = AuditLogs.create_audit_log(client, audit_log)
+      created_audit_log_id = created_audit_log["auditLog"]["id"]
 
-      assert {:ok, ^response_body, %Tesla.Env{status: 200, body: ^response_body}} =
-               AuditLogs.search_audit_logs(client, search)
+      {:ok, result, _} = AuditLogs.search_audit_logs(client, search)
+
+      assert Enum.at(result["auditLogs"], 0)["id"] == created_audit_log_id
     end
   end
 
   describe "Export Audit Logs" do
     test "export_audit_logs/2 returns a 200 status code with a compressed archive byte stream based on the export criteria",
          %{client: client} do
-      criteria = %{start: 1_594_922_276_379, user: "john.doe@email.com"}
+      criteria = %{user: "john.doe@email.com"}
+      {:ok, byte_stream, %Tesla.Env{status: 200}} = AuditLogs.export_audit_logs(client, criteria)
 
-      Mock.mock_request(
-        path: @audit_logs_url <> "/export",
-        method: :post,
-        status: 200,
-        body: criteria,
-        response_body: %{}
-      )
-
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = AuditLogs.export_audit_logs(client, criteria)
+      assert is_bitstring(byte_stream)
     end
   end
 end

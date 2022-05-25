@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: fa-test-postgres
+    image: postgres:13.4
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 25532:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  fusionauth:
+    container_name: fa-test-fusionauth
+    image: fusionauth/fusionauth-app:1.35.0
+    environment:
+      DATABASE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/fusionauth
+      DATABASE_ROOT_USERNAME: ${POSTGRES_USER}
+      DATABASE_ROOT_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_USERNAME: ${FUSIONAUTH_DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${FUSIONAUTH_DATABASE_PASSWORD}
+      FUSIONAUTH_APP_MEMORY: ${FUSIONAUTH_APP_MEMORY}
+      FUSIONAUTH_APP_RUNTIME_MODE: development
+      FUSIONAUTH_APP_URL: ${FUSION_AUTH_URL}
+      FUSIONAUTH_APP_KICKSTART_FILE: ${FUSIONAUTH_APP_KICKSTART_FILE}
+      SEARCH_SERVERS: ${ELASTIC_ENDPOINT}
+      SEARCH_TYPE: elasticsearch
+
+      # Kickstart Configuration
+      FUSION_AUTH_API_KEY: ${FUSION_AUTH_API_KEY}
+    depends_on:
+      - elasticsearch
+      - postgres
+    ports:
+      - 29012:9011
+    volumes:
+      - fusionauth-config:/usr/local/fusionauth/config
+      - ./priv/data/fusionauth:/usr/local/fusionauth/kickstart
+
+  elasticsearch:
+    container_name: fa-test-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    environment:
+      - bootstrap.memory_lock=true
+      - cluster.name=elasticsearch-cluster
+      - discovery.type=single-node
+      - node.name=elasticsearch-01
+      - "ES_JAVA_OPTS=${ES_JAVA_OPTS}"
+    ports:
+      - 29300:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+
+volumes:
+  postgres-data:
+  fusionauth-config:
+  elasticsearch-data:

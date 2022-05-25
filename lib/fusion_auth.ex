@@ -51,17 +51,25 @@ defmodule FusionAuth do
   @doc """
   Builds a dynamic client for executing HTTP requests to the FusionAuth API based on runtime arguments.
   """
-  @spec client(String.t(), String.t(), String.t()) :: client()
-  def client(base_url, api_key, tenant_id) do
+  @spec client(String.t(), String.t(), String.t(), list()) :: client()
+  def client(base_url, api_key, tenant_id, opts \\ []) do
+    auth_headers =
+      case opts[:disable_authorization_headers] do
+        true ->
+          []
+
+        _ ->
+          [
+            {"Authorization", api_key},
+            {"X-FusionAuth-TenantId", tenant_id}
+          ]
+      end
+
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON,
       Tesla.Middleware.Telemetry,
-      {Tesla.Middleware.Headers,
-       [
-         {"Authorization", api_key},
-         {"X-FusionAuth-TenantId", tenant_id}
-       ]}
+      {Tesla.Middleware.Headers, auth_headers}
     ]
 
     Tesla.client(middleware, adapter())

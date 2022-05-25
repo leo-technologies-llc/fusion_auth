@@ -1,6 +1,6 @@
 # This file is responsible for configuring your application
-# and its dependencies with the aid of the Mix.Config module.
-use Mix.Config
+# and its dependencies with the aid of the Config module.
+import Config
 
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
@@ -11,8 +11,8 @@ use Mix.Config
 # You can configure your application as:
 
 # config :fusion_auth,
-#   api_key: "FUSION_AUTH_API_KEY",
 #   api_url: "FUSION_AUTH_URL",
+#   api_key: "FUSION_AUTH_API_KEY",
 #   tenant_id: "FUSION_AUTH_TENANT_ID",
 #   application_id: "FUSION_AUTH_APPLICATION_ID",
 #   enable_jwt: true,

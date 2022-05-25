@@ -208,7 +208,7 @@ defmodule FusionAuth.Registrations do
   @spec verify_user_registration(FusionAuth.client(), String.t()) ::
           FusionAuth.result()
   def verify_user_registration(client, verification_id) do
-    Tesla.post(client, @verify_registration_url <> "/#{verification_id}", %{})
+    Tesla.post(client, @verify_registration_url, %{"verificationId" => verification_id})
     |> FusionAuth.result()
   end
 

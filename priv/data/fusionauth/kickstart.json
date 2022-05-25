@@ -1,0 +1,12 @@
+{
+  "variables": {
+    "apiKey": "#{ENV.FUSION_AUTH_API_KEY}"
+  },
+  "apiKeys": [
+    {
+      "__comment": "Creates the default API key to be leveraged for the development tenant.",
+      "key": "#{apiKey}",
+      "description": "Default API key for the development tenant."
+    }
+  ]
+}

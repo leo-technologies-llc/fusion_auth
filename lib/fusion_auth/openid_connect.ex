@@ -12,69 +12,69 @@ defmodule FusionAuth.OpenIdConnect do
   @type application_id :: String.t()
   @type tenant_id :: String.t()
   @type identity_provider :: %{
-    application_configuration: %{
-      application_id() => application_configuration()
-    },
-    button_image_url: String.t(),
-    button_text: String.t(),
-    debug: boolean(),
-    domains: [String.t()],
-    lambda_configuration_reconciled: String.t(),
-    linking_strategy: String.t(),
-    name: String.t(),
-    oauth_configuration: oauth_configuration(),
-    post_request: boolean(),
-    tenant_configuration_map: %{
-      tenant_id() => tenant_configuration()
-    },
-    type: String.t()
-  }
+          application_configuration: %{
+            application_id() => application_configuration()
+          },
+          button_image_url: String.t(),
+          button_text: String.t(),
+          debug: boolean(),
+          domains: [String.t()],
+          lambda_configuration_reconciled: String.t(),
+          linking_strategy: String.t(),
+          name: String.t(),
+          oauth_configuration: oauth_configuration(),
+          post_request: boolean(),
+          tenant_configuration_map: %{
+            tenant_id() => tenant_configuration()
+          },
+          type: String.t()
+        }
   @type application_configuration :: %{
-    button_image_url: String.t(),
-    button_text: String.t(),
-    oauth_client_id: String.t(),
-    oauth_client_secret: String.t(),
-    create_registration: boolean(),
-    enabled: boolean(),
-    oauth_scope: String.t()
-  }
+          button_image_url: String.t(),
+          button_text: String.t(),
+          oauth_client_id: String.t(),
+          oauth_client_secret: String.t(),
+          create_registration: boolean(),
+          enabled: boolean(),
+          oauth_scope: String.t()
+        }
   @type oauth_configuration :: %{
-    authorization_endpoint: String.t(),
-    client_id: String.t(),
-    client_secret: String.t(),
-    client_authentication_method: String.t(),
-    email_claim: String.t(),
-    issuer: String.t(),
-    scope: String.t(),
-    token_endpoint: String.t(),
-    userinfo_endpoint: String.t(),
-  }
+          authorization_endpoint: String.t(),
+          client_id: String.t(),
+          client_secret: String.t(),
+          client_authentication_method: String.t(),
+          email_claim: String.t(),
+          issuer: String.t(),
+          scope: String.t(),
+          token_endpoint: String.t(),
+          userinfo_endpoint: String.t()
+        }
   @type tenant_configuration :: %{
-    limit_user_link_count: %{
-      enabled: integer(),
-      maximum_links: integer(),
-    }
-  }
+          limit_user_link_count: %{
+            enabled: integer(),
+            maximum_links: integer()
+          }
+        }
 
   @type login_request_body :: %{
-    application_id: String.t(),
-    identity_provider_id: String.t(),
-    ipAddress: String.t(),
-    data: %{
-      code: String.t(),
-      redirect_uri: String.t(),
-    },
-    metadata: %{
-      device: %{
-        description: String.t(),
-        lastAccessedAddress: String.t(),
-        name: String.t(),
-        type: String.t(),
-      }
-    },
-    no_jwt: boolean(),
-    no_link: boolean()
-  }
+          application_id: String.t(),
+          identity_provider_id: String.t(),
+          ipAddress: String.t(),
+          data: %{
+            code: String.t(),
+            redirect_uri: String.t()
+          },
+          metadata: %{
+            device: %{
+              description: String.t(),
+              lastAccessedAddress: String.t(),
+              name: String.t(),
+              type: String.t()
+            }
+          },
+          no_jwt: boolean(),
+          no_link: boolean()
+        }
   @connect_url "/api/identity-provider"
 
   @doc """
@@ -106,7 +106,7 @@ defmodule FusionAuth.OpenIdConnect do
   """
   @spec create_openid_connect_identity_provider(client(), identity_provider()) :: result()
   def create_openid_connect_identity_provider(client, identity_provider) do
-    Tesla.post(client, @connect_url, %{identity_provider: identity_provider})
+    Tesla.post(client, @connect_url, identity_provider)
     |> FusionAuth.result()
   end
 
@@ -115,12 +115,19 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Create an OpenID connect identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#create-an-openid-connect-identity-provider)
   """
-  @spec create_openid_connect_identity_provider_uuid(client(), identity_provider(), identity_provider_id()) :: result()
-  def create_openid_connect_identity_provider_uuid(client, identity_provider, identity_provider_id) do
-    Tesla.post(client, @connect_url <> "/#{identity_provider_id}", %{identity_provider: identity_provider})
+  @spec create_openid_connect_identity_provider_uuid(
+          client(),
+          identity_provider(),
+          identity_provider_id()
+        ) :: result()
+  def create_openid_connect_identity_provider_uuid(
+        client,
+        identity_provider,
+        identity_provider_id
+      ) do
+    Tesla.post(client, @connect_url <> "/#{identity_provider_id}", identity_provider)
     |> FusionAuth.result()
   end
-
 
   @doc """
   Retrieves an OpenID identity provider with the given identity provider ID
@@ -140,9 +147,13 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Update an OpenID connect identity provider](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#update-an-openid-connect-identity-provider)
   """
-  @spec update_openid_connect_identity_provider(client(), identity_provider(), identity_provider_id()) :: result()
+  @spec update_openid_connect_identity_provider(
+          client(),
+          identity_provider(),
+          identity_provider_id()
+        ) :: result()
   def update_openid_connect_identity_provider(client, identity_provider, identity_provider_id) do
-    Tesla.patch(client, @connect_url <> "/#{identity_provider_id}", %{identity_provider: identity_provider})
+    Tesla.patch(client, @connect_url <> "/#{identity_provider_id}", identity_provider)
     |> FusionAuth.result()
   end
 
@@ -174,7 +185,7 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_openid_connect_login(client(),login_request_body()) :: result()
+  @spec complete_openid_connect_login(client(), login_request_body()) :: result()
   def complete_openid_connect_login(client, login_request_body) do
     Tesla.post(client, @connect_url <> "/login", login_request_body)
     |> FusionAuth.result()
@@ -212,12 +223,9 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_openid_connect_login(client(),login_request_body(), headers()) :: result()
+  @spec complete_openid_connect_login(client(), login_request_body(), headers()) :: result()
   def complete_openid_connect_login(client, login_request_body, headers) do
     Tesla.post(client, @connect_url <> "/login", login_request_body, headers: headers)
     |> FusionAuth.result()
   end
-
-
-
 end
