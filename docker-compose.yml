@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - 25433:5432
+      - 25532:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -50,7 +50,7 @@ services:
       - node.name=elasticsearch-01
       - "ES_JAVA_OPTS=${ES_JAVA_OPTS}"
     ports:
-      - 29201:9200
+      - 29300:9200
     ulimits:
       memlock:
         soft: -1
