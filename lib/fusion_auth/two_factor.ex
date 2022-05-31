@@ -259,13 +259,9 @@ defmodule FusionAuth.TwoFactor do
   @doc """
   Send a Two Factor code to an existing User by Id
 
-  This API is used to send a Two Factor verification code to a User. This may be useful during Two Factor authentication if the initial code is no longer valid. It may be also used to send a code to a User to assist in enabling or disabling Two Factor authentication.
+  This API is used to send a Two Factor verification code to a User.
 
-  To send a code to a User that already has Two Factor enabled, it is not required they have `TextMessage` set as their preferred delivery. As long as the User has a mobile phone defined you may send the User a code.
-
-  This API requires that the [Twilio](https://fusionauth.io/docs/v1/tech/integrations/twilio) integration is enabled and configured properly.
-
-  This request is intended to be used to send a Two Factor code to a User that already has enabled Two Factor authentication to assist in disabling Two Factor authentication. The User must already have Two Factor enabled and have a valid mobile phone for this to succeed.
+  This request is intended to be used to send a Two Factor code to enable Two Factor authentication for a user.
 
   ## Examples
       iex> client = FusionAuth.client()
@@ -288,7 +284,7 @@ defmodule FusionAuth.TwoFactor do
   @doc """
   Send a Two Factor code to complete Two Factor Login
 
-  This request is intended to send additional messages to the User’s mobile phone during login.
+  Can be used to re-send a code to a user during login
 
   For more information, visit the FusionAuth API Documentation for [Send a Multi-Factor Code During Login or Step Up](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-multi-factor-code-during-login-or-step-up).
   """
@@ -301,8 +297,9 @@ defmodule FusionAuth.TwoFactor do
   @doc """
   Send a Two Factor code to an authenticated User using a JWT
 
-  This request is intended to be used to send a Two Factor code to a User that already has enabled Two Factor authentication. When using JWT authentication the User’s Id is retrieved from the JWT. The User must already have Two Factor enabled and have a valid mobile phone for this to succeed.
+  This API is used to send a Two Factor verification code to a User.
 
+  This request is intended to be used to send a Two Factor code to enable Two Factor authentication for a user.
   ## Examples
       iex(137)> token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJleHAiOjE1OTIwMDI4MTQsImlhdCI6MTU5MTk5OTIxNCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJSRUZSRVNIX1RPS0VOIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJyb2xlcyI6W119.6hqLDc7-PxHpQRjsdDVt0NcDLcs6ZcoUy5hbwSzMcLM"
       iex(138)> FusionAuth.TwoFactor.send_two_factor_code_by_jwt(client, token)
