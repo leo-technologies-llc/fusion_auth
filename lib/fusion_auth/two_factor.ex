@@ -15,10 +15,49 @@ defmodule FusionAuth.TwoFactor do
   @type secret :: String.t()
   @type mobile_phone :: String.t()
   @type two_factor_id :: String.t()
+  @type email() :: String.t()
+  @type secret_base32_encoded() :: String.t()
+  @type method() :: String.t()
+  @type method_id() :: String.t()
+  @type application_id() :: String.t()
+  @type login_id() :: String.t()
+  @type state() :: map()
+  @type trust_challenge :: String.t()
 
+  @type mfa_data :: %{
+          code: code(),
+          method: method(),
+          token: token(),
+          email: email(),
+          mobilePhone: mobile_phone(),
+          secret: secret(),
+          secretBase32Encoded: secret_base32_encoded()
+        }
+  @type start_mfa_data :: %{
+          applicationId: application_id(),
+          code: code(),
+          loginId: login_id(),
+          state: state(),
+          trustChallenge: trust_challenge(),
+          userId: user_id()
+        }
+
+  @type two_factor_user_id_data :: %{
+          email: email(),
+          method: method(),
+          mobilePhone: mobile_phone(),
+          userId: user_id()
+        }
+  @type two_factor_jwt_data :: %{
+          email: email(),
+          method: method(),
+          mobilePhone: mobile_phone()
+        }
   @two_factor_url "/api/user/two-factor"
   @two_factor_send_url "/api/two-factor/send"
   @two_factor_secret_url "/api/two-factor/secret"
+  @two_factor_start_url "api/two-factor/start"
+  @two_factor_recovery_code_url "/api/user/two-factor/recovery-code"
 
   @doc """
   Enable Two Factor Authentication by User Id
@@ -57,17 +96,11 @@ defmodule FusionAuth.TwoFactor do
       }
   For more information, visit the FusionAuth API Documentation for [Enable Two Factor](https://fusionauth.io/docs/v1/tech/apis/two-factor#enable-two-factor).
   """
-  @spec enable_two_factor_by_user_id(client(), user_id(), code(), delivery(), secret()) :: result()
-  def enable_two_factor_by_user_id(client, user_id, code, delivery, secret) do
-    data = %{
-      code: code,
-      delivery: delivery,
-      secret: secret
-    }
-    Tesla.post(client, @two_factor_url <> "/#{user_id}", data)
+  @spec enable_two_factor_by_user_id(client(), user_id(), mfa_data()) :: result()
+  def enable_two_factor_by_user_id(client, user_id, mfa_data) do
+    Tesla.post(client, @two_factor_url <> "/#{user_id}", mfa_data)
     |> FusionAuth.result()
   end
-
 
   @doc """
   Enable Two Factor Authentication by JWT
@@ -102,19 +135,15 @@ defmodule FusionAuth.TwoFactor do
       }
   For more information, visit the FusionAuth API Documentation for [Enable Two Factor](https://fusionauth.io/docs/v1/tech/apis/two-factor#enable-two-factor).
   """
-  @spec enable_two_factor_by_jwt(client(), token(), code(), delivery(), secret()) :: result()
-  def enable_two_factor_by_jwt(client, token, code, delivery, secret) do
-    data = %{
-      code: code,
-      delivery: delivery,
-      secret: secret
-    }
+  @spec enable_two_factor_by_jwt(client(), token(), mfa_data()) :: result()
+  def enable_two_factor_by_jwt(client, token, mfa_data) do
     Tesla.post(
       client,
       @two_factor_url,
-      data,
+      mfa_data,
       headers: [{"Authorization", "Bearer " <> token}]
-    ) |> FusionAuth.result()
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -158,12 +187,13 @@ defmodule FusionAuth.TwoFactor do
       }
   For more information, visit the FusionAuth API Documentation for [Disable Two Factor](https://fusionauth.io/docs/v1/tech/apis/two-factor#disable-two-factor).
   """
-  @spec disable_two_factor_by_user_id(client(), user_id(), code()) :: result()
-  def disable_two_factor_by_user_id(client, user_id, code) do
+  @spec disable_two_factor_by_user_id(client(), user_id(), code(), method_id()) :: result()
+  def disable_two_factor_by_user_id(client, user_id, code, method_id) do
     Tesla.delete(
       client,
-      @two_factor_url <> "/#{user_id}?code=#{code}"
-    ) |> FusionAuth.result()
+      @two_factor_url <> "/#{user_id}?code=#{code}&methodId=#{method_id}"
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -181,13 +211,49 @@ defmodule FusionAuth.TwoFactor do
 
   For more information, visit the FusionAuth API Documentation for [Disable Two Factor](https://fusionauth.io/docs/v1/tech/apis/two-factor#disable-two-factor).
   """
-  @spec disable_two_factor_by_jwt(client(), token(), code()) :: result()
-  def disable_two_factor_by_jwt(client, token, code) do
+  @spec disable_two_factor_by_jwt(client(), token(), code(), method_id()) :: result()
+  def disable_two_factor_by_jwt(client, token, code, method_id) do
     Tesla.delete(
       client,
-      @two_factor_url <> "?code=#{code}",
+      @two_factor_url <> "?code=#{code}&methodId=#{method_id}",
       headers: [{"Authorization", "Bearer " <> token}]
-    ) |> FusionAuth.result()
+    )
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Sends a code when disabling the MFA method with the given `method_id` for a user with the given `user_id`
+
+  For more information, visit the FusionAuth API Documentation for [Send a Multi-Factor Code When Disabling MFA](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-multi-factor-code-when-disabling-mfa).
+  """
+  @spec disable_two_factor_with_code_by_user_id(client(), method_id(), user_id()) :: result()
+  def disable_two_factor_with_code_by_user_id(client, method_id, user_id) do
+    Tesla.post(client, @two_factor_send_url, %{methodId: method_id, userId: user_id})
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Sends a code when disabling the MFA method with the given `method_id` for a user with the given JWT
+
+  For more information, visit the FusionAuth API Documentation for [Send a Multi-Factor Code When Disabling MFA](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-multi-factor-code-when-disabling-mfa).
+  """
+  @spec disable_two_factor_with_code_by_jwt(client(), method_id(), token()) :: result()
+  def disable_two_factor_with_code_by_jwt(client, method_id, token) do
+    Tesla.post(client, @two_factor_send_url, %{methodId: method_id},
+      headers: [{"Authorization", "Bearer " <> token}]
+    )
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Starts an MFA request, typically only used for step up auth
+
+  For more information, visit the FusionAuth API Documentation for [Start Multi-Factor](https://fusionauth.io/docs/v1/tech/apis/two-factor#start-multi-factor).
+  """
+  @spec start_mfa_auth(client(), start_mfa_data()) :: result()
+  def start_mfa_auth(client, start_mfa_data) do
+    Tesla.post(client, @two_factor_start_url, start_mfa_data)
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -213,34 +279,9 @@ defmodule FusionAuth.TwoFactor do
 
   For more information, visit the FusionAuth API Documentation for [Send a Two Factor Code](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-two-factor-code).
   """
-  @spec send_two_factor_code_by_user_id(client(), user_id()) :: result()
-  def send_two_factor_code_by_user_id(client, user_id) do
-    data = %{userId: user_id}
-    Tesla.post(client, @two_factor_send_url, data)
-    |> FusionAuth.result()
-  end
-
-  @doc """
-  Send a Two Factor code to a mobile phone
-
-  This request is intended to be used to send a Two Factor code to a User to assist in enabling Two Factor authentication
-
-  ## Examples
-      iex> secret = "D90sYs5aPN51Z+ubdQt7"
-      iex> mobile_phone= "2015970074"
-      iex> FusionAuth.TwoFactor.send_two_factor_code_to_mobile_phone(client, mobile_phone, secret)
-      {
-        :ok,
-        "",
-        %Tesla.Env{...}
-      }
-
-  For more information, visit the FusionAuth API Documentation for [Send a Two Factor Code](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-two-factor-code).
-  """
-  @spec send_two_factor_code_to_mobile_phone(client(), mobile_phone(), secret()) :: result()
-  def send_two_factor_code_to_mobile_phone(client, mobile_phone, secret) do
-    data = %{mobilePhone: mobile_phone, secret: secret}
-    Tesla.post(client, @two_factor_send_url, data)
+  @spec send_two_factor_code_by_user_id(client(), two_factor_user_id_data()) :: result()
+  def send_two_factor_code_by_user_id(client, two_factor_user_id_data) do
+    Tesla.post(client, @two_factor_send_url, two_factor_user_id_data)
     |> FusionAuth.result()
   end
 
@@ -249,18 +290,18 @@ defmodule FusionAuth.TwoFactor do
 
   This request is intended to send additional messages to the User’s mobile phone during login.
 
-  For more information, visit the FusionAuth API Documentation for [Send a Two Factor Code](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-two-factor-code).
+  For more information, visit the FusionAuth API Documentation for [Send a Multi-Factor Code During Login or Step Up](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-multi-factor-code-during-login-or-step-up).
   """
-  @spec send_two_factor_code_to_complete_login(client(), two_factor_id()) :: result()
-  def send_two_factor_code_to_complete_login(client, two_factor_id) do
-    Tesla.post(client, @two_factor_send_url <> "/#{two_factor_id}", %{})
+  @spec send_two_factor_code_to_complete_login(client(), two_factor_id(), method_id()) :: result()
+  def send_two_factor_code_to_complete_login(client, two_factor_id, method_id) do
+    Tesla.post(client, @two_factor_send_url <> "/#{two_factor_id}", %{methodId: method_id})
     |> FusionAuth.result()
   end
 
   @doc """
   Send a Two Factor code to an authenticated User using a JWT
 
-  This request is intended to be used to send a Two Factor code to a User that already has enabled Two Factor authentication to assist in disabling Two Factor authentication. When using JWT authentication the User’s Id is retrieved from the JWT. The User must already have Two Factor enabled and have a valid mobile phone for this to succeed.
+  This request is intended to be used to send a Two Factor code to a User that already has enabled Two Factor authentication. When using JWT authentication the User’s Id is retrieved from the JWT. The User must already have Two Factor enabled and have a valid mobile phone for this to succeed.
 
   ## Examples
       iex(137)> token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJleHAiOjE1OTIwMDI4MTQsImlhdCI6MTU5MTk5OTIxNCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJSRUZSRVNIX1RPS0VOIiwiZW1haWwiOiJhZGVsYWNydXpAY29naWxpdHkuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImFwcGxpY2F0aW9uSWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJyb2xlcyI6W119.6hqLDc7-PxHpQRjsdDVt0NcDLcs6ZcoUy5hbwSzMcLM"
@@ -272,14 +313,15 @@ defmodule FusionAuth.TwoFactor do
       }
   For more information, visit the FusionAuth API Documentation for [Send a Two Factor Code](https://fusionauth.io/docs/v1/tech/apis/two-factor#send-a-two-factor-code).
   """
-  @spec send_two_factor_code_by_jwt(client(), token()) :: result()
-  def send_two_factor_code_by_jwt(client, token) do
+  @spec send_two_factor_code_by_jwt(client(), token(), two_factor_jwt_data()) :: result()
+  def send_two_factor_code_by_jwt(client, token, two_factor_jwt_data) do
     Tesla.post(
       client,
       @two_factor_send_url,
-      %{},
+      two_factor_jwt_data,
       headers: [{"Authorization", "Bearer " <> token}]
-    ) |> FusionAuth.result()
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -333,6 +375,25 @@ defmodule FusionAuth.TwoFactor do
       client,
       @two_factor_secret_url,
       headers: [{"Authorization", "Bearer " <> token}]
-    ) |> FusionAuth.result()
+    )
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Generates recovery codes for a given user
+  """
+  @spec generate_recovery_codes(client(), user_id()) :: result()
+  def generate_recovery_codes(client, user_id) do
+    Tesla.post(client, @two_factor_recovery_code_url <> "/#{user_id}", %{})
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Retrieves recovery codes for a given user
+  """
+  @spec retrieve_recovery_codes(client(), user_id()) :: result()
+  def retrieve_recovery_codes(client, user_id) do
+    Tesla.get(client, @two_factor_recovery_code_url <> "/#{user_id}")
+    |> FusionAuth.result()
   end
 end
