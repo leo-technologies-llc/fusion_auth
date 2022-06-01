@@ -15,13 +15,13 @@ defmodule FusionAuth.TwoFactor do
   @type secret :: String.t()
   @type mobile_phone :: String.t()
   @type two_factor_id :: String.t()
-  @type email() :: String.t()
-  @type secret_base32_encoded() :: String.t()
-  @type method() :: String.t()
-  @type method_id() :: String.t()
+  @type email :: String.t()
+  @type secret_base32_encoded :: String.t()
+  @type method :: String.t()
+  @type method_id :: String.t()
   @type application_id() :: String.t()
-  @type login_id() :: String.t()
-  @type state() :: map()
+  @type login_id :: String.t()
+  @type state :: map()
   @type trust_challenge :: String.t()
 
   @type mfa_data :: %{
@@ -378,6 +378,17 @@ defmodule FusionAuth.TwoFactor do
 
   @doc """
   Generates recovery codes for a given user
+
+  ## Examples
+      FusionAuth.TwoFactor.generate_recovery_codes(client, user_id)
+      {:ok,
+      %{
+        "recoveryCodes" => ["8WZDD-TYFPH", "QGGLS-N4428", "KTXHK-M9F9B",
+          "C9LHS-VNT78", "M5NG2-YB9TY", "P3W2C-QDFGG", "CHGFK-3DVWG", "J8LGT-6BM3D",
+          "STZ4M-CMGSS", "VR8N8-9GX6N"]
+      },
+      %Tesla.Env{...}
+
   """
   @spec generate_recovery_codes(client(), user_id()) :: result()
   def generate_recovery_codes(client, user_id) do
@@ -387,6 +398,17 @@ defmodule FusionAuth.TwoFactor do
 
   @doc """
   Retrieves recovery codes for a given user
+
+  ## Examples
+      FusionAuth.TwoFactor.retrieve_recovery_codes(client, user_id)
+      {:ok,
+      %{
+        "recoveryCodes" => ["8WZDD-TYFPH", "QGGLS-N4428", "KTXHK-M9F9B",
+          "C9LHS-VNT78", "M5NG2-YB9TY", "P3W2C-QDFGG", "CHGFK-3DVWG", "J8LGT-6BM3D",
+          "STZ4M-CMGSS", "VR8N8-9GX6N"]
+      },
+      %Tesla.Env{...}
+
   """
   @spec retrieve_recovery_codes(client(), user_id()) :: result()
   def retrieve_recovery_codes(client, user_id) do
