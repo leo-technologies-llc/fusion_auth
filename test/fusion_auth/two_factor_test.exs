@@ -19,9 +19,6 @@ defmodule FusionAuth.TwoFactorTest do
     %{token: token, refresh_token: refresh_token} =
       TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
 
-    %{token: token, refresh_token: refresh_token} =
-      FusionAuth.TestUtilities.create_tokens_and_user(client_with_tenant, application_id, user_id)
-
     {:ok, %{client: client_with_tenant, token: token, refresh_token: refresh_token}}
   end
 
