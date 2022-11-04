@@ -7,17 +7,21 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
   @api_key Application.get_env(:fusion_auth, :api_key)
   @tenant_id Application.get_env(:fusion_auth, :tenant_id)
   @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
-
+  @key_id "b2cd1a09-6929-45a9-a172-9ec6523469f9"
+  @jwt_signing_key_secret "secret"
   @user_id "eec7905c-a79d-4069-992f-5088109ac51e"
 
   setup do
     Application.put_env(:fusion_auth, :api_url, @base_url)
-
+    Application.put_env(:fusion_auth, :jwt_signing_key, @jwt_signing_key_secret)
     client = FusionAuth.client(@base_url, @api_key, "")
     TestUtilities.create_tenant(client, @tenant_id)
     client_with_tenant = FusionAuth.client(@base_url, @api_key, @tenant_id)
 
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
+    TestUtilities.create_key(client, @jwt_signing_key_secret, @key_id)
+
+    TestUtilities.add_jwt_signing_key_to_application(client, @key_id, @application_id)
 
     %{token: token, refresh_token: refresh_token} =
       TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
@@ -70,7 +74,9 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                  client: client,
                  atomize_keys: false,
                  case_format: :camelcase,
-                 conn_key: :current_user
+                 conn_key: :current_user,
+                 generate_refresh_token: true,
+                 refresh_window: 7
                )
     end
 

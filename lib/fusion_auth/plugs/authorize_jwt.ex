@@ -27,16 +27,21 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     - conn_key :: atom() // default :user
     - atomize_keys :: boolean() // default true
     - case_format :: :underscore | :camelcase  // default :underscore
-
+    - refresh_window :: integer() // default 5
+    - generate_refresh_token :: boolean() // default :true
   """
 
   alias FusionAuth.Utils
+  alias JOSE.JWK
+  alias JOSE.JWT
 
   @default_options [
     client: nil,
     conn_key: :user,
     atomize_keys: true,
-    case_format: :underscore
+    case_format: :underscore,
+    refresh_window: 5,
+    generate_refresh_token: true
   ]
 
   @formatter [
@@ -51,9 +56,31 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
   def call(conn, opts \\ []) do
     options = Keyword.merge(@default_options, opts)
     client = options[:client] || FusionAuth.client()
+    generate_refresh_token = options[:generate_refresh_token]
 
     with {:ok, token} <- Utils.fetch_token(conn),
-         {:ok, claims} <- verify_token(client, token) do
+         {:ok, claims} <- verify_signature(token),
+         {:ok, diff} <- verify_exp(claims["exp"], generate_refresh_token) do
+      conn =
+        Plug.Conn.register_before_send(conn, fn conn ->
+          case needs_refresh?(diff, generate_refresh_token, options[:refresh_window]) do
+            true ->
+              {:ok, refresh} = Utils.fetch_refresh(conn)
+
+              {:ok, %{"token" => new_token}, _} =
+                FusionAuth.JWT.refresh_jwt(client, refresh, token)
+
+              Plug.Conn.put_resp_header(
+                conn,
+                Application.get_env(:fusion_auth, :token_header_key),
+                new_token
+              )
+
+            false ->
+              conn
+          end
+        end)
+
       Plug.Conn.assign(
         conn,
         options[:conn_key],
@@ -77,10 +104,36 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
       claims
       |> Recase.Enumerable.atomize_keys(@formatter[key_format])
 
-  defp verify_token(client, token) do
-    case FusionAuth.JWT.validate_jwt(client, token) do
-      {:ok, %{"jwt" => claims}, _} -> {:ok, claims}
-      _ -> :error
+  defp needs_refresh?(diff, true, refresh_window) when diff >= refresh_window * 60 or diff < 0,
+    do: true
+
+  defp needs_refresh?(_, _, _), do: false
+
+  defp verify_signature(token) do
+    key = Application.get_env(:fusion_auth, :jwt_signing_key) |> Base.encode64()
+    jwk = JWK.from(%{"kty" => "oct", "k" => key})
+
+    case JWT.verify_strict(jwk, ["HS256"], token) do
+      {false, _, _} ->
+        {:error, "couldn't verify signature"}
+
+      {true, jwt, _} ->
+        {_, jwt_map} = JWT.to_map(jwt)
+        {:ok, jwt_map}
+
+      error ->
+        {:error, error}
+    end
+  end
+
+  defp verify_exp(exp, generate_refresh_token) do
+    expire_date = exp |> DateTime.from_unix!()
+    now = DateTime.utc_now()
+    diff = DateTime.diff(expire_date, now, :second)
+
+    cond do
+      diff <= 0 and generate_refresh_token -> {:error, "expired token"}
+      true -> {:ok, diff}
     end
   end
 end

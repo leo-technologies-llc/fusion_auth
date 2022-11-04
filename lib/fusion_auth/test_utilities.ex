@@ -246,7 +246,8 @@ defmodule FusionAuth.TestUtilities do
   def enable_JWT(client, application_id) do
     app = %{
       "jwtConfiguration" => %{
-        "enabled" => true
+        "enabled" => true,
+        "timeToLiveInSeconds" => 300
       }
     }
 
@@ -269,5 +270,34 @@ defmodule FusionAuth.TestUtilities do
     }
 
     Tesla.post(client, "/api/email/template/" <> template_id, template)
+  end
+
+  @doc """
+  Creates an HS256 key with the given secret and key_id
+  """
+  def create_key(client, secret, key_id) do
+    key = %{
+      "key" => %{
+        "algorithm" => "HS256",
+        "name" => Faker.Color.name(),
+        "secret" => secret,
+        "type" => "HMAC"
+      }
+    }
+
+    Tesla.post(client, "/api/key/import/#{key_id}", key)
+  end
+
+  @doc """
+  Adds a key with the given key_id to the application to use when signing JWTs
+  """
+  def add_jwt_signing_key_to_application(client, key_id, application_id) do
+    app = %{
+      "jwtConfiguration" => %{
+        "accessTokenKeyId" => key_id
+      }
+    }
+
+    Applications.update_application(client, application_id, app)
   end
 end
