@@ -100,6 +100,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
       [new_token] = Plug.Conn.get_resp_header(result, "authorization")
       jwt_regex = ~r"^(?:[\w-]*\.){2}[\w-]*$"
       assert String.match?(new_token, jwt_regex)
+      assert new_token != token
     end
 
     test "No token prefix", %{token: token} do

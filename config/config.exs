@@ -16,6 +16,7 @@ import Config
 #   tenant_id: "FUSION_AUTH_TENANT_ID",
 #   application_id: "FUSION_AUTH_APPLICATION_ID",
 #   enable_jwt: true,
+#   jwt_signing_key: "FUSION_AUTH_SIGNING_KEY"
 #   token_header_key: "authorization",
 #   refresh_header_key: "refresh"
 
