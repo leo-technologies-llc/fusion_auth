@@ -72,8 +72,8 @@ defmodule FusionAuth.TestUtilities do
   Takes an already created application id and user id (that may or may not exist) and creates tokens for a user with that id
   - This does recreate the user if one already exists so the ID will be the same but the other information won't.
   """
-  def create_tokens_and_user(client, application_id, user_id) do
-    enable_JWT(client, application_id)
+  def create_tokens_and_user(client, application_id, user_id, token_ttl \\ 300) do
+    enable_JWT(client, application_id, token_ttl)
     enable_refresh_tokens(client, application_id)
 
     if user_exists?(client, %{id: user_id}),
@@ -243,11 +243,11 @@ defmodule FusionAuth.TestUtilities do
   @doc """
   Enables JWT generation for the application with the given id.
   """
-  def enable_JWT(client, application_id) do
+  def enable_JWT(client, application_id, token_ttl) do
     app = %{
       "jwtConfiguration" => %{
         "enabled" => true,
-        "timeToLiveInSeconds" => 300
+        "timeToLiveInSeconds" => token_ttl
       }
     }
 

@@ -87,6 +87,21 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                |> AuthorizeJWT.call()
     end
 
+    test "Succesfully refreshes the access token", %{token: token, refresh_token: refresh_token} do
+      response =
+        conn()
+        |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
+        |> Plug.Conn.put_req_header("refresh", refresh_token)
+        |> AuthorizeJWT.call()
+
+      [test_fn] = response.private.before_send
+      result = test_fn.(response)
+
+      [new_token] = Plug.Conn.get_resp_header(result, "authorization")
+      jwt_regex = ~r"^(?:[\w-]*\.){2}[\w-]*$"
+      assert String.match?(new_token, jwt_regex)
+    end
+
     test "No token prefix", %{token: token} do
       assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
                conn()

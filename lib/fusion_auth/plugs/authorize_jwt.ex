@@ -104,7 +104,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
       claims
       |> Recase.Enumerable.atomize_keys(@formatter[key_format])
 
-  defp needs_refresh?(diff, true, refresh_window) when diff >= refresh_window * 60 or diff < 0,
+  defp needs_refresh?(diff, true, refresh_window) when diff <= refresh_window * 60,
     do: true
 
   defp needs_refresh?(_, _, _), do: false
@@ -132,7 +132,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     diff = DateTime.diff(expire_date, now, :second)
 
     cond do
-      diff <= 0 and generate_refresh_token -> {:error, "expired token"}
+      diff <= 0 and !generate_refresh_token -> {:error, "expired token"}
       true -> {:ok, diff}
     end
   end
