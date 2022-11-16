@@ -50,7 +50,6 @@ defmodule FusionAuth.Utils do
   defp parse_token(["JWT " <> token]), do: {:ok, token}
   defp parse_token(["Bearer " <> token]), do: {:ok, token}
   defp parse_token([""]), do: {:error, :unauthorized}
-  defp parse_token([nil]), do: {:error, :unauthorized}
   defp parse_token([token]) when is_binary(token), do: {:ok, token}
   defp parse_token(_), do: {:error, :unauthorized}
 end
