@@ -63,20 +63,17 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
          {:ok, diff} <- verify_exp(claims["exp"], generate_refresh_token) do
       conn =
         Plug.Conn.register_before_send(conn, fn conn ->
-          case needs_refresh?(diff, generate_refresh_token, options[:refresh_window]) do
-            true ->
-              {:ok, refresh} = Utils.fetch_refresh(conn)
-
-              {:ok, %{"token" => new_token}, _} =
-                FusionAuth.JWT.refresh_jwt(client, refresh, token)
-
-              Plug.Conn.put_resp_header(
-                conn,
-                Application.get_env(:fusion_auth, :token_header_key),
-                new_token
-              )
-
-            false ->
+          with true <- needs_refresh?(diff, generate_refresh_token, options[:refresh_window]),
+               {:ok, refresh} <- Utils.fetch_refresh(conn),
+               {:ok, %{"token" => new_token}, _} =
+                 FusionAuth.JWT.refresh_jwt(client, refresh, token) do
+            Plug.Conn.put_resp_header(
+              conn,
+              Application.get_env(:fusion_auth, :token_header_key),
+              new_token
+            )
+          else
+            _ ->
               conn
           end
         end)
