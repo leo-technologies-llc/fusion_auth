@@ -117,6 +117,18 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                |> AuthorizeJWT.call()
     end
 
+    test "Bad refresh token", %{token: token} do
+      response =
+        conn()
+        |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
+        |> Plug.Conn.put_req_header("refresh", "")
+        |> AuthorizeJWT.call()
+
+      [test_fn] = response.private.before_send
+      result = test_fn.(response)
+      assert result == response
+    end
+
     test "No authorization header" do
       assert %Plug.Conn{halted: true, status: 401} =
                conn()
