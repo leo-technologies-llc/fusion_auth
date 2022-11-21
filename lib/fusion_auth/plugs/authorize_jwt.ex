@@ -42,7 +42,8 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     atomize_keys: true,
     case_format: :underscore,
     refresh_window: 5,
-    generate_refresh_token: true
+    generate_refresh_token: true,
+    error_handler: nil
   ]
 
   @formatter [
@@ -74,11 +75,11 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
           )
         else
           {:error, body, env} ->
-            Logger.warn("""
-            FusionAuth refresh token request resulted in an error.
-            Env: #{inspect(env)}
-            Body: #{body}}
-            """)
+            error_handler = options[:error_handler]
+
+            if error_handler do
+              error_handler.({body, env})
+            end
 
             if diff <= 0 do
               conn
