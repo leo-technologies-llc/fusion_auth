@@ -30,6 +30,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     - refresh_window :: integer() // default 5
     - generate_refresh_token :: boolean() // default :true
   """
+  require Logger
 
   alias FusionAuth.Utils
   alias JOSE.JWK
@@ -41,7 +42,8 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     atomize_keys: true,
     case_format: :underscore,
     refresh_window: 5,
-    generate_refresh_token: true
+    generate_refresh_token: true,
+    error_handler: nil
   ]
 
   @formatter [
@@ -62,21 +64,34 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
          {:ok, claims} <- verify_signature(token),
          {:ok, diff} <- verify_exp(claims["exp"], generate_refresh_token) do
       conn =
-        Plug.Conn.register_before_send(conn, fn conn ->
-          with true <- needs_refresh?(diff, generate_refresh_token, options[:refresh_window]),
-               {:ok, refresh} <- Utils.fetch_refresh(conn),
-               {:ok, %{"token" => new_token}, _} =
-                 FusionAuth.JWT.refresh_jwt(client, refresh, token) do
-            Plug.Conn.put_resp_header(
-              conn,
-              Application.get_env(:fusion_auth, :token_header_key),
-              new_token
-            )
-          else
-            _ ->
+        with true <- needs_refresh?(diff, generate_refresh_token, options[:refresh_window]),
+             {_, refresh} <- Utils.fetch_refresh(conn),
+             {:ok, %{"token" => new_token}, _} <-
+               FusionAuth.JWT.refresh_jwt(client, refresh, token) do
+          Plug.Conn.put_resp_header(
+            conn,
+            Application.get_env(:fusion_auth, :token_header_key),
+            new_token
+          )
+        else
+          {:error, body, env} ->
+            error_handler = options[:error_handler]
+
+            if error_handler do
+              error_handler.({body, env})
+            end
+
+            if diff <= 0 do
               conn
-          end
-        end)
+              |> Plug.Conn.halt()
+              |> Plug.Conn.send_resp(401, "Unauthorized")
+            else
+              conn
+            end
+
+          _ ->
+            conn
+        end
 
       Plug.Conn.assign(
         conn,

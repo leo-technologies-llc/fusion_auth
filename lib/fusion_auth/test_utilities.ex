@@ -2,6 +2,8 @@ defmodule FusionAuth.TestUtilities do
   @moduledoc """
   This is module provides various functions for writing tests utilizing this packages functions
   """
+  alias JOSE.JWK
+  alias JOSE.JWT
   alias FusionAuth.{Users, Applications, Registrations, OpenIdConnect, Groups}
   alias Faker.{Internet, UUID}
 
@@ -299,5 +301,23 @@ defmodule FusionAuth.TestUtilities do
     }
 
     Applications.update_application(client, application_id, app)
+  end
+
+  @doc """
+  Modifies and signs a token with the provided unix time set as the exp
+  """
+  def change_token_exp(token, unix_time) do
+    key = Application.get_env(:fusion_auth, :jwt_signing_key) |> Base.encode64()
+    jwk = JWK.from(%{"kty" => "oct", "k" => key})
+    jws = %{"alg" => "HS256"}
+    {true, jwt, _} = JWT.verify_strict(jwk, ["HS256"], token)
+    {_, jwt_map} = JWT.to_map(jwt)
+    jwt = Map.put(jwt_map, "exp", unix_time)
+
+    {_, signed_jwt} =
+      JOSE.JWT.sign(jwk, jws, jwt)
+      |> JOSE.JWS.compact()
+
+    signed_jwt
   end
 end

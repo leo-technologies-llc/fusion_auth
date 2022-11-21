@@ -59,10 +59,11 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
   end
 
   describe "call/2" do
-    test "default options", %{token: token} do
+    test "default options", %{token: token, refresh_token: refresh_token} do
       assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
                conn()
                |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
+               |> Plug.Conn.put_req_header("refresh", refresh_token)
                |> AuthorizeJWT.call()
     end
 
@@ -84,7 +85,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
       assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
                conn()
                |> Plug.Conn.put_req_header("authorization", "JWT " <> token)
-               |> AuthorizeJWT.call()
+               |> AuthorizeJWT.call(generate_refresh_token: false)
     end
 
     test "Succesfully refreshes the access token", %{token: token, refresh_token: refresh_token} do
@@ -94,10 +95,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
         |> Plug.Conn.put_req_header("refresh", refresh_token)
         |> AuthorizeJWT.call()
 
-      [test_fn] = response.private.before_send
-      result = test_fn.(response)
-
-      [new_token] = Plug.Conn.get_resp_header(result, "authorization")
+      [new_token] = Plug.Conn.get_resp_header(response, "authorization")
       jwt_regex = ~r"^(?:[\w-]*\.){2}[\w-]*$"
       assert String.match?(new_token, jwt_regex)
       assert new_token != token
@@ -107,7 +105,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
       assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
                conn()
                |> Plug.Conn.put_req_header("authorization", token)
-               |> AuthorizeJWT.call()
+               |> AuthorizeJWT.call(generate_refresh_token: false)
     end
 
     test "No token" do
@@ -117,16 +115,30 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
                |> AuthorizeJWT.call()
     end
 
-    test "Bad refresh token", %{token: token} do
-      response =
-        conn()
-        |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
-        |> Plug.Conn.put_req_header("refresh", "")
-        |> AuthorizeJWT.call()
+    test "Bad refresh token and valid token", %{token: token} do
+      assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
+               conn()
+               |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
+               |> Plug.Conn.put_req_header("refresh", "")
+               |> AuthorizeJWT.call(refresh_window: 100)
+    end
 
-      [test_fn] = response.private.before_send
-      result = test_fn.(response)
-      assert result == response
+    test "Bad refresh token and valid token in the refresh window", %{token: token} do
+      assert %Plug.Conn{assigns: %{user: %{application_id: @application_id}}} =
+               conn()
+               |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
+               |> Plug.Conn.put_req_header("refresh", "")
+               |> AuthorizeJWT.call()
+    end
+
+    test "Bad refresh token and expired token", %{token: token} do
+      token = TestUtilities.change_token_exp(token, 0)
+
+      assert %Plug.Conn{halted: true, status: 401} =
+               conn()
+               |> Plug.Conn.put_req_header("authorization", "Bearer " <> token)
+               |> Plug.Conn.put_req_header("refresh", "")
+               |> AuthorizeJWT.call()
     end
 
     test "No authorization header" do
