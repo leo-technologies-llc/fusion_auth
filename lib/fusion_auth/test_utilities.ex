@@ -4,7 +4,7 @@ defmodule FusionAuth.TestUtilities do
   """
   alias JOSE.JWK
   alias JOSE.JWT
-  alias FusionAuth.{Users, Applications, Registrations, OpenIdConnect, Groups}
+  alias FusionAuth.{Users, Applications, Registrations, IdentityProvider, Groups}
   alias Faker.{Internet, UUID}
 
   @doc """
@@ -155,11 +155,11 @@ defmodule FusionAuth.TestUtilities do
   Deletes all the identity providers in FusionAuth.
   """
   def cleanup_identity_providers(client) do
-    {:ok, identity_providers, _} = OpenIdConnect.retrieve_all_identity_providers(client)
+    {:ok, identity_providers, _} = IdentityProvider.retrieve_all_identity_providers(client)
 
     if identity_providers != %{} do
       Enum.map(identity_providers["identityProviders"], fn provider ->
-        OpenIdConnect.delete_openid_connect_identity_provider(client, provider["id"])
+        IdentityProvider.delete_openid_connect_identity_provider(client, provider["id"])
       end)
     end
   end

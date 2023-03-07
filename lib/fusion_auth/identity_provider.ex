@@ -1,13 +1,13 @@
-defmodule FusionAuth.OpenIdConnect do
+defmodule FusionAuth.IdentityProvider do
   @moduledoc """
-  The `FusionAuth.OpenIdConnect` module provides access methods to the [FusionAuth OpenID Connect API](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect).
+  The `FusionAuth.IdentityProvider` module provides access methods to the [FusionAuth OpenID Connect API](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect).
   All methods require a Tesla Client struct created with `FusionAuth.client(base_url, api_key, tenant_id)`.
   """
 
   @type client :: FusionAuth.client()
   @type result :: FusionAuth.result()
   @type domain :: String.t()
-  @type headers :: list()
+  @type headers :: [{String.t(), String.t()}]
   @type identity_provider_id :: String.t()
   @type application_id :: String.t()
   @type tenant_id :: String.t()
@@ -55,7 +55,11 @@ defmodule FusionAuth.OpenIdConnect do
             maximum_links: integer()
           }
         }
-
+  @type saml_start_login_request_body :: %{
+          application_id: String.t(),
+          data: %{request_id: String.t()},
+          identity_provider_id: String.t()
+        }
   @type login_request_body :: %{
           application_id: String.t(),
           identity_provider_id: String.t(),
@@ -169,11 +173,26 @@ defmodule FusionAuth.OpenIdConnect do
   end
 
   @doc """
-  Completes an OpenID connect login using a login request, this function allows for optional headers to be passed. *Must* at least contain the following values
+  Starts a samlv2 login, requires the identity provider to be properly configured beforehand. See [here](https://fusionauth.io/docs/v1/tech/identity-providers/samlv2/azure-ad)
+  for an example on how its setup with azure ad, returns a code to be used in the auth request to the identity provider
+  """
+  @spec start_login(client(), saml_start_login_request_body()) :: FusionAuth.result()
+  def start_login(client, saml_start_login_request_body) do
+    Tesla.post(client, "/api/identity-provider/start", saml_start_login_request_body)
+    |> FusionAuth.result()
+  end
+
+  @doc """
+  Completes an identity provider login using a login request, this function allows for optional headers to be passed. *Must* at least contain the following values
   - applicationId :: String.t()\n
     The Id of the Application the user is to be logged into.
 
-  - data
+  - data (if you're performing a samlv2 login your data map should only contain the samlv2 response, for openid it should have the code and redirect_uri)
+    - samlResponse :: String.t()\n
+    The response from the saml login
+
+    OR
+
     - code :: String.t()\n
     The `code` parameter that was returned to the Authorization redirect URI.
 
@@ -185,18 +204,47 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_openid_connect_login(client(), login_request_body()) :: result()
-  def complete_openid_connect_login(client, login_request_body) do
+  @spec complete_identity_provider_login(client(), login_request_body()) :: result()
+  def complete_identity_provider_login(
+        client,
+        %{
+          "applicationId" => _application_id,
+          "data" => %{
+            "code" => _code,
+            "redirect_uri" => _redirect_uri
+          },
+          "identityProviderId" => _identity_provider_id
+        } = login_request_body
+      ) do
+    Tesla.post(client, @connect_url <> "/login", login_request_body)
+    |> FusionAuth.result()
+  end
+
+  def complete_identity_provider_login(
+        client,
+        %{
+          "applicationId" => _application_id,
+          "data" => %{
+            "samlResponse" => _saml_response
+          },
+          "identityProviderId" => _identity_provider_id
+        } = login_request_body
+      ) do
     Tesla.post(client, @connect_url <> "/login", login_request_body)
     |> FusionAuth.result()
   end
 
   @doc """
-  Completes an OpenID connect login using a login request, this function allows for optional headers to be passed. *Must* at least contain the following values
+  Completes an identity provider login request, this function allows for optional headers to be passed. *Must* at least contain the following values
   - applicationId :: String.t()\n
     The Id of the Application the user is to be logged into.
 
-  - data
+  - data (if you're performing a samlv2 login your data map should only contain the samlv2 response, for openid it should have the code and redirect_uri)
+    - samlResponse :: String.t()\n
+    The response from the saml login
+
+    OR
+
     - code :: String.t()\n
     The `code` parameter that was returned to the Authorization redirect URI.
 
@@ -223,8 +271,34 @@ defmodule FusionAuth.OpenIdConnect do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_openid_connect_login(client(), login_request_body(), headers()) :: result()
-  def complete_openid_connect_login(client, login_request_body, headers) do
+  @spec complete_identity_provider_login(client(), login_request_body(), headers()) :: result()
+  def complete_identity_provider_login(
+        client,
+        %{
+          "applicationId" => _application_id,
+          "data" => %{
+            "code" => _code,
+            "redirect_uri" => _redirect_uri
+          },
+          "identityProviderId" => _identity_provider_id
+        } = login_request_body,
+        headers
+      ) do
+    Tesla.post(client, @connect_url <> "/login", login_request_body, headers: headers)
+    |> FusionAuth.result()
+  end
+
+  def complete_identity_provider_login(
+        client,
+        %{
+          "applicationId" => _application_id,
+          "data" => %{
+            "samlResponse" => _saml_response
+          },
+          "identityProviderId" => _identity_provider_id
+        } = login_request_body,
+        headers
+      ) do
     Tesla.post(client, @connect_url <> "/login", login_request_body, headers: headers)
     |> FusionAuth.result()
   end
