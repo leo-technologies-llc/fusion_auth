@@ -60,25 +60,6 @@ defmodule FusionAuth.IdentityProvider do
           data: %{request_id: String.t()},
           identity_provider_id: String.t()
         }
-  @type login_request_body :: %{
-          application_id: String.t(),
-          identity_provider_id: String.t(),
-          ipAddress: String.t(),
-          data: %{
-            code: String.t(),
-            redirect_uri: String.t()
-          },
-          metadata: %{
-            device: %{
-              description: String.t(),
-              lastAccessedAddress: String.t(),
-              name: String.t(),
-              type: String.t()
-            }
-          },
-          no_jwt: boolean(),
-          no_link: boolean()
-        }
   @connect_url "/api/identity-provider"
 
   @doc """
@@ -204,7 +185,7 @@ defmodule FusionAuth.IdentityProvider do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_identity_provider_login(client(), login_request_body()) :: result()
+  @spec complete_identity_provider_login(client(), map()) :: result()
   def complete_identity_provider_login(
         client,
         %{
@@ -271,7 +252,7 @@ defmodule FusionAuth.IdentityProvider do
 
   For more information, visit the FusionAuth API documentation for [Complete an OpenID connect login](https://fusionauth.io/docs/v1/tech/apis/identity-providers/openid-connect#complete-an-openid-connect-login)
   """
-  @spec complete_identity_provider_login(client(), login_request_body(), headers()) :: result()
+  @spec complete_identity_provider_login(client(), map(), headers()) :: result()
   def complete_identity_provider_login(
         client,
         %{
