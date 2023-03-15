@@ -57,7 +57,6 @@ defmodule FusionAuth.IdentityProvider do
         }
   @type saml_start_login_request_body :: %{
           application_id: String.t(),
-          data: %{request_id: String.t()},
           identity_provider_id: String.t()
         }
   @connect_url "/api/identity-provider"
