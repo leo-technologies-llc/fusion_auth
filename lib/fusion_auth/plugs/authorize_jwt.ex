@@ -93,10 +93,14 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
             conn
         end
 
-      Plug.Conn.assign(
-        conn,
+      conn
+      |> Plug.Conn.assign(
         options[:conn_key],
         format(claims, options[:atomize_keys], options[:case_format])
+      )
+      |> Plug.Conn.assign(
+        :authorization,
+        %{exp: claims["exp"], jti: claims["jti"]}
       )
     else
       _ ->
