@@ -31,7 +31,7 @@ defmodule FusionAuth.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:faker, :logger]
     ]
   end
 
@@ -42,14 +42,15 @@ defmodule FusionAuth.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:tesla, "~> 1.4.2"},
+      {:excoveralls, "~> 0.14", only: :test},
+      {:faker, "~> 0.17", only: [:test, :dev]},
       {:hackney, "~> 1.18"},
       {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"},
       {:jose, "~> 1.8"},
+      {:opentelemetry_tesla, "~> 2.1.0"},
+      {:plug_cowboy, "~> 2.5"},
       {:recase, "~> 0.7.0"},
-      {:excoveralls, "~> 0.14", only: :test},
-      {:faker, "~> 0.17", only: :test}
+      {:tesla, "~> 1.4.2"}
     ]
   end
 
@@ -58,11 +59,11 @@ defmodule FusionAuth.MixProject do
       description: @description,
       files: ["lib", "config", "mix.exs", "README*"],
       maintainers: [
-        "Brennan Karrer",
-        "Shawn Liang",
-        "Christopher Kempton",
         "Maurice Roy",
-        "Axl Jon Dela Cruz"
+        "Alec Kustanovich",
+        "Marc Hayes",
+        "Ron Russell",
+        "Brian Hoang"
       ],
       licenses: ["MIT"],
       links: %{github: @url}
