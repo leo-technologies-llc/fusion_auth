@@ -43,7 +43,7 @@ defmodule FusionAuth.MixProject do
     [
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:excoveralls, "~> 0.14", only: :test},
-      {:faker, "~> 0.17", only: [:test, :dev]},
+      {:faker, "~> 0.17", only: :test},
       {:hackney, "~> 1.18"},
       {:jason, "~> 1.2"},
       {:jose, "~> 1.8"},
