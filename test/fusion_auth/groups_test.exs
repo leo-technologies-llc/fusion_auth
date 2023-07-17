@@ -1,7 +1,10 @@
 defmodule FusionAuth.GroupsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{Groups, Applications, Users, TestUtilities}
+  alias FusionAuth.Groups
+  alias FusionAuth.Applications
+  alias FusionAuth.Users
+  alias FusionAuth.TestUtilities
 
   @role %{
     "description" => "Test role description.",

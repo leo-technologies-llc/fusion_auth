@@ -1,7 +1,8 @@
 defmodule FusionAuth.JWTTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{JWT, TestUtilities}
+  alias FusionAuth.JWT
+  alias FusionAuth.TestUtilities
 
   @invalid_user_id "25a872da-bb44-4af8-a43d-e7bcb5351ebc"
   @invalid_token "123123"

@@ -1,7 +1,8 @@
 defmodule FusionAuth.ApplicationsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{Applications, TestUtilities}
+  alias FusionAuth.Applications
+  alias FusionAuth.TestUtilities
 
   @invalid_application_id "32c54ee1-3d5a-4085-9ec5-4731d9e0f752"
   @valid_role_id "8bd3db07-8d98-455a-bd86-b802263114b1"

@@ -1,7 +1,8 @@
 defmodule FusionAuth.TwoFactorTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{TwoFactor, TestUtilities}
+  alias FusionAuth.TwoFactor
+  alias FusionAuth.TestUtilities
   @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
   @user_id "84846873-89d2-44f8-91e9-dac80f420cb2"
 

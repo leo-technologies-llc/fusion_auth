@@ -1,7 +1,9 @@
 defmodule FusionAuth.RegistrationsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{Registrations, TestUtilities, Users}
+  alias FusionAuth.Registrations
+  alias FusionAuth.Users
+  alias FusionAuth.TestUtilities
 
   @application_id "7d47523b-057d-4f91-b159-f196f9dbe7c9"
   @user_id "12104852-f534-475e-9332-9fc3c37432b8"

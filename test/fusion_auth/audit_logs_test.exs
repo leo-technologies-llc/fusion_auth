@@ -1,7 +1,8 @@
 defmodule FusionAuth.AuditLogsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{AuditLogs, TestUtilities}
+  alias FusionAuth.AuditLogs
+  alias FusionAuth.TestUtilities
 
   @audit_log %{insertUser: "john.doe@email.com", message: "This is an audit log."}
 
