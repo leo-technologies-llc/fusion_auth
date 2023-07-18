@@ -52,11 +52,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - uses: marocchino/tool-versions-action@v1
+        id: versions
+
       - uses: ./.github/actions/cache-restore
         id: cache-mix-dependencies
         with:
           otp-version: ${{ steps.versions.outputs.erlang }}
           elixir-version: ${{ steps.versions.outputs.elixir }}
+
       - name: Build the stack
         run: |
           touch .env
