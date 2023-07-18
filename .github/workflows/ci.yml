@@ -20,14 +20,51 @@ on:
   workflow_dispatch:
 
 jobs:
-  runner-job:
+  setup:
     runs-on: ubuntu-latest
-    env:
-      MIX_ENV: test
-      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
     steps:
-      - uses: leo-technologies-llc/pipelines/actions/elixir/cover@main
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.6.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          github-token: ${{ secrets.CI_GITHUB_TOKEN }}
-          
+          access_token: ${{ github.token }}
+
+      - uses: actions/checkout@v2
+
+      - uses: marocchino/tool-versions-action@v1
+        id: versions
+
+      - uses: ./.github/actions/cache-restore
+        id: cache-mix-dependencies
+        with:
+          otp-version: ${{ steps.versions.outputs.erlang }}
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+
+      - name: Install mix dependencies if cache is empty
+        if: steps.cache-mix-dependencies.outputs.cache-hit != 'true'
+        run: |
+          mix local.rebar --force
+          mix local.hex --force
+          mix deps.get
+          mix deps.compile
+
+  unit-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: marocchino/tool-versions-action@v1
+        id: versions
+
+      - uses: ./.github/actions/cache-restore
+        id: cache-mix-dependencies
+        with:
+          otp-version: ${{ steps.versions.outputs.erlang }}
+          elixir-version: ${{ steps.versions.outputs.elixir }}
+
+      - name: Build the stack
+        run: |
+          touch .env
+          cp .env.example .env
+          source .env
+          ./run coveralls
