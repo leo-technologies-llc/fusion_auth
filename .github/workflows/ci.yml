@@ -1,0 +1,33 @@
+---
+name: Code Coverage
+
+on:
+  push:
+    branches:
+      - production
+      - development
+      - 'release/**'
+      - 'hotfix/**'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - development
+      - 'release/**'
+      - 'hotfix/**'
+  workflow_dispatch:
+
+jobs:
+  runner-job:
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: test
+      SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+    steps:
+      - uses: leo-technologies-llc/pipelines/actions/elixir/cover@main
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          github-token: ${{ secrets.CI_GITHUB_TOKEN }}
+          
