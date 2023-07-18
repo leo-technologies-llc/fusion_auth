@@ -43,14 +43,14 @@ defmodule FusionAuth.MixProject do
     [
       {:ex_doc, "~> 0.24", only: :dev, runtime: false},
       {:excoveralls, "~> 0.14", only: :test},
-      {:faker, "~> 0.17", only: [:test, :dev]},
+      {:faker, "~> 0.17", only: :test},
       {:hackney, "~> 1.18"},
       {:jason, "~> 1.2"},
       {:jose, "~> 1.8"},
-      {:opentelemetry_tesla, "~> 2.1.0"},
+      {:opentelemetry_tesla, "~> 2.1"},
       {:plug_cowboy, "~> 2.5"},
       {:recase, "~> 0.7.0"},
-      {:tesla, "~> 1.4.2"}
+      {:tesla, "~> 1.4"}
     ]
   end
 

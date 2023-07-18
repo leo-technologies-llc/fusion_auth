@@ -4,8 +4,13 @@ defmodule FusionAuth.TestUtilities do
   """
   alias JOSE.JWK
   alias JOSE.JWT
-  alias FusionAuth.{Users, Applications, Registrations, IdentityProvider, Groups}
-  alias Faker.{Internet, UUID}
+  alias FusionAuth.Users
+  alias FusionAuth.Applications
+  alias FusionAuth.Registrations
+  alias FusionAuth.IdentityProvider
+  alias FusionAuth.Groups
+  alias Faker.Internet
+  alias Faker.UUID
 
   @doc """
   Checks if a given user object is currently available to be queried by FusionAuth

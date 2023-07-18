@@ -1,7 +1,10 @@
 defmodule FusionAuth.ReportsTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{Reports, TestUtilities, Registrations, Login}
+  alias FusionAuth.Reports
+  alias FusionAuth.TestUtilities
+  alias FusionAuth.Registrations
+  alias FusionAuth.Login
 
   @user %{username: "johndoe", password: "password", email: "email@email.com"}
 

@@ -1,7 +1,8 @@
 defmodule FusionAuth.UsersTest do
   use FusionAuth.DataCase
 
-  alias FusionAuth.{Users, TestUtilities}
+  alias FusionAuth.Users
+  alias FusionAuth.TestUtilities
 
   @invalid_id "d6624a85-f006-4f61-825f-0cf3df9ca140"
 
