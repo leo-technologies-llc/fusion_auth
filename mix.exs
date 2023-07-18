@@ -1,7 +1,7 @@
 defmodule FusionAuth.MixProject do
   use Mix.Project
 
-  @version "2023.1.0"
+  @version "2023.1.1"
   @url "https://github.com/leo-technologies-llc/fusion_auth"
   @name "FusionAuth"
   @description "Elixir SDK for #{@name}"
