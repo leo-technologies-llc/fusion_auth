@@ -31,7 +31,7 @@ defmodule FusionAuth.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:faker, :logger]
+      extra_applications: [:logger]
     ]
   end
 
@@ -41,11 +41,10 @@ defmodule FusionAuth.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.24", only: :dev, runtime: false},
-      {:excoveralls, "~> 0.14", only: :test},
-      {:faker, "~> 0.17", only: :test},
+      {:ex_doc, "~> 0.24", only: :dev, runtime: false, optional: true},
+      {:excoveralls, "~> 0.14", only: :test, optional: true},
+      {:faker, "~> 0.17", only: :test, optional: true},
       {:hackney, "~> 1.18"},
-      {:jason, "~> 1.2"},
       {:jose, "~> 1.8"},
       {:opentelemetry_tesla, "~> 2.1"},
       {:plug_cowboy, "~> 2.5"},

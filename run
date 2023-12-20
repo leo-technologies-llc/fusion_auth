@@ -3,58 +3,7 @@
 set -eo pipefail
 VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
 
-function test {
-    docker-compose down
-    docker-compose rm -f
-
-    if [ -z "$VOLUMES" ]; then
-        echo "No test containers/volumes to prune ..."
-    else
-        docker volume rm $VOLUMES
-    fi
-
-    docker-compose up -d
-    echo "Checking to see if Kickstart has finished"
-    COUNT=0
-    echo -n "Waiting for Kickstart "
-    until  docker logs fa-test-fusionauth 2>&1 | grep -q "Created API key ending in" ||  [ $COUNT == 60 ] ; do
-        COUNT=$(( COUNT + 1 ))
-        echo -n "."
-        sleep 1
-    done
-    echo " Kickstart has finished"
-
-    echo "FusionAuth is healthy. Executing tests ..."
-    mix test "${@}"
-    docker-compose down
-}
-
-function coveralls {
-    docker-compose down
-    docker-compose rm -f
-
-    if [ -z "$VOLUMES" ]; then
-        echo "No test containers/volumes to prune ..."
-    else
-        docker volume rm $VOLUMES
-    fi
-
-    docker-compose up -d
-    echo "Checking to see if Kickstart has finished"
-    COUNT=0
-    echo -n "Waiting for Kickstart "
-    until  docker logs fa-test-fusionauth 2>&1 | grep -q "Created API key ending in" ||  [ $COUNT == 60 ] ; do
-        COUNT=$(( COUNT + 1 ))
-        echo -n "."
-        sleep 1
-    done
-    echo " Kickstart has finished"
-
-    echo "FusionAuth is healthy. Executing tests ..."
-    mix coveralls
-}
-
-function up {
+function _up {
     docker-compose down
     docker-compose rm -f
 
@@ -75,6 +24,28 @@ function up {
     done
     echo " Kickstart has finished"
     echo "FusionAuth is healthy"
+}
+
+function down {
+    docker-compose down
+}
+
+function test {
+    _up
+    source .env.example
+    mix test "${@}"
+    down
+}
+
+function coveralls {
+    _up
+    source .env.example
+    mix coveralls
+    down
+}
+
+function logs {
+    _up
     docker logs fa-test-fusionauth --follow
 }
 

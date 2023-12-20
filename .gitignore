@@ -27,3 +27,6 @@ fusion_auth-*.tar
 
 # Env
 .env
+
+# Elixir LS
+.elixir_ls/
