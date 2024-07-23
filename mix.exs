@@ -1,7 +1,7 @@
 defmodule FusionAuth.MixProject do
   use Mix.Project
 
-  @version "2023.2.0"
+  @version "2024.1.0"
   @url "https://github.com/leo-technologies-llc/fusion_auth"
   @name "FusionAuth"
   @description "Elixir SDK for #{@name}"
@@ -47,8 +47,8 @@ defmodule FusionAuth.MixProject do
       {:hackney, "~> 1.18"},
       {:jose, "~> 1.8"},
       {:opentelemetry_tesla, "~> 2.1"},
-      {:plug_cowboy, "~> 2.5"},
-      {:recase, "~> 0.7.0"},
+      {:plug_cowboy, "~> 2.7"},
+      {:recase, "~> 0.8"},
       {:tesla, "~> 1.4"}
     ]
   end
