@@ -4,8 +4,8 @@ set -eo pipefail
 VOLUMES=$(docker volume ls -q --filter "name=fusion_auth")
 
 function _up {
-    docker-compose down
-    docker-compose rm -f
+    docker compose down
+    docker compose rm -f
 
     if [ -z "$VOLUMES" ]; then
         echo "No test containers/volumes to prune ..."
@@ -13,7 +13,7 @@ function _up {
         docker volume rm $VOLUMES
     fi
 
-    docker-compose up -d
+    docker compose up -d
     echo "Checking to see if Kickstart has finished"
     COUNT=0
     echo -n "Waiting for Kickstart "
@@ -27,7 +27,7 @@ function _up {
 }
 
 function down {
-    docker-compose down
+    docker compose down
 }
 
 function test {
