@@ -31,10 +31,10 @@ function down {
 }
 
 function test {
-    _up
+    # _up
     source .env.example
     mix test "${@}"
-    down
+    # down
 }
 
 function coveralls {

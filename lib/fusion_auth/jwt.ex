@@ -287,7 +287,9 @@ defmodule FusionAuth.JWT do
   """
   @spec validate_jwt(client(), String.t()) :: result()
   def validate_jwt(client, token) do
-    client = jwt_client(client, "JWT #{token}")
+    client = jwt_client(client, "Bearer #{token}")
+
+    IO.inspect(client, label: "CLIENT")
 
     Tesla.get(
       client,

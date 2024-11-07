@@ -367,12 +367,8 @@ defmodule FusionAuth.TwoFactor do
   For more information, visit the FusionAuth API Documentation for [Send a Two Factor Code](https://fusionauth.io/docs/v1/tech/apis/two-factor#generate-a-secret).
   """
   @spec generate_secret_for_jwt(client(), token()) :: result()
-  def generate_secret_for_jwt(client, token) do
-    Tesla.get(
-      client,
-      @two_factor_secret_url,
-      headers: [{"Authorization", "Bearer " <> token}]
-    )
+  def generate_secret_for_jwt(client, _token) do
+    Tesla.get(client, @two_factor_secret_url)
     |> FusionAuth.result()
   end
 

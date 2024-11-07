@@ -459,17 +459,6 @@ defmodule FusionAuth.Applications do
   end
 
   @doc """
-  Get an application's OAuth configuration by the application's ID.
-
-  For more information visit the FusionAuth API Documentation for [Retrieve OAuth Configuration](https://fusionauth.io/docs/v1/tech/apis/applications#retrieve-oauth-configuration)
-  """
-  @spec get_oauth_configuration(client(), application_id()) :: FusionAuth.result()
-  def get_oauth_configuration(client, application_id) do
-    Tesla.get(client, @applications_url <> "/#{application_id}" <> "/oauth-configuration")
-    |> FusionAuth.result()
-  end
-
-  @doc """
   Update an application by the application's ID.
 
   For more information visit the FusionAuth API Documentation for [Update an Application](https://fusionauth.io/docs/v1/tech/apis/applications#update-an-application)

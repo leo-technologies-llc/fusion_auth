@@ -86,11 +86,12 @@ defmodule FusionAuth.TestUtilities do
     if user_exists?(client, %{id: user_id}),
       do: Users.delete_user(client, user_id, [{:hardDelete, true}])
 
-    user = %{
-      username: Internet.user_name(),
-      password: UUID.v4(),
-      email: Internet.email()
-    }
+    user =
+      %{
+        username: Internet.user_name(),
+        password: UUID.v4(),
+        email: Internet.email()
+      }
 
     data = %{
       registration: %{

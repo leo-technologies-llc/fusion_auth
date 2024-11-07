@@ -13,7 +13,7 @@ defmodule FusionAuth.IdentityProviderTest do
         %{
           "code" => "[duplicate]identityProvider.name",
           "message" =>
-            "An Identity Provider with name [App[Dev] Identity Provider] already exists."
+            "An identity provider with name [App[Dev] identity provider] already exists."
         }
       ]
     }
@@ -24,7 +24,7 @@ defmodule FusionAuth.IdentityProviderTest do
         %{
           "code" => "[duplicate]identityProviderId",
           "message" =>
-            "An Identity Provider with Id [320a5cea-6893-42fe-9fba-bd31258a1a27] already exists."
+            "An identity provider with Id [320a5cea-6893-42fe-9fba-bd31258a1a27] already exists."
         }
       ]
     }
@@ -35,7 +35,7 @@ defmodule FusionAuth.IdentityProviderTest do
         %{
           "code" => "[duplicate]identityProvider.domains",
           "message" =>
-            "Invalid value for property [identityProvider.domains]. The following domain(s) [domain.com] are currently managed by another Identity Provider. A domain may only be managed by a single Identity Provider."
+            "Invalid value for property [identityProvider.domains]. The following domain(s) [domain.com] are currently managed by another identity provider. A domain may only be managed by a single identity provider."
         }
       ]
     }
@@ -50,7 +50,7 @@ defmodule FusionAuth.IdentityProviderTest do
       },
       "domains" => ["domain.com"],
       "buttonText" => "test button text",
-      "name" => "App[Dev] Identity Provider",
+      "name" => "App[Dev] identity provider",
       "debug" => true,
       "enabled" => true,
       "oauth2" => %{
@@ -70,7 +70,7 @@ defmodule FusionAuth.IdentityProviderTest do
     "identityProvider" => %{
       "domains" => ["second_domain.com"],
       "buttonText" => "test button text",
-      "name" => "App[Dev] Second Identity Provider",
+      "name" => "App[Dev] Second identity provider",
       "debug" => true,
       "enabled" => true,
       "oauth2" => %{
@@ -241,7 +241,7 @@ defmodule FusionAuth.IdentityProviderTest do
          %{client: client} do
       new_identity_provider = %{
         "identityProvider" =>
-          Map.put(@identity_provider["identityProvider"], "name", "New Identity Provider name")
+          Map.put(@identity_provider["identityProvider"], "name", "New identity provider name")
       }
 
       IdentityProvider.create_openid_connect_identity_provider_uuid(

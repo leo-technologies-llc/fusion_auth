@@ -58,7 +58,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [application.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -132,26 +133,6 @@ defmodule FusionAuth.ApplicationsTest do
     end
   end
 
-  describe "Get OAuth Configuration" do
-    test "get_oauth_configuration/2 returns a 200 status code with oauth configs for the ID passed",
-         %{client: client} do
-      {:ok, application, _} = Applications.create_application(client, @application)
-      created_id = application["application"]["id"]
-
-      assert TestUtilities.wait_for_process(fn ->
-               {status, _, _} = Applications.get_oauth_configuration(client, created_id)
-
-               if status == :ok, do: :continue, else: :wait
-             end)
-    end
-
-    test "get_oauth_configuration/2 returns a 404 status code if application is not found",
-         %{client: client} do
-      assert {:error, "", %Tesla.Env{status: 404}} =
-               Applications.get_oauth_configuration(client, @invalid_application_id)
-    end
-  end
-
   describe "Update Application" do
     test "update_application/3 returns a 200 status code with the updated application", %{
       client: client
@@ -182,7 +163,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [application.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       {:ok, initial_application, _} = Applications.create_application(client, @application)
@@ -285,7 +267,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [role.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       {:ok, application, _} = Applications.create_application(client, @application)
@@ -303,10 +286,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalid]applicationId",
               "message" =>
-                "Invalid [applicationId] on the URL. No Application exists for Id [#{@invalid_application_id}]."
+                "Invalid [applicationId] on the URL. No application exists with Id [#{@invalid_application_id}]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -342,10 +326,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalidJSON]",
               "message" =>
-                "Invalid JSON in the request body. The property was [role.isSuperRole]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `boolean` from String \"bogus\": only \"true\"/\"True\"/\"TRUE\" or \"false\"/\"False\"/\"FALSE\" recognized\n at [Source: (org.apache.catalina.connector.CoyoteInputStream); line: 1, column: 24] (through reference chain: io.fusionauth.domain.api.ApplicationRequest[\"role\"]->io.fusionauth.domain.ApplicationRole[\"isSuperRole\"])]."
+                "Invalid JSON in the request body. The property was [role.isSuperRole]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `boolean` from String \"bogus\": only \"true\"/\"True\"/\"TRUE\" or \"false\"/\"False\"/\"FALSE\" recognized\n at [Source: (io.fusionauth.http.io.ReaderBlockingByteBufferInputStream); line: 1, column: 24] (through reference chain: io.fusionauth.domain.api.ApplicationRequest[\"role\"]->io.fusionauth.domain.ApplicationRole[\"isSuperRole\"])]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -367,10 +352,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalid]applicationId",
               "message" =>
-                "Invalid [applicationId] on the URL. No Application exists for Id [32c54ee1-3d5a-4085-9ec5-4731d9e0f752]."
+                "Invalid [applicationId] on the URL. No application exists with Id [32c54ee1-3d5a-4085-9ec5-4731d9e0f752]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =

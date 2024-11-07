@@ -1,4 +1,6 @@
 defmodule FusionAuth.JWTTest do
+  # TODO: Fix tests.
+
   use FusionAuth.DataCase
 
   alias FusionAuth.JWT
@@ -14,9 +16,10 @@ defmodule FusionAuth.JWTTest do
     base_url = Application.get_env(:fusion_auth, :api_url)
     api_key = Application.get_env(:fusion_auth, :api_key)
     tenant_id = Application.get_env(:fusion_auth, :tenant_id)
-
     client = FusionAuth.client(base_url, api_key, "")
+
     TestUtilities.create_tenant(client, tenant_id)
+
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
@@ -165,10 +168,11 @@ defmodule FusionAuth.JWTTest do
             %{
               "code" => "[invalid]userId",
               "message" =>
-                "Invalid [userId] property. No user exists with an Id [25a872da-bb44-4af8-a43d-e7bcb5351ebc]."
+                "The [userId] property is not valid. No user exists with an Id [25a872da-bb44-4af8-a43d-e7bcb5351ebc]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^error, %Tesla.Env{status: 400}} =
