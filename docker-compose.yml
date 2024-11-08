@@ -45,9 +45,14 @@ services:
     # GOOD      Upgrading to 1.45.4 works with some minor test tweaks.
     # GOOD      Upgrading to 1.46.0 works with no additional test tweaks.
     # ISSUES    Upgrading to 1.47.1 has some odd test errors show up.
+    # ISSUES    Upgrading to 1.48.3 returns 401 for some JWT endpoints that are currently in use.
+    #               JWT.validate
+    #               JWT.issue_jwt_by_application_id 
+    #               TwoFactor.generate_secret_for_jwt
     # ISSUES    Upgrading to 1.49.2 returns 401 for some JWT endpoints that are currently in use.
     #               JWT.validate
     #               JWT.issue_jwt_by_application_id
+    #               TwoFactor.generate_secret_for_jwt
     image: fusionauth/fusionauth-app:1.46.0
     environment:
       DATABASE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/fusionauth
