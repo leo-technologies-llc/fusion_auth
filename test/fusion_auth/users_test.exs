@@ -299,10 +299,10 @@ defmodule FusionAuth.UsersTest do
       }
 
       assert TestUtilities.wait_for_process(fn ->
-               {:ok, %{"total" => count}, %Tesla.Env{status: 200}} =
+               {:ok, %{"users" => users}, %Tesla.Env{status: 200}} =
                  Users.search_users(client, search)
 
-               if count == 2, do: :continue, else: :wait
+               if length(users) == 2, do: :continue, else: :wait
              end)
     end
 
