@@ -179,7 +179,7 @@ defmodule FusionAuth.RegistrationsTest do
           "userId" => [
             %{
               "code" => "[missing]userId",
-              "message" => "The Id of the User was not specified on the URL."
+              "message" => "The Id of the user was not specified on the URL."
             }
           ]
         },

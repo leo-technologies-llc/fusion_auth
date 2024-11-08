@@ -316,7 +316,8 @@ defmodule FusionAuth.UsersTest do
         "generalErrors" => [
           %{
             "code" => "[invalid]",
-            "message" => "You must specify either the [ids], [queryString], or [query] property."
+            "message" =>
+              "You must specify either the [ids], [queryString], or [query] property. If you are continuing a search, you must include the [nextResults] property."
           }
         ],
         "fieldErrors" => %{}
