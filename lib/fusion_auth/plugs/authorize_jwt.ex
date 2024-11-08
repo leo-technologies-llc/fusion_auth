@@ -103,7 +103,9 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
         %{exp: claims["exp"], jti: claims["jti"]}
       )
     else
-      _ ->
+      other ->
+        IO.inspect(other, label: "other throwing 401")
+
         conn
         |> Plug.Conn.halt()
         |> Plug.Conn.send_resp(401, "Unauthorized")
@@ -128,6 +130,10 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
   defp verify_signature(token) do
     key = Application.get_env(:fusion_auth, :jwt_signing_key) |> Base.encode64()
     jwk = JWK.from(%{"kty" => "oct", "k" => key})
+
+    IO.inspect(token, label: "verify_signature token")
+    IO.inspect(key, label: "verify_signature key")
+    IO.inspect(jwk, label: "verify_signature jwk")
 
     case JWT.verify_strict(jwk, ["HS256"], token) do
       {false, _, _} ->
