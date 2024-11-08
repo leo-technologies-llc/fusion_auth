@@ -75,7 +75,8 @@ defmodule FusionAuth.RegistrationsTest do
               "message" => "You must specify the [registration.applicationId] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -104,7 +105,8 @@ defmodule FusionAuth.RegistrationsTest do
                 "The user with Id [00000000-0000-0000-0000-00000001e240] does not exist."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -180,7 +182,8 @@ defmodule FusionAuth.RegistrationsTest do
               "message" => "The Id of the User was not specified on the URL."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -300,7 +303,8 @@ defmodule FusionAuth.RegistrationsTest do
               "message" => "You must specify the [registration.applicationId] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       data = %{
@@ -407,7 +411,8 @@ defmodule FusionAuth.RegistrationsTest do
               "message" => "You must specify the [applicationId] as a parameter."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^resp_body, %Tesla.Env{status: 400}} =

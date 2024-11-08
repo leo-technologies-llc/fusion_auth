@@ -98,42 +98,6 @@ defmodule FusionAuth.JWTTest do
     end
   end
 
-  describe "Retrieve Refresh Tokens issued to a User by User ID" do
-    test "get_user_refresh_tokens_by_user_id/2 returns a 200 status code for successful request",
-         %{client: client} do
-      TestUtilities.wait_for_process(fn ->
-        {status, _, _} = FusionAuth.Users.get_user_by_id(client, @user_id)
-        if status == :ok, do: :continue, else: :wait
-      end)
-
-      assert {:ok, %{}, %Tesla.Env{status: 200}} =
-               JWT.get_user_refresh_tokens_by_user_id(client, @user_id)
-    end
-
-    test "get_user_refresh_tokens_by_user_id/2 returns a 401 status code for incorrect Authorization header",
-         %{base_url: base_url} do
-      client = FusionAuth.client(base_url, "", "")
-
-      assert {:error, "", %Tesla.Env{status: 401}} =
-               JWT.get_user_refresh_tokens_by_user_id(client, @user_id)
-    end
-  end
-
-  describe "Retrieve Refresh Tokens issued to a User" do
-    test "get_user_refresh_tokens/2 returns a 200 status code for a successful request", %{
-      client: client,
-      token: token
-    } do
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_user_refresh_tokens(client, token)
-    end
-
-    test "get_user_refresh_tokens/2 returns a 401 status code for an invalid token",
-         %{client: client} do
-      assert {:error, "", %Tesla.Env{status: 401}} =
-               JWT.get_user_refresh_tokens(client, "bad-token")
-    end
-  end
-
   describe "Revoke all Refresh Tokens for an entire Application by Application ID" do
     test "revoke_refresh_tokens_by_application_id/2 returns a 200 status code for a successful request",
          %{client: client} do
@@ -165,10 +129,11 @@ defmodule FusionAuth.JWTTest do
             %{
               "code" => "[invalid]userId",
               "message" =>
-                "Invalid [userId] property. No user exists with an Id [25a872da-bb44-4af8-a43d-e7bcb5351ebc]."
+                "The [userId] property is not valid. No user exists with an Id [25a872da-bb44-4af8-a43d-e7bcb5351ebc]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^error, %Tesla.Env{status: 400}} =
