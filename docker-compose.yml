@@ -42,7 +42,7 @@ services:
     container_name: fa-test-fusionauth
     # ISSUES    Upgrading to 45 returns 401 for some JWT endpoints that are currently in use.
     # GOOD      Upgrading to 40 works with some minor test tweaks.
-    image: fusionauth/fusionauth-app:1.40.0
+    image: fusionauth/fusionauth-app:1.45.4
     environment:
       DATABASE_URL: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/fusionauth
       DATABASE_ROOT_USERNAME: ${POSTGRES_USER}

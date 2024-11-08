@@ -375,7 +375,7 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[invalidJSON]",
               "message" =>
-                "Invalid JSON in the request body. The property was [loginId]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)\n at [Source: (byte[])\"{\"loginId\":{}}\"; line: 1, column: 12] (through reference chain: io.fusionauth.domain.api.user.ForgotPasswordRequest[\"loginId\"])]."
+                "Invalid JSON in the request body. The property was [loginId]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)\n at [Source: (io.fusionauth.http.io.ReaderBlockingByteBufferInputStream); line: 1, column: 12] (through reference chain: io.fusionauth.domain.api.user.ForgotPasswordRequest[\"loginId\"])]."
             }
           ]
         },
