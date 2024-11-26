@@ -248,6 +248,25 @@ defmodule FusionAuth.TestUtilities do
   end
 
   @doc """
+  Enables passwordless for the application with the given id.
+  """
+  def enable_passwordless(client, application_id) do
+    app =
+      %{
+        "passwordlessConfiguration" => %{
+          "enabled" => true
+        },
+        "loginConfiguration" => %{
+          "allowPasswordless" => true,
+          "allowTokenRefresh" => true,
+          "generateRefreshTokens" => true
+        }
+      }
+
+    Applications.update_application(client, application_id, app)
+  end
+
+  @doc """
   Enables JWT generation for the application with the given id.
   """
   def enable_JWT(client, application_id, token_ttl) do
