@@ -58,7 +58,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [application.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -182,7 +183,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [application.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       {:ok, initial_application, _} = Applications.create_application(client, @application)
@@ -285,7 +287,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [role.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       {:ok, application, _} = Applications.create_application(client, @application)
@@ -303,10 +306,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalid]applicationId",
               "message" =>
-                "Invalid [applicationId] on the URL. No Application exists for Id [#{@invalid_application_id}]."
+                "Invalid [applicationId] on the URL. No application exists with Id [#{@invalid_application_id}]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -342,10 +346,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalidJSON]",
               "message" =>
-                "Invalid JSON in the request body. The property was [role.isSuperRole]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `boolean` from String \"bogus\": only \"true\"/\"True\"/\"TRUE\" or \"false\"/\"False\"/\"FALSE\" recognized\n at [Source: (org.apache.catalina.connector.CoyoteInputStream); line: 1, column: 24] (through reference chain: io.fusionauth.domain.api.ApplicationRequest[\"role\"]->io.fusionauth.domain.ApplicationRole[\"isSuperRole\"])]."
+                "Invalid JSON in the request body. The property was [role.isSuperRole]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `boolean` from String \"bogus\": only \"true\"/\"True\"/\"TRUE\" or \"false\"/\"False\"/\"FALSE\" recognized\n at [Source: (io.fusionauth.http.io.ReaderBlockingByteBufferInputStream); line: 1, column: 24] (through reference chain: io.fusionauth.domain.api.ApplicationRequest[\"role\"]->io.fusionauth.domain.ApplicationRole[\"isSuperRole\"])]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -367,10 +372,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalid]applicationId",
               "message" =>
-                "Invalid [applicationId] on the URL. No Application exists for Id [32c54ee1-3d5a-4085-9ec5-4731d9e0f752]."
+                "Invalid [applicationId] on the URL. No application exists with Id [32c54ee1-3d5a-4085-9ec5-4731d9e0f752]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =

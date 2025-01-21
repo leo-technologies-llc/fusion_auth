@@ -9,6 +9,8 @@ defmodule FusionAuth.LoginTest do
   @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
   @user_id "84846873-89d2-44f8-91e9-dac80f420cb2"
   @ip_address "0.0.0.0"
+  @key_id "b2cd1a09-6929-45a9-a172-9ec6523469f9"
+  @jwt_signing_key_secret "secret"
 
   @invalid_one_time_passord_response %{
     "fieldErrors" => %{
@@ -34,6 +36,9 @@ defmodule FusionAuth.LoginTest do
     TestUtilities.create_tenant_with_email_template(client, tenant_id)
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
+    TestUtilities.create_key(client, @jwt_signing_key_secret, @key_id)
+    TestUtilities.add_jwt_signing_key_to_application(client, @key_id, @application_id)
+    TestUtilities.enable_jwt(client, @application_id, 300)
     TestUtilities.enable_refresh_tokens(client, @application_id)
 
     data = %{

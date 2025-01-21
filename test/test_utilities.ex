@@ -2,6 +2,7 @@ defmodule FusionAuth.TestUtilities do
   @moduledoc """
   This is module provides various functions for writing tests utilizing this packages functions
   """
+
   alias JOSE.JWK
   alias JOSE.JWT
   alias FusionAuth.Users
@@ -50,9 +51,13 @@ defmodule FusionAuth.TestUtilities do
         true
 
       :wait ->
+        if attempts > 1 do
+          IO.write("\e[33m*\e[0m")
+        end
+
         cond do
-          attempts < 50 ->
-            Process.sleep(100)
+          attempts < 20 ->
+            Process.sleep(1000)
             wait_for_process(func, attempts + 1)
 
           true ->
@@ -80,7 +85,7 @@ defmodule FusionAuth.TestUtilities do
   - This does recreate the user if one already exists so the ID will be the same but the other information won't.
   """
   def create_tokens_and_user(client, application_id, user_id, token_ttl \\ 300) do
-    enable_JWT(client, application_id, token_ttl)
+    enable_jwt(client, application_id, token_ttl)
     enable_refresh_tokens(client, application_id)
 
     if user_exists?(client, %{id: user_id}),
@@ -269,7 +274,7 @@ defmodule FusionAuth.TestUtilities do
   @doc """
   Enables JWT generation for the application with the given id.
   """
-  def enable_JWT(client, application_id, token_ttl) do
+  def enable_jwt(client, application_id, token_ttl) do
     app = %{
       "jwtConfiguration" => %{
         "enabled" => true,

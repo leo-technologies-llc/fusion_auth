@@ -168,34 +168,6 @@ defmodule FusionAuth.JWT do
   end
 
   @doc """
-  Retrieve Refresh Tokens issued to a User
-
-  This API will use a JWT as authentication. See [JWT Authentication](https://fusionauth.io/docs/v1/tech/apis/authentication#jwt-authentication) for examples of how you can send the JWT to FusionAuth.
-
-  ## Examples
-      iex> FusionAuth.JWT.get_user_refresh_tokens(client, token)
-      {
-        :ok,
-        %{
-          "refreshTokens" => [...]
-        },
-        %Tesla.Env{...}
-      }
-
-  For more information, visit the FusionAuth API Documentation for [Retrieve Refresh Tokens](https://fusionauth.io/docs/v1/tech/apis/jwt#retrieve-refresh-tokens).
-  """
-  @spec get_user_refresh_tokens(client(), String.t()) :: result()
-  def get_user_refresh_tokens(client, token) do
-    client = jwt_client(client, "Bearer #{token}")
-
-    Tesla.get(
-      client,
-      @jwt_refresh_url
-    )
-    |> FusionAuth.result()
-  end
-
-  @doc """
   Revoke all Refresh Tokens for an entire Application
 
   ## Examples
@@ -287,7 +259,7 @@ defmodule FusionAuth.JWT do
   """
   @spec validate_jwt(client(), String.t()) :: result()
   def validate_jwt(client, token) do
-    client = jwt_client(client, "JWT #{token}")
+    client = jwt_client(client, "Bearer #{token}")
 
     Tesla.get(
       client,

@@ -349,34 +349,6 @@ defmodule FusionAuth.TwoFactor do
   end
 
   @doc """
-  Generate a Two Factor Secret by JWT
-
-  ## Examples
-      iex> client = FusionAuth.client()
-      iex> token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY1NTYzYjY5OSJ9.eyJhdWQiOiJmN2E3MmFkMS1kZTZhLTQxMmYtYTM3Mi1lNjg5YTNiN2FkY2IiLCJleHAiOjE1OTE5OTY1NzAsImlhdCI6MTU5MTk5Mjk3MCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJmZmZjODY0OC1iYWIyLTRiZGQtYjJlYi1hNDhlODUzZDkyMTciLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiYWRlbGFjcnV6QGNvZ2lsaXR5LmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhcHBsaWNhdGlvbklkIjoiZjdhNzJhZDEtZGU2YS00MTJmLWEzNzItZTY4OWEzYjdhZGNiIiwicm9sZXMiOltdfQ.CqKgxZvqCLPgdT8vSk_KvfNbISe-uIAfQJp0xKWbKno"
-      iex> FusionAuth.TwoFactor.generate_secret_for_jwt(client, token)
-      {
-        :ok,
-        %{
-          "secret" => "ZlaRg5hfQ5/cF25tYHKU",
-          "secretBase32Encoded" => "MZLJDA4YL5BZ7XAXNZWWA4UU"
-        },
-        %Tesla.Env{...}
-      }
-
-  For more information, visit the FusionAuth API Documentation for [Send a Two Factor Code](https://fusionauth.io/docs/v1/tech/apis/two-factor#generate-a-secret).
-  """
-  @spec generate_secret_for_jwt(client(), token()) :: result()
-  def generate_secret_for_jwt(client, token) do
-    Tesla.get(
-      client,
-      @two_factor_secret_url,
-      headers: [{"Authorization", "Bearer " <> token}]
-    )
-    |> FusionAuth.result()
-  end
-
-  @doc """
   Generates recovery codes for a given user
 
   ## Examples
