@@ -122,20 +122,21 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[blank]user.email",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ],
-          "user.password" => [
+          "user.phoneNumber" => [
             %{
-              "code" => "[blank]user.password",
-              "message" => "You must specify the [user.password] property."
+              "code" => "[blank]user.phoneNumber",
+              "message" =>
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ],
           "user.username" => [
             %{
               "code" => "[blank]user.username",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ]
         },
@@ -169,14 +170,21 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[blank]user.email",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
+            }
+          ],
+          "user.phoneNumber" => [
+            %{
+              "code" => "[blank]user.phoneNumber",
+              "message" =>
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ],
           "user.username" => [
             %{
               "code" => "[blank]user.username",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ]
         },
@@ -256,20 +264,21 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[blank]user.email",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property for each user."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties for each user."
             }
           ],
-          "user.password" => [
+          "user.phoneNumber" => [
             %{
-              "code" => "[blank]user.password",
-              "message" => "You must specify the [user.password] property for each user."
+              "code" => "[blank]user.phoneNumber",
+              "message" =>
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties for each user."
             }
           ],
           "user.username" => [
             %{
               "code" => "[blank]user.username",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property for each user."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties for each user."
             }
           ]
         },
