@@ -4,9 +4,9 @@ defmodule FusionAuth.Plugs.AuthorizeJWTTest do
   alias FusionAuth.Plugs.AuthorizeJWT
   alias FusionAuth.TestUtilities
 
-  @base_url Application.get_env(:fusion_auth, :api_url)
-  @api_key Application.get_env(:fusion_auth, :api_key)
-  @tenant_id Application.get_env(:fusion_auth, :tenant_id)
+  @base_url Application.compile_env(:fusion_auth, :api_url)
+  @api_key Application.compile_env(:fusion_auth, :api_key)
+  @tenant_id Application.compile_env(:fusion_auth, :tenant_id)
   @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
   @key_id "b2cd1a09-6929-45a9-a172-9ec6523469f9"
   @jwt_signing_key_secret "secret"
