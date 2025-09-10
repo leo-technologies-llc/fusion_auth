@@ -3,13 +3,13 @@ description: "Setup an Elixir environment and restore cache if any, given OTP an
 
 inputs:
   elixir-version:
-    description: "Elixir version to use, default to 1.18.3"
+    description: "Elixir version to use, default to 1.13.0"
     required: true
-    default: "1.18.3"
+    default: "1.13.0"
   otp-version:
-    description: "OTP Version to use, default to 27.3"
+    description: "OTP Version to use, default to 24.2"
     required: true
-    default: "27.3"
+    default: "24.2"
 outputs:
   cache-hit:
     description: "Forward actions/cache cache-hit output"
