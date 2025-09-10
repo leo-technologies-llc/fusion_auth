@@ -28,7 +28,7 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: marocchino/tool-versions-action@v1
         id: versions
@@ -51,7 +51,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: marocchino/tool-versions-action@v1
         id: versions
