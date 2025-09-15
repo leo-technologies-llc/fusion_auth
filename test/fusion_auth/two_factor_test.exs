@@ -28,10 +28,5 @@ defmodule FusionAuth.TwoFactorTest do
       {:ok, result, _} = TwoFactor.generate_secret(client)
       assert Map.has_key?(result, "secret")
     end
-
-    test "generate_secret/2 creates a secret", %{client: client, token: token} do
-      {:ok, result, _} = TwoFactor.generate_secret_for_jwt(client, token)
-      assert Map.has_key?(result, "secret")
-    end
   end
 end

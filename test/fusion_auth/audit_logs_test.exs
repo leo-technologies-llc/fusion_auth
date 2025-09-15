@@ -46,7 +46,8 @@ defmodule FusionAuth.AuditLogsTest do
               "message" => "You must specify the [auditLog.message] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =

@@ -97,7 +97,8 @@ defmodule FusionAuth.GroupsTest do
               "message" => "A group with the name [Test Group] already exists."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       Groups.create_group(client, @group)

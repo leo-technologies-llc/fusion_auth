@@ -88,7 +88,7 @@ defmodule FusionAuth do
 
   @spec result({:ok, Tesla.Env.t()}) :: result()
   def result({:ok, %{status: status, body: body} = env}) when status >= 300 do
-    Logger.warn("""
+    Logger.warning("""
       FusionAuth request resulted in a status code >= 300.
       Env: #{inspect(env)}
     """)
