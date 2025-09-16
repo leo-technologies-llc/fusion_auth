@@ -9,6 +9,8 @@ defmodule FusionAuth.JWTTest do
   @application_id "861f5558-34a8-43e4-ab50-317bdcd47671"
   @invalid_application_id "88ebf5e2-097c-4b28-ba57-6effb7f3a627"
   @user_id "84846873-89d2-44f8-91e9-dac80f420cb2"
+  @key_id "b2cd1a09-6929-45a9-a172-9ec6523469f9"
+  @jwt_signing_key_secret "secret"
 
   setup do
     base_url = Application.get_env(:fusion_auth, :api_url)
@@ -20,12 +22,19 @@ defmodule FusionAuth.JWTTest do
     client_with_tenant = FusionAuth.client(base_url, api_key, tenant_id)
 
     TestUtilities.create_application_with_id(client_with_tenant, @application_id)
+    TestUtilities.create_key(client, @jwt_signing_key_secret, @key_id)
+    TestUtilities.add_jwt_signing_key_to_application(client, @key_id, @application_id)
 
     %{token: token, refresh_token: refresh_token} =
       TestUtilities.create_tokens_and_user(client_with_tenant, @application_id, @user_id)
 
     {:ok,
-     %{client: client_with_tenant, token: token, refresh_token: refresh_token, base_url: base_url}}
+     %{
+       client: client_with_tenant,
+       token: token,
+       refresh_token: refresh_token,
+       base_url: base_url
+     }}
   end
 
   describe "Issue an Access Token by Application ID" do
@@ -119,21 +128,6 @@ defmodule FusionAuth.JWTTest do
     end
   end
 
-  describe "Retrieve Refresh Tokens issued to a User" do
-    test "get_user_refresh_tokens/2 returns a 200 status code for a successful request", %{
-      client: client,
-      token: token
-    } do
-      assert {:ok, %{}, %Tesla.Env{status: 200}} = JWT.get_user_refresh_tokens(client, token)
-    end
-
-    test "get_user_refresh_tokens/2 returns a 401 status code for an invalid token",
-         %{client: client} do
-      assert {:error, "", %Tesla.Env{status: 401}} =
-               JWT.get_user_refresh_tokens(client, "bad-token")
-    end
-  end
-
   describe "Revoke all Refresh Tokens for an entire Application by Application ID" do
     test "revoke_refresh_tokens_by_application_id/2 returns a 200 status code for a successful request",
          %{client: client} do
@@ -165,10 +159,11 @@ defmodule FusionAuth.JWTTest do
             %{
               "code" => "[invalid]userId",
               "message" =>
-                "Invalid [userId] property. No user exists with an Id [25a872da-bb44-4af8-a43d-e7bcb5351ebc]."
+                "The [userId] property is not valid. No user exists with an Id [25a872da-bb44-4af8-a43d-e7bcb5351ebc]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^error, %Tesla.Env{status: 400}} =

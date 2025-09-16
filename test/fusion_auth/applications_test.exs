@@ -58,7 +58,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [application.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -70,32 +71,45 @@ defmodule FusionAuth.ApplicationsTest do
     test "list_applications/2 returns a 200 status code with a list of active applications", %{
       client: client
     } do
+      {:ok, %{"applications" => existing_applications}, _} =
+        Applications.list_applications(client)
+
       {:ok, application_1, _} = Applications.create_application(client, @application)
 
       {:ok, application_2, _} = Applications.create_application(client, @application_2)
 
-      {:ok, retrieved_applications, _} = Applications.list_applications(client, active: true)
+      {:ok, %{"applications" => retrieved_applications}, _} =
+        Applications.list_applications(client)
 
       created_ids = [application_2["application"]["id"], application_1["application"]["id"]]
 
       retrieved_ids =
-        Enum.map(retrieved_applications["applications"], fn application ->
-          application["id"]
-        end)
+        (retrieved_applications -- existing_applications)
+        |> Enum.map(fn application -> application["id"] end)
 
       assert created_ids == retrieved_ids
     end
 
     test "list_applications/2 returns a 200 status code with a list of inactive applications when inactive is true",
          %{client: client} do
-      application = Map.put(@application, "active", false)
-      application_2 = Map.put(@application_2, "active", false)
+      {:ok, created_application_1, _} =
+        Applications.create_application(client, @application)
+        |> then(fn {:ok, %{"application" => %{"id" => application_id}} = _app, _env} ->
+          # Deactivate the application to make it inactive
+          Applications.delete_application(client, application_id)
+          Applications.get_application(client, application_id)
+        end)
 
-      {:ok, created_application_1, _} = Applications.create_application(client, application)
+      {:ok, created_application_2, _} =
+        Applications.create_application(client, @application_2)
+        |> then(fn {:ok, %{"application" => %{"id" => application_id}} = _app, _env} ->
+          # Deactivate the application to make it inactive
+          Applications.delete_application(client, application_id)
+          Applications.get_application(client, application_id)
+        end)
 
-      {:ok, created_application_2, _} = Applications.create_application(client, application_2)
-
-      {:ok, retrieved_applications, _} = Applications.list_applications(client, active: false)
+      {:ok, %{"applications" => retrieved_applications}, _} =
+        Applications.list_applications(client, inactive: true)
 
       created_ids = [
         created_application_2["application"]["id"],
@@ -103,7 +117,7 @@ defmodule FusionAuth.ApplicationsTest do
       ]
 
       retrieved_ids =
-        Enum.map(retrieved_applications["applications"], fn application ->
+        Enum.map(retrieved_applications, fn application ->
           application["id"]
         end)
 
@@ -182,7 +196,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [application.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       {:ok, initial_application, _} = Applications.create_application(client, @application)
@@ -285,7 +300,8 @@ defmodule FusionAuth.ApplicationsTest do
               "message" => "You must specify the [role.name] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       {:ok, application, _} = Applications.create_application(client, @application)
@@ -303,10 +319,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalid]applicationId",
               "message" =>
-                "Invalid [applicationId] on the URL. No Application exists for Id [#{@invalid_application_id}]."
+                "Invalid [applicationId] on the URL. No application exists with Id [#{@invalid_application_id}]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -342,10 +359,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalidJSON]",
               "message" =>
-                "Invalid JSON in the request body. The property was [role.isSuperRole]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `boolean` from String \"bogus\": only \"true\"/\"True\"/\"TRUE\" or \"false\"/\"False\"/\"FALSE\" recognized\n at [Source: (org.apache.catalina.connector.CoyoteInputStream); line: 1, column: 24] (through reference chain: io.fusionauth.domain.api.ApplicationRequest[\"role\"]->io.fusionauth.domain.ApplicationRole[\"isSuperRole\"])]."
+                "Invalid JSON in the request body. The property was [role.isSuperRole]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `boolean` from String \"bogus\": only \"true\"/\"True\"/\"TRUE\" or \"false\"/\"False\"/\"FALSE\" recognized\n at [Source: (io.fusionauth.http.io.ReaderBlockingByteBufferInputStream); line: 1, column: 24] (through reference chain: io.fusionauth.domain.api.ApplicationRequest[\"role\"]->io.fusionauth.domain.ApplicationRole[\"isSuperRole\"])]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -367,10 +385,11 @@ defmodule FusionAuth.ApplicationsTest do
             %{
               "code" => "[invalid]applicationId",
               "message" =>
-                "Invalid [applicationId] on the URL. No Application exists for Id [32c54ee1-3d5a-4085-9ec5-4731d9e0f752]."
+                "Invalid [applicationId] on the URL. No application exists with Id [32c54ee1-3d5a-4085-9ec5-4731d9e0f752]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =

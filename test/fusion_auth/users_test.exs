@@ -122,23 +122,25 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[blank]user.email",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ],
-          "user.password" => [
+          "user.phoneNumber" => [
             %{
-              "code" => "[blank]user.password",
-              "message" => "You must specify the [user.password] property."
+              "code" => "[blank]user.phoneNumber",
+              "message" =>
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ],
           "user.username" => [
             %{
               "code" => "[blank]user.username",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} = Users.create_user(client, user)
@@ -168,17 +170,25 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[blank]user.email",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
+            }
+          ],
+          "user.phoneNumber" => [
+            %{
+              "code" => "[blank]user.phoneNumber",
+              "message" =>
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ],
           "user.username" => [
             %{
               "code" => "[blank]user.username",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property. If you are emailing the user you must specify the [user.email]."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       {:ok, user, _} = Users.create_user(client, @user)
@@ -254,23 +264,25 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[blank]user.email",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property for each user."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties for each user."
             }
           ],
-          "user.password" => [
+          "user.phoneNumber" => [
             %{
-              "code" => "[blank]user.password",
-              "message" => "You must specify the [user.password] property for each user."
+              "code" => "[blank]user.phoneNumber",
+              "message" =>
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties for each user."
             }
           ],
           "user.username" => [
             %{
               "code" => "[blank]user.username",
               "message" =>
-                "You must specify either the [user.email] or [user.username] property for each user."
+                "You must specify at least one of the [user.email], [user.phoneNumber], or [user.username] properties for each user."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} = Users.import_users(client, users)
@@ -280,9 +292,6 @@ defmodule FusionAuth.UsersTest do
   describe "Search Users" do
     test "search_users/2 returns a 200 status code with the list of users based on the search criteria",
          %{client: client} do
-      Users.create_user(client, @user)
-      Users.create_user(client, @user2)
-
       search = %{
         numberOfResults: 10,
         queryString: "email:*@email.com",
@@ -294,6 +303,9 @@ defmodule FusionAuth.UsersTest do
         ],
         startRow: 0
       }
+
+      Users.create_user(client, @user)
+      Users.create_user(client, @user2)
 
       assert TestUtilities.wait_for_process(fn ->
                {:ok, %{"total" => count}, %Tesla.Env{status: 200}} =
@@ -313,9 +325,11 @@ defmodule FusionAuth.UsersTest do
         "generalErrors" => [
           %{
             "code" => "[invalid]",
-            "message" => "You must specify either the [ids], [queryString], or [query] property."
+            "message" =>
+              "You must specify either the [ids], [queryString], or [query] property. If you are continuing a search, you must include the [nextResults] property."
           }
-        ]
+        ],
+        "fieldErrors" => %{}
       }
 
       assert {:error, ^response_body, %Tesla.Env{status: 400}} =
@@ -371,10 +385,11 @@ defmodule FusionAuth.UsersTest do
             %{
               "code" => "[invalidJSON]",
               "message" =>
-                "Invalid JSON in the request body. The property was [loginId]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)\n at [Source: (org.apache.catalina.connector.CoyoteInputStream); line: 1, column: 12] (through reference chain: io.fusionauth.domain.api.user.ForgotPasswordRequest[\"loginId\"])]."
+                "Invalid JSON in the request body. The property was [loginId]. The error was [Possible conversion error]. The detailed exception was [Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)\n at [Source: (io.fusionauth.http.io.ReaderBlockingByteBufferInputStream); line: 1, column: 12] (through reference chain: io.fusionauth.domain.api.user.ForgotPasswordRequest[\"loginId\"])]."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^error, %Tesla.Env{status: 400}} = Users.forgot_password(client, login_id)
@@ -412,7 +427,8 @@ defmodule FusionAuth.UsersTest do
               "message" => "You must specify the [password] property."
             }
           ]
-        }
+        },
+        "generalErrors" => []
       }
 
       assert {:error, ^error, %Tesla.Env{status: 400}} =
@@ -446,7 +462,8 @@ defmodule FusionAuth.UsersTest do
             "message" =>
               "Your request is invalid. You must call the API with a valid JSON body that includes a changePasswordId, with a valid JWT in the Authorization header or with an API key."
           }
-        ]
+        ],
+        "fieldErrors" => %{}
       }
 
       assert {:error, ^error, %Tesla.Env{status: 400}} =
