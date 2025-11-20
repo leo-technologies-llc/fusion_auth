@@ -69,6 +69,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
              {_, refresh} <- Utils.fetch_refresh(conn),
              {:ok, %{"token" => new_token}, _} <-
                FusionAuth.JWT.refresh_jwt(client, refresh, token) do
+          Logger.warning("Adding response header #{Application.get_env(:fusion_auth, :token_header_key)}")
           Plug.Conn.put_resp_header(
             conn,
             Application.get_env(:fusion_auth, :token_header_key),
@@ -80,18 +81,22 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
             error_handler = options[:error_handler]
 
             if error_handler do
+              Logger.error("FusionAuth calling error handler...")
               error_handler.({body, env})
             end
 
             if diff <= 0 do
+              Logger.error("FusionAuth error diff <= 0")
               conn
               |> Plug.Conn.halt()
               |> Plug.Conn.send_resp(401, "Unauthorized")
             else
+              Logger.warning("passing conn...")
               conn
             end
 
           _ ->
+            Logger.error("FusionAuth generic error failure on refresh")
             conn
         end
 
