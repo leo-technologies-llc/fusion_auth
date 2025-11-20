@@ -57,13 +57,17 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
   @spec call(%Plug.Conn{}, keyword()) :: %Plug.Conn{}
   def call(conn, opts \\ []) do
     Logger.info("Running fusion-auth plug...")
+    Logger.info("  merging options...")
     options = Keyword.merge(@default_options, opts)
+    Logger.info("  Getting the client...")
     client = options[:client] || FusionAuth.client()
+    Logger.info("  generating refresh token...")
     generate_refresh_token = options[:generate_refresh_token]
+    Logger.info("  Proceeding with additional validation...")
 
-    with {:ok, token} <- Utils.fetch_token(conn),
-         {:ok, claims} <- verify_signature(token),
-         {:ok, diff} <- verify_exp(claims["exp"], generate_refresh_token) do
+    with {:ok, token} <- dbg(Utils.fetch_token(conn)),
+         {:ok, claims} <- dbg(verify_signature(token)),
+         {:ok, diff} <- dbg(verify_exp(claims["exp"], generate_refresh_token)) do
       conn =
         with true <- needs_refresh?(diff, generate_refresh_token, options[:refresh_window]),
              {_, refresh} <- Utils.fetch_refresh(conn),
