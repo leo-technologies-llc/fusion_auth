@@ -56,6 +56,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
 
   @spec call(%Plug.Conn{}, keyword()) :: %Plug.Conn{}
   def call(conn, opts \\ []) do
+    Logger.info("Running fusion-auth plug...")
     options = Keyword.merge(@default_options, opts)
     client = options[:client] || FusionAuth.client()
     generate_refresh_token = options[:generate_refresh_token]
@@ -75,6 +76,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
           )
         else
           {:error, body, env} ->
+            Logger.error("Error encountered in fusion_auth plug")
             error_handler = options[:error_handler]
 
             if error_handler do
@@ -93,6 +95,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
             conn
         end
 
+      Logger.info("FusionAuth happy path")
       conn
       |> Plug.Conn.assign(
         options[:conn_key],
@@ -103,7 +106,32 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
         %{exp: claims["exp"], jti: claims["jti"]}
       )
     else
+      {:error, "expired token"} ->
+        Logger.error("{:error, expired_token} from verify_exp")
+        conn
+        |> Plug.Conn.halt()
+        |> Plug.Conn.send_resp(401, "Unauthorized")
+
+      {:error, "couldn't verify signature"} ->
+        Logger.error("{:error, couldnt_verify_signature} from verify_signiture")
+        conn
+        |> Plug.Conn.halt()
+        |> Plug.Conn.send_resp(401, "Unauthorized")
+
+      {:error, :unauthorized} ->
+        Logger.error("{:error, :unauthorized} from fusion_auth plug get_token")
+        conn
+        |> Plug.Conn.halt()
+        |> Plug.Conn.send_resp(401, "Unauthorized")
+
+      {:error, _error} ->
+        Logger.error("{:error, error} maybe from verify_signiture")
+        conn
+        |> Plug.Conn.halt()
+        |> Plug.Conn.send_resp(401, "Unauthorized")
+
       _ ->
+        Logger.error("Generic error in fusion_auth plug")
         conn
         |> Plug.Conn.halt()
         |> Plug.Conn.send_resp(401, "Unauthorized")
