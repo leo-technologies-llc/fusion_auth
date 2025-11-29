@@ -178,11 +178,15 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
 
   defp verify_signature(token) do
     key = Application.get_env(:fusion_auth, :jwt_signing_key) |> Base.encode64()
+    IO.inspect("Retrieved key #{inspect(key)}")
     jwk = JWK.from(%{"kty" => "oct", "k" => key})
+    IO.inspect("Got jwk #{inspect(jwk)}")
 
     case JWT.verify_strict(jwk, ["HS256"], token) do
-      {false, _, _} ->
+      {false, ret_val_2, ret_val_3} ->
         Logger.error("Could not verify the signature of the JWT")
+        Logger.warning("Second return value from JWT.verify_strict #{inspect(ret_val_2)}")
+        Logger.warning("Third return value from JWT.verify_strict #{inspect(ret_val_3)}")
         {:error, "couldn't verify signature"}
 
       {true, jwt, _} ->
