@@ -168,13 +168,16 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
 
     case JWT.verify_strict(jwk, ["HS256"], token) do
       {false, _, _} ->
+        Logger.error("Could not verify the signature of the JWT")
         {:error, "couldn't verify signature"}
 
       {true, jwt, _} ->
+        Logger.info("Signature was successfully verified")
         {_, jwt_map} = JWT.to_map(jwt)
         {:ok, jwt_map}
 
       error ->
+        Logger.error("Generic error during signature verification")
         {:error, error}
     end
   end
