@@ -41,15 +41,17 @@ defmodule FusionAuth.AuditLogs do
           insertUser: String.t(),
           message: String.t()
         }
-  @type search_criteria :: %{
-          end: integer() | nil,
-          message: String.t() | nil,
-          numberOfResults: integer() | nil,
-          orderBy: String.t() | nil,
-          start: integer() | nil,
-          startRow: integer() | nil,
-          user: String.t() | nil
-        } | map()
+  @type search_criteria ::
+          %{
+            end: integer() | nil,
+            message: String.t() | nil,
+            numberOfResults: integer() | nil,
+            orderBy: String.t() | nil,
+            start: integer() | nil,
+            startRow: integer() | nil,
+            user: String.t() | nil
+          }
+          | map()
   @type export_criteria :: %{
           end: integer() | nil,
           message: String.t() | nil,

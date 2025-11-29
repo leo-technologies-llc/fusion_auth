@@ -65,15 +65,21 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     generate_refresh_token = options[:generate_refresh_token]
     Logger.info("  Proceeding with additional validation...")
 
-    with {:ok, token} <- dbg(Utils.fetch_token(conn)),
-         {:ok, claims} <- dbg(verify_signature(token)),
-         {:ok, diff} <- dbg(verify_exp(claims["exp"], generate_refresh_token)) do
+    with {:ok, token} <- Utils.fetch_token(conn),
+         _ <- IO.inspect("Retrieved token: #{inspect(token)}"),
+         {:ok, claims} <- verify_signature(token),
+         _ <- IO.inspect("Checked claims: #{inspect(claims)}"),
+         {:ok, diff} <- verify_exp(claims["exp"], generate_refresh_token),
+         _ <- IO.inspect("Verified exp: #{inspect(diff)}") do
       conn =
         with true <- needs_refresh?(diff, generate_refresh_token, options[:refresh_window]),
              {_, refresh} <- Utils.fetch_refresh(conn),
              {:ok, %{"token" => new_token}, _} <-
                FusionAuth.JWT.refresh_jwt(client, refresh, token) do
-          Logger.warning("Adding response header #{Application.get_env(:fusion_auth, :token_header_key)}")
+          Logger.warning(
+            "Adding response header #{Application.get_env(:fusion_auth, :token_header_key)}"
+          )
+
           Plug.Conn.put_resp_header(
             conn,
             Application.get_env(:fusion_auth, :token_header_key),
@@ -91,6 +97,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
 
             if diff <= 0 do
               Logger.error("FusionAuth error diff <= 0")
+
               conn
               |> Plug.Conn.halt()
               |> Plug.Conn.send_resp(401, "Unauthorized")
@@ -105,6 +112,7 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
         end
 
       Logger.info("FusionAuth happy path")
+
       conn
       |> Plug.Conn.assign(
         options[:conn_key],
@@ -117,30 +125,35 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
     else
       {:error, "expired token"} ->
         Logger.error("{:error, expired_token} from verify_exp")
+
         conn
         |> Plug.Conn.halt()
         |> Plug.Conn.send_resp(401, "Unauthorized")
 
       {:error, "couldn't verify signature"} ->
         Logger.error("{:error, couldnt_verify_signature} from verify_signiture")
+
         conn
         |> Plug.Conn.halt()
         |> Plug.Conn.send_resp(401, "Unauthorized")
 
       {:error, :unauthorized} ->
         Logger.error("{:error, :unauthorized} from fusion_auth plug get_token")
+
         conn
         |> Plug.Conn.halt()
         |> Plug.Conn.send_resp(401, "Unauthorized")
 
       {:error, _error} ->
         Logger.error("{:error, error} maybe from verify_signiture")
+
         conn
         |> Plug.Conn.halt()
         |> Plug.Conn.send_resp(401, "Unauthorized")
 
       _ ->
         Logger.error("Generic error in fusion_auth plug")
+
         conn
         |> Plug.Conn.halt()
         |> Plug.Conn.send_resp(401, "Unauthorized")

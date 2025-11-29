@@ -53,14 +53,21 @@ defmodule FusionAuth.Reports do
 
   For more information, visit the FusionAuth API Documentation for [Generate Daily Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-daily-active-users-report).
   """
-  @spec get_daily_active_users_report(client(), start_date(), end_date(), [key: application_id()] | []) :: result()
+  @spec get_daily_active_users_report(
+          client(),
+          start_date(),
+          end_date(),
+          [key: application_id()] | []
+        ) :: result()
   def get_daily_active_users_report(client, start_date, end_date, parameters \\ []) do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
+
     Tesla.get(
       client,
       "/api/report/daily-active-user" <>
-      Utils.build_query_parameters(params)
-    ) |> FusionAuth.result()
+        Utils.build_query_parameters(params)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -117,11 +124,13 @@ defmodule FusionAuth.Reports do
   @spec get_login_report(client(), start_date(), end_date(), [key: String.t()] | []) :: result()
   def get_login_report(client, start_date, end_date, parameters \\ []) do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
+
     Tesla.get(
       client,
       "/api/report/login" <>
-      Utils.build_query_parameters(params)
-    ) |> FusionAuth.result()
+        Utils.build_query_parameters(params)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -156,14 +165,21 @@ defmodule FusionAuth.Reports do
 
   For more information, visit the FusionAuth API Documentation for [Generate Monthly Active Users Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-monthly-active-users-report).
   """
-  @spec get_monthly_active_users_report(client(), start_date(), end_date(), [key: application_id()] | []) :: result()
+  @spec get_monthly_active_users_report(
+          client(),
+          start_date(),
+          end_date(),
+          [key: application_id()] | []
+        ) :: result()
   def get_monthly_active_users_report(client, start_date, end_date, parameters \\ []) do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
+
     Tesla.get(
       client,
       "/api/report/monthly-active-user" <>
-      Utils.build_query_parameters(params)
-    ) |> FusionAuth.result()
+        Utils.build_query_parameters(params)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
@@ -199,14 +215,17 @@ defmodule FusionAuth.Reports do
 
   For more information, visit the FusionAuth API Documentation for [Generate Registration Report](https://fusionauth.io/docs/v1/tech/apis/reports#generate-registration-report).
   """
-  @spec get_registration_report(client(), start_date(), end_date(), [key: application_id()] | []) :: result()
+  @spec get_registration_report(client(), start_date(), end_date(), [key: application_id()] | []) ::
+          result()
   def get_registration_report(client, start_date, end_date, parameters \\ []) do
     params = Keyword.merge([start: start_date, end: end_date], parameters)
+
     Tesla.get(
       client,
       "/api/report/registration" <>
-      Utils.build_query_parameters(params)
-    ) |> FusionAuth.result()
+        Utils.build_query_parameters(params)
+    )
+    |> FusionAuth.result()
   end
 
   @doc """
