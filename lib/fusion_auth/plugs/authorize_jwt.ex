@@ -106,8 +106,9 @@ defmodule FusionAuth.Plugs.AuthorizeJWT do
               conn
             end
 
-          _ ->
+          error ->
             Logger.error("FusionAuth generic error failure on refresh")
+            Logger.error("   genericerror descriptions #{inspect(error)}")
             conn
         end
 
