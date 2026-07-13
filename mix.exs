@@ -44,7 +44,7 @@ defmodule FusionAuth.MixProject do
       {:ex_doc, "~> 0.24", only: :dev, runtime: false, optional: true},
       {:excoveralls, "~> 0.14", only: :test, optional: true},
       {:faker, "~> 0.17", only: :test, optional: true},
-      {:hackney, "~> 1.18"},
+      {:hackney, "~> 1.21 or ~> 4.0 and >= 4.0.2"},
       {:jose, "~> 1.8"},
       {:opentelemetry_tesla, "~> 2.1"},
       {:plug_cowboy, "~> 2.7"},
